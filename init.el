@@ -376,7 +376,8 @@
   (evil-set-initial-state 'Info-mode 'emacs)
 
   ;; https://github.com/emacs-evil/evil/issues/1074
-  (global-undo-tree-mode -1)
+  ;; (global-undo-tree-mode -1)
+  (setq evil-undo-system 'undo-redo)
 
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
@@ -663,10 +664,13 @@
 
 
 (use-package smart-tab
+  ;; owner moved repo and uses "main" instead of "master"
+  :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab" :branch "main")
   :config
   (global-smart-tab-mode 1)
   (message "smart-tab")
   )
+
 
 
 (use-package web-mode
