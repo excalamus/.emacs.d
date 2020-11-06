@@ -9,7 +9,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; make use-package invoke straight.  Must be set before straight is
-;; bootstrapped because it affects how straight.el is loaded.  See
+;; bootstrapped because it affects how straight.el is loaded.
+;; Use-package is configured below, after bootstrapping.  See
 ;; https://github.com/raxod502/straight.el#getting-started
 (setq straight-use-package-by-default 't)
 
@@ -48,6 +49,8 @@
 ;; prevent custom from writing to init; have it write to a dump file
 ;; that never gets loaded or read
 (setq custom-file "~/.emacs.d/custom-set.el")
+
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ;; configure autosave directory
 ;; https://stackoverflow.com/a/18330742/5065796
@@ -147,6 +150,7 @@
 		" "
 		mode-line-end-spaces))
 
+;; Theme advice approach modified from
 ;; https://www.greghendershott.com/2017/02/emacs-themes.html
 (use-package base16-theme)
 (use-package zenburn-theme)
@@ -655,11 +659,29 @@
   (message "org")
   )
 
+;; 
+;; (use-package ox-confluence
+;;   :straight (:type git :repo "https://github.com/sdelafond/org-confluence")
+;;   :config
+;;   (require 'ox-confluence)
+;;   (message "ox-confluence")
+;;   )
+
+;; 
+;; (use-package ox-confluence-en
+;;   :load-path "~/.emacs.d/lisp/")
+
 
 (use-package right-click-context
   :config
   (right-click-context-mode 1)
   (message "right-click-context")
+  )
+
+
+(use-package rg
+  :config
+  (message "rg")
   )
 
 
@@ -671,6 +693,12 @@
   (message "smart-tab")
   )
 
+
+(use-package yaml-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+  (message "yaml-mode")
+  )
 
 
 (use-package web-mode
@@ -807,21 +835,43 @@ Taken from URL
 (with-eval-after-load "python"
   (define-key python-mode-map (kbd "<f6>") 'my-insert-breakpoint))
 
-(defvar my-global-default-directory "~/Projects/"
-  "Global default directory.")
+(if (eq system-type 'windows-nt)
+    (defvar my-global-default-directory "C:/projects/"
+      "Global default directory.")
+  (defvar my-global-default-directory "~/Projects/"
+    "Global default directory."))
 
 (defun my-global-default-directory (new-default-directory)
   "Set my-global-default-directory to NEW-DEFAULT-DIRECTORY."
   (interactive "DSet global default directory: ")
   (setq my-global-default-directory new-default-directory))
 
+(defun my-find-file (&optional filename)
+  "Switch to a buffer visiting FILENAME, defaulting to `my-global-default-directory'."
+  (interactive)
+  (if (null filename)
+      (setq filename my-global-default-directory))
+  (cd my-global-default-directory)
+  (call-interactively 'find-file filename))
+
+(global-set-key (kbd "C-x C-f") 'my-find-file)
+
 (defvar my-python
   (concat
-   "python3"
-   ;; "C:/python/python3.6.8-64/python.exe"
+   ;; "python3"
+   "C:\\Users\\mtrzcinski\\Anaconda3\\envs\\ushr-acorn\\python.exe"
    " "
    )
   "Python interpreter to be used in shell calls.")
+
+
+(defun my-set-python (exe)
+  "Set python executable."
+  ;; (interactive "fSelect Python executable: ")
+  (interactive
+   (list (read-file-name "Python executable: " "C:/Users/mtrzcinski/Anaconda3/envs/" nil t)))
+  (setq my-python (concat exe " "))
+  (message "Set `my-python' to: %s" my-python))
 
 (defun my-sh-send-command (command)
   "Send COMMAND to current shell process.
@@ -851,11 +901,25 @@ See URL `https://stackoverflow.com/a/7053298/5065796'"
   (interactive "sShell command: ")
   (setq my-global-shell-command new-command))
 
+;; 16000
+(defun my-kill-python ()
+  "Kill Python."
+  (interactive)
+  (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\""))
+
+(global-set-key (kbd "<apps>") 'my-kill-python)
+
 (global-set-key (kbd "<f10>")
 		(lambda() (interactive)
 		  (save-some-buffers t nil)
-		  ;; (my-kill-python)
+		  (my-kill-python)
 		  (my-sh-send-command my-global-shell-command)))
+
+;; todo make interactive, read envs dir for available envs
+(defun my-conda-activate ()
+  "Activate conda venv."
+  (interactive)
+  (insert "C:\\Users\\mtrzcinski\\Anaconda3\\condabin\\conda.bat activate "))
 
 (defun my-set-global-shell-command-to-current-file ()
   "Set the global shell command to use the current file.
@@ -920,6 +984,30 @@ REGION unfills the region.  See URL
 
 (define-key global-map "\M-Q" 'my-unfill-paragraph)
 
+(defun my-create-shell ()
+    "Create shell with a given name.
+
+Taken from URL `https://stackoverflow.com/a/36450889/5065796'"
+    (interactive);; "Prompt\n shell name:")
+    (let ((shell-name (read-string "shell name: " nil)))
+    (shell (concat "*" shell-name "*"))))
+
+(defun my-open-windows-explorer ()
+  "Open Windows Explorer to folder containing file."
+  (interactive)
+  (let* ((file (or (buffer-file-name (current-buffer)) my-global-default-directory))
+	 (dir (file-name-directory file))
+	 (windows-dir (subst-char-in-string ?/ ?\\ dir)))
+    (start-process "explorer" nil "explorer.exe" windows-dir)))
+
+;; (defun my-open-windows-explorer (&optional start end)
+;;   (interactive "r")
+;;   (message "%s" (buffer-substring-no-properties start end)
+
+;;	   ))
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
@@ -932,8 +1020,7 @@ REGION unfills the region.  See URL
 (global-set-key (kbd "C-x i") 'my-map)
 (define-key my-map (kbd "i") '(lambda() (interactive) (find-file "~/.emacs.d/init.el")))
 (define-key my-map (kbd "n") '(lambda() (interactive) (find-file "~/.emacs.d/notes.org")))
-(define-key my-map (kbd "d") '(lambda() (interactive) (find-file "~/Documents/notes/installing-debian.org")))
-(define-key my-map (kbd "j") '(lambda() (interactive) (find-file "~/.emacs.d/job.org")))
+(define-key my-map (kbd "c") '(lambda() (interactive) (find-file "~/.emacs.d/classic-init.el")))
 
 ;; Disable stupid minimize hotkeys
 (global-unset-key (kbd "C-z"))
