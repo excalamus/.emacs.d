@@ -273,7 +273,7 @@
 (use-package comment-dwim-2
   :config
 
-  (message " comment-dwim-2"))
+  (message "comment-dwim-2"))
 
 
 (use-package define-word
@@ -810,6 +810,12 @@
       (string-inflection-get-current-word))))
 
   (message "string-inflection"))
+
+
+(use-package sx
+  :config
+
+  (message "sx"))
 
 
 (use-package yaml-mode
