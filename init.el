@@ -21,9 +21,9 @@
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -56,7 +56,7 @@
 ;; https://stackoverflow.com/a/18330742/5065796
 (defvar my--backup-directory (concat user-emacs-directory "backups"))
 (if (not (file-exists-p my--backup-directory))
-	(make-directory my--backup-directory t))
+        (make-directory my--backup-directory t))
 (setq backup-directory-alist `(("." . ,my--backup-directory))) ; put backups in current dir and in my--backup-directory
 (setq make-backup-files t               ; backup of a file the first time it is saved.
       backup-by-copying t               ; don't clobber symlinks
@@ -97,12 +97,6 @@
     (window-width . fit-window-to-buffer))
    ))
 
-;; Used for introspection
-(global-set-key (kbd "C-h j") 'describe-face)
-
-;; Disable mouse click on minibuffer from opening messages
-(define-key minibuffer-inactive-mode-map [mouse-1] nil)
-
 ;; split ediff vertically
 (setq ediff-split-window-function 'split-window-right)
 
@@ -124,31 +118,31 @@
 ;; Values in 1/10pt, so 100 will give you 10pt, etc.
 (if (eq system-type 'windows-nt)
     (set-face-attribute 'default nil
-			:family "DejaVu Sans Mono"
-			:height 100
-			:weight 'normal
-			:width 'normal))
+                        :family "DejaVu Sans Mono"
+                        :height 100
+                        :weight 'normal
+                        :width 'normal))
 
 ;;; Mode line
 (column-number-mode t)
 (setq mode-line-position
-	    '((line-number-mode ("%l" (column-number-mode ":%c ")))
-	      (-3 "%p")))
+            '((line-number-mode ("%l" (column-number-mode ":%c ")))
+              (-3 "%p")))
 (which-function-mode)
 
 ;; Just a hack, needs proper attention
 (setq-default mode-line-format
-	      '("%e"
-		evil-mode-line-tag
-		mode-line-mule-info
-		mode-line-modified
-		" "
-		mode-line-buffer-identification
-		" "
-		mode-line-position
-		mode-line-misc-info
-		" "
-		mode-line-end-spaces))
+              '("%e"
+                evil-mode-line-tag
+                mode-line-mule-info
+                mode-line-modified
+                " "
+                mode-line-buffer-identification
+                " "
+                mode-line-position
+                mode-line-misc-info
+                " "
+                mode-line-end-spaces))
 
 ;; Theme advice approach modified from
 ;; https://www.greghendershott.com/2017/02/emacs-themes.html
@@ -176,11 +170,11 @@
       (apply f theme-id no-confirm no-enable args)
     (unless no-enable
       (pcase (assq theme-id my-theme-hooks)
-	(`(,_ . ,f) (funcall f))))))
+        (`(,_ . ,f) (funcall f))))))
 
 (advice-add 'load-theme
-	    :around
-	    #'my-load-theme-advice)
+            :around
+            #'my-load-theme-advice)
 
 (defvar my-theme-dark nil
   "My dark theme.")
@@ -226,21 +220,21 @@
   (interactive)
   (unless type (setq type my-theme-type))
   (cond ((eq type 'dark)
-	 (disable-theme my-theme-light)
-	 (load-theme my-theme-dark t nil)
-	 (setq my-theme-type 'dark))
-	((eq type 'light)
-	 (disable-theme my-theme-dark)
-	 (load-theme my-theme-light t nil)
-	 (setq my-theme-type 'light))))
+         (disable-theme my-theme-light)
+         (load-theme my-theme-dark t nil)
+         (setq my-theme-type 'dark))
+        ((eq type 'light)
+         (disable-theme my-theme-dark)
+         (load-theme my-theme-light t nil)
+         (setq my-theme-type 'light))))
 
 (defun my-theme-switch ()
   "Switch from dark theme to light or vice versa."
   (interactive)
   (cond ((eq my-theme-type 'light)
-	 (my-theme-toggle 'dark))
-	((eq my-theme-type 'dark)
-	 (my-theme-toggle 'light))))
+         (my-theme-toggle 'dark))
+        ((eq my-theme-type 'dark)
+         (my-theme-toggle 'light))))
 
 ;; theme config depends on ace-window and bm
 (with-eval-after-load "ace-window"
@@ -255,69 +249,225 @@
 
 
 (use-package ace-window
-  ;; :bind
-  ;; ;; default C-x o is other-window
-  ;; ;; default C-x C-o is delete-blank-lines
-  ;; (("C-x o" . ace-window)
-  ;;  ("C-x C-o" . ace-window))
-  ;; :init
-  ;; (require 'ace-window)
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (setq aw-background nil)
-  (message "ace-window")
-  )
+
+  (message "ace-window"))
 
 
 (use-package ag
   :config
-  (message "ag")
-  )
+
+  (message "ag"))
 
 
 (use-package bm
-  ;; ;; These are the recommended Visual Studio-like bindings.
-  ;; ;; Note that the <f2> is viewed as a modifier key by default
-  ;; ;; so that this overrides whatever may be there.
-  ;; :bind (("<f2>" . bm-next)
-  ;;	 ("S-<f2>" . bm-previous)
-  ;;	 ("C-<f2>" . bm-toggle))  ; may clash with xfce4 workspace default
   :init
   (setq bm-cycle-all-buffers t)
   :config
-  (message "bm")
-  )
+
+  (message "bm"))
 
 
 (use-package comment-dwim-2
   :config
-  (global-set-key (kbd "C-;") 'comment-dwim-2)
-  ;; (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (message " comment-dwim-2")
-  )
+
+  (message " comment-dwim-2"))
 
 
 (use-package define-word
   :config
-  (message "define-word")
-  )
+
+  (message "define-word"))
 
 
 (use-package dumb-jump
   :config
-  (message "dumb-jump")
-  )
+
+  (message "dumb-jump"))
 
 
-(use-package simple-httpd
+(use-package general
   :config
-  (message "simple-httpd")
-  )
+  (require 'ffap)
+
+  (general-after-init
+
+    ;; Disable stupid minimize hotkeys
+    (general-unbind
+      "C-z"
+      "C-x C-z")
+
+    (general-define-key
+     :keymaps 'key-translation-map
+     ;; "M-x" "M-q"  ; dvp
+     ;; "M-q" "M-x"  ; dvp
+     "<next>" "<tab>"
+     "<prior>" "<escape>"
+     )
+
+    (general-def
+      :keymaps 'override
+      :prefix "C-x i"
+      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+      "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
+      "c" '(lambda () (interactive) (find-file "~/.emacs.d/classic-init.el"))
+      )
+
+    (general-def
+      :keymaps 'override
+      "C-x s" 'save-buffer
+      "<f8>" 'my-switch-to-last-window
+      "M-j" 'helm-semantic-or-imenu
+      "C-j" 'helm-swoop
+      "C-S-j" 'helm-swoop-without-pre-input
+      "<f2>" 'bm-next
+      "S-<f2>" 'bm-previous
+      "C-<f2>" 'bm-toggle
+      "C-h j" 'describe-face  ; introspect colors
+      "C-x b" 'helm-buffers-list
+      "C-x g" 'magit-status
+      "C-x C-f" 'my-find-file
+      )
+
+    (general-def
+      :keymaps 'override
+      :states '(normal insert)
+      (general-chord "jk") 'my-newline-without-break-of-line
+      "C-;" 'comment-dwim-2
+      "<f9>" 'save-buffer
+      "\M-Q" 'my-unfill-paragraph
+      )
+
+    (general-def
+      :states '(normal insert emacs)
+      ;; qwerty bindings
+      "C-]" 'xref-find-definitions
+      "C-}" 'xref-find-definitions-other-window
+      "M-]" 'dumb-jump-go
+      "M-}" 'dumb-jump-go-other-window
+
+      ;; ;; dvp bindings
+      ;; "C-@" 'xref-find-definitions
+      ;; "C-^" 'xref-find-definitions-other-window
+      ;; "M-@" 'dumb-jump-go
+      ;; "M-^" 'dumb-jump-go-other-window
+
+      "C-o" 'dumb-jump-back
+      )
+
+    (general-def
+      :states 'normal
+      :prefix "SPC"
+      ";" 'comment-dwim-2
+      "=" 'er/expand-region
+      "+" 'er/contract-region
+      "b" 'helm-buffers-list
+      "f" 'my-find-file
+      "k" 'kill-buffer
+      "o" 'ace-window
+      "s" 'save-buffer
+      "g" 'ffap-other-window
+      )
+
+    (general-define-key
+     :keymaps 'comint-mode-map
+     :states '(insert emacs)
+     "-" #'(lambda () (interactive) (insert "_"))
+     "_" #'(lambda () (interactive) (insert "-"))
+     )
+    (general-def
+      :keymaps 'comint-mode-map
+      "C-l" 'comint-clear-buffer
+      "C-x C-l" 'recenter-top-bottom
+      )
+
+    (general-define-key
+     :keymaps 'elpy-mode-map
+     :states '(insert emacs)
+     "-" #'(lambda () (interactive) (insert "_"))
+     "_" #'(lambda () (interactive) (insert "-"))
+     )
+    (general-def
+      :keymaps 'elpy-mode-map
+      "<C-return>" 'nil
+      "<C-S-return>" 'nil
+      )
+    (general-def
+      :keymaps 'elpy-mode-map
+      "<C-S-return>"'elpy-shell-send-statement
+      "<C-return>" 'elpy-shell-send-statement-and-step
+      "<M-return>" 'elpy-shell-send-group
+      "<M-S-return>" 'elpy-shell-send-group-and-step
+      "<pause>" 'elpy-test-pytest-runner
+      ;; "<insert>" 'elpy-test-pytest-runner
+      "C-c o" 'elpy-occur-definitions
+      "<apps>" 'my-kill-python
+      "<f6>" 'my-insert-breakpoint
+      "<f10>" '(lambda() (interactive)
+                 (save-some-buffers t nil)
+                 (my-kill-python)
+                 (my-sh-send-command my-global-shell-command))
+      "<C-S-f10>" 'my-set-global-shell-command-to-current-file
+      "<S-f10>" 'my-buffer-file-to-shell
+      )
+    (general-def
+      :keymaps 'elpy-mode-map
+      :states 'normal
+      :prefix "SPC"
+      "d" 'elpy-occur-definitions
+      "c" 'my-string-inflection-style-cycle
+      )
+
+    (general-def
+      :keymaps 'emacs-lisp-mode-map
+      :states 'normal
+      :prefix "SPC"
+      "x" 'eval-expression
+      "e" 'eval-last-sexp
+      )
+
+    (general-def
+      :keymaps 'emacs-lisp-mode-map
+      "C-<next>" 'forward-page  ; C-PgUp goto previous linebreak
+      "C-<prior>" 'backward-page ; C-PgDown goto next linebreak
+      )
+
+    (general-def :keymaps 'helm-map "<escape>"  'helm-keyboard-quit)
+
+    (general-def
+      :keymaps 'magit-status-mode-map
+      "S-<tab>" 'magit-section-cycle-global
+      "<tab>" 'magit-section-toggle
+      )
+
+    ;; Disable mouse click on minibuffer from opening messages
+    (general-def :keymaps 'minibuffer-inactive-mode-map [mouse-1] nil)
+
+    (general-def
+      :keymaps 'org-mode-map
+      :states 'normal
+      :prefix "SPC"
+      "SPC" 'org-ctrl-c-ctrl-c
+      "t" 'org-insert-structure-template
+      )
+
+    (general-def
+      :keymaps 'org-mode-map
+      "C-c h o" 'org-clock-out
+      "C-c h i" 'org-clock-in
+      "C-c h d" 'org-clock-display
+      "C-c C--" 'org-ctrl-c-minus
+      )
+
+    ) ; general-after-init
+
+  (message "general"))
 
 
 (use-package elpy
   :after (:all helm key-chord use-package-chords)
-  :chords (("jk" . my-newline-without-break-of-line))
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
   (add-hook 'elpy-mode-hook #'hs-minor-mode)
@@ -335,41 +485,24 @@
   (when (eq system-type 'gnu/linux)
     (setq-default indent-tabs-mode nil)
     (setq python-shell-interpreter "ipython"
-	  python-shell-interpreter-args "--simple-prompt")
+          python-shell-interpreter-args "--simple-prompt")
     (setq elpy-rpc-python-command "python3"))
 
   (when (eq system-type 'windows-nt)
     (setq-default indent-tabs-mode nil)
     ;; https://emacs.stackexchange.com/questions/24750/emacs-freezes-with-ipython-5-0-0
     (setq python-shell-interpreter "ipython"
-	  python-shell-interpreter-args "--simple-prompt")
+          python-shell-interpreter-args "--simple-prompt")
     (setq elpy-rpc-python-command "python"))
 
-  ;; For some reason, simple :bind doesn't work
-  ;; https://emacs.stackexchange.com/a/46251/15177
-  (unbind-key "<C-return>" elpy-mode-map)
-  (unbind-key "<C-S-return>" elpy-mode-map)
-  (bind-keys :map elpy-mode-map
-	     ("<C-S-return>". elpy-shell-send-statement)
-	     ("<C-return>" . elpy-shell-send-statement-and-step)
-	     ("<M-return>" . elpy-shell-send-group)
-	     ("<M-S-return>" . elpy-shell-send-group-and-step)
-	     ("<pause>" . elpy-test-pytest-runner)
-	     ("C-c o" . elpy-occur-definitions)
-	     ;; ("<insert>" . elpy-test-pytest-runner)
-	     ("C-j" . helm-swoop)
-	     ("C-M-j" . helm-swoop-without-pre-input)
-	     ("M-j" . helm-semantic-or-imenu)
-	     ("C-c C-j" . helm-semantic-or-imenu))
-  (message "elpy")
-  )
+  (message "elpy"))
 
 
 (use-package ess
   :init (require 'ess-site)
   :config
-  (message "ess")
-  )
+
+  (message "ess"))
 
 
 (use-package evil
@@ -380,35 +513,7 @@
   (evil-set-initial-state 'Info-mode 'emacs)
 
   ;; https://github.com/emacs-evil/evil/issues/1074
-  ;; (global-undo-tree-mode -1)
   (setq evil-undo-system 'undo-redo)
-
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-  (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
-  (key-chord-define evil-emacs-state-map "jj" 'evil-normal-state)
-
-  ;; (key-chord-define evil-emacs-state-map ".." 'my-string-inflection-style-cycle)
-  ;; (key-chord-define evil-normal-state-map ".." 'my-string-inflection-style-cycle)
-
-  (define-key evil-emacs-state-map [escape] 'evil-normal-state)
-  (define-key evil-normal-state-map "\C-n" 'elpy-nav-forward-block)
-  (define-key evil-normal-state-map "\C-p" 'elpy-nav-backward-block)
-  ;; (define-key evil-normal-state-map (kbd "<insert>") 'elpy-test-pytest-runner)
-
-  ;; qwerty bindings
-  (define-key evil-normal-state-map (kbd "C-]") 'xref-find-definitions)
-  (define-key evil-normal-state-map (kbd "C-}") 'xref-find-definitions-other-window)
-  (define-key evil-normal-state-map (kbd "M-]") 'dumb-jump-go)
-  (define-key evil-normal-state-map (kbd "M-}") 'dumb-jump-go-other-window)
-
-  ;; ;; dvp bindings
-  ;; (define-key evil-normal-state-map (kbd "C-@") 'xref-find-definitions)
-  ;; (define-key evil-normal-state-map (kbd "C-^") 'xref-find-definitions-other-window)
-  ;; (define-key evil-normal-state-map (kbd "M-@") 'dumb-jump-go)
-  ;; (define-key evil-normal-state-map (kbd "M-^") 'dumb-jump-go-other-window)
-
-  (define-key evil-normal-state-map (kbd "gd") 'dumb-jump-go)
-  ;; (define-key evil-normal-state-map (kbd "C-o") 'dumb-jump-back)
 
   ;; Coordinate states with cursor color
   (setq evil-emacs-state-cursor '("SkyBlue2" bar))
@@ -416,56 +521,46 @@
   (setq evil-insert-state-cursor '("light gray" bar))
   (setq evil-visual-state-cursor '("gray" box))
   (setq evil-motion-state-cursor '("plum3" box))
-  (message "evil")
-  )
+
+  (message "evil"))
 
 
 (use-package evil-lion
   :after (:all evil)
   :config
   (evil-lion-mode 1)
-  (message "evil-lion")
-  )
+
+  (message "evil-lion"))
 
 
 (use-package evil-surround
   :after (:all evil)
   :config
   (global-evil-surround-mode 1)
-  (message "evil-surround")
-  )
+
+  (message "evil-surround"))
 
 
 (use-package expand-region
-  ;; :bind (("C-=" . er/expand-region)
-  ;;        ("C-+" . er/contract-region))
   :config
-  (message "expand-region")
-  )
+
+  (message "expand-region"))
 
 
 (use-package flycheck
-  ;; :config (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
   :config
-  (message "flycheck")
-  )
+
+  (message "flycheck"))
 
 
 (use-package helm
-  :bind
-  (("C-x b" . helm-buffers-list)
-  :map helm-map
-  ("<escape>" . helm-keyboard-quit))
   :config
-  (message "helm")
-  )
+
+  (message "helm"))
 
 
 (use-package helm-swoop
   :after helm
-  :bind (("C-j" . helm-swoop)
-	 ("M-j" . helm-semantic-or-imenu)
-	 ("C-M-j" . helm-swoop-without-pre-input))
   :config
 
   (defun my--reset-linum-hack ()
@@ -481,20 +576,21 @@
   (setq helm-swoop-speed-or-color t)
 
   (set-face-attribute 'helm-swoop-target-word-face nil
-		      :foreground 'unspecified
-		      :background 'unspecified
-		      :inherit    'lazy-highlight)
+                      :foreground 'unspecified
+                      :background 'unspecified
+                      :inherit    'lazy-highlight)
   (set-face-attribute 'helm-swoop-target-line-face nil
-		      :foreground         'unspecified
-		      :distant-foreground 'unspecified
-		      :background         'unspecified
-		      :inherit            'secondary-selection)
+                      :foreground         'unspecified
+                      :distant-foreground 'unspecified
+                      :background         'unspecified
+                      :inherit            'secondary-selection)
   (set-face-attribute 'helm-selection nil
-		      :distant-foreground 'unspecified
-		      :background         'unspecified
-		      :inherit            'secondary-selection)
-  (message "helm-swoop")
-  )
+                      :distant-foreground 'unspecified
+                      :background         'unspecified
+                      :inherit            'secondary-selection)
+
+
+  (message "helm-swoop"))
 
 
 (use-package hi-lock
@@ -509,8 +605,8 @@
     For more information, see `global-hl-line-sticky-flag'."
     (interactive)
     (if global-hl-line-sticky-flag
-	(setq global-hl-line-sticky-flag nil)
-	(setq global-hl-line-sticky-flag t))
+        (setq global-hl-line-sticky-flag nil)
+        (setq global-hl-line-sticky-flag t))
 
     ;; once toggled, the mode needs to be restarted
     (global-hl-line-mode -1)
@@ -529,21 +625,21 @@
   (set-face-attribute 'hi-pink   nil                       :foreground "gray30" :distant-foreground "pink"        :box "dim gray")
   (set-face-attribute 'hi-green  nil                       :foreground "gray30" :distant-foreground "light green" :box "dim gray")
   (set-face-attribute 'hi-blue   nil                       :foreground "gray30" :distant-foreground "light blue " :box "dim gray")
-  (message "hi-lock")
-  )
+
+  (message "hi-lock"))
 
 
 (use-package htmlize
   :config
-  (message "htmlize")
-  )
+
+  (message "htmlize"))
 
 
 ;; https://github.com/jwiegley/use-package#use-package-chords
 (use-package key-chord
   :config (key-chord-mode 1)
-  (message "key-chord")
-  )
+
+  (message "key-chord"))
 
 
 (when (eq system-type 'gnu/linux)
@@ -551,60 +647,47 @@
     :defer t
     :config
     (setq ledger-post-amount-alignment-column 60)
-    (message "ledger-mode")
-    ))
+
+    (message "ledger-mode")))
 
 
 (use-package magit
-  :bind
-  (("S-<tab>" . magit-section-cycle-global)
-   ("C-x g" . magit-status))
   :init
   (setq magit-section-initial-visibility-alist
-	'((stashes . hide) (untracked . hide) (unpushed . hide)))
+        '((stashes . hide) (untracked . hide) (unpushed . hide)))
   :config
-  (message "magit")
-  )
+
+  (message "magit"))
 
 
 (use-package markdown-mode
   :mode (("README\\.md\\'" . gfm-mode)
-	 ("\\.md\\'" . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode))
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
   :init
   (setq markdown-command "multimarkdown")
   :config
-  (message "markdown-mode")
-  )
+
+  (message "markdown-mode"))
 
 
 (use-package markdown-toc
   :config
-  (message "markdown-mode"))
 
+  (message "markdown-mode"))
 
 (use-package nameless
   :init
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   :config
-  (message "nameless"))
 
+  (message "nameless"))
 
 ;; This step works some magic. For details:
 ;; https://github.com/raxod502/straight.el#integration-with-org
 (use-package org
   :after (helm helm-swoop)
-  ;; :bind
-  ;; (("C-c h o" . org-clock-out)
-  ;;  ("C-c h i" . org-clock-in)
-  ;;  ("C-c h d" . org-clock-display))
   :config
-  ;; (unbind-key "C-j" org-mode-map)
-  ;; (unbind-key "C-j" global-map)
-  ;; (bind-keys :map org-mode-map
-  ;;            ("C-j" . helm-swoop)
-  ;;            ("C-M-j" . helm-swoop-without-pre-input))
-
   (setq org-edit-src-content-indentation 0)
   (setq org-src-tab-acts-natively t)
   (setq org-src-fontify-natively t)
@@ -612,27 +695,27 @@
   (setq org-support-shift-select 'always)
   (setq org-indent-indentation-per-level 0)
   (setq org-todo-keywords
-	'((sequence
-	   ;; open items
-	   "TODO"		  ; todo, not active
-	   "CURRENT"		  ; todo, active item
-	   "PENDING"		  ; requires more information (timely)
-	   "|"	; entries after pipe are considered completed in [%] and [/]
-	    ;; closed items
-	   "DONE"	 ; completed successfully
-	   "ON-HOLD"	 ; requires more information (indefinite time)
-	   "CANCELED"	 ; no longer relevant, not completed
-	   )))
+        '((sequence
+           ;; open items
+           "TODO"		  ; todo, not active
+           "CURRENT"		  ; todo, active item
+           "PENDING"		  ; requires more information (timely)
+           "|"	; entries after pipe are considered completed in [%] and [/]
+            ;; closed items
+           "DONE"	 ; completed successfully
+           "ON-HOLD"	 ; requires more information (indefinite time)
+           "CANCELED"	 ; no longer relevant, not completed
+           )))
 
   (setq org-todo-keyword-faces
-	'(
-	  ("TODO" . "light pink")
-	  ("CURRENT" . "yellow")
-	  ("DONE" . "light green")
-	  ("PENDING" . "light blue")
-	  ("ON-HOLD" . "plum")
-	  ("CANCELED" . "gray")
-	  ))
+        '(
+          ("TODO" . "light pink")
+          ("CURRENT" . "yellow")
+          ("DONE" . "light green")
+          ("PENDING" . "light blue")
+          ("ON-HOLD" . "plum")
+          ("CANCELED" . "gray")
+          ))
   ;;
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -649,23 +732,21 @@
     (org-clock-out)
     (org-clock-in))
 
-  (define-key org-mode-map (kbd "C-c C--") 'org-ctrl-c-minus)
-
   ;; org-mode doesn't automatically save archive files for some
   ;; stupid reason.  This is a ruthless hack which saves /all/ org
   ;; buffers in archive.
   ;; https://emacs.stackexchange.com/a/51112/15177
   (advice-add 'org-archive-subtree :after #'org-save-all-org-buffers)
-  (message "org")
-  )
+
+  (message "org"))
 
 ;; 
 ;; (use-package ox-confluence
 ;;   :straight (:type git :repo "https://github.com/sdelafond/org-confluence")
 ;;   :config
 ;;   (require 'ox-confluence)
-;;   (message "ox-confluence")
-;;   )
+
+;;   (message "ox-confluence") ;;   )
 
 ;; 
 ;; (use-package ox-confluence-en
@@ -675,14 +756,20 @@
 (use-package right-click-context
   :config
   (right-click-context-mode 1)
-  (message "right-click-context")
-  )
+
+  (message "right-click-context"))
 
 
 (use-package rg
   :config
-  (message "rg")
-  )
+
+  (message "rg"))
+
+
+(use-package simple-httpd
+  :config
+
+  (message "simple-httpd"))
 
 
 (use-package smart-tab
@@ -690,22 +777,53 @@
   :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab" :branch "main")
   :config
   (global-smart-tab-mode 1)
-  (message "smart-tab")
-  )
+
+  (message "smart-tab"))
+
+
+(use-package string-inflection
+  :config
+  (defun my--string-inflection-style-cycle-function (str)
+    "foo-bar => foo_bar => FOO_BAR => fooBar => FooBar => foo-bar"
+    (cond
+     ;; foo-bar => foo_bar
+     ((string-inflection-kebab-case-p str)
+      (string-inflection-underscore-function str))
+     ;; foo_bar => FOO_BAR
+     ((string-inflection-underscore-p str)
+      (string-inflection-upcase-function str))
+     ;; FOO_BAR => fooBar
+     ((string-inflection-upcase-p str)
+      (string-inflection-pascal-case-function str))
+     ;; fooBar => FooBar
+     ((string-inflection-pascal-case-p str)
+      (string-inflection-camelcase-function str))
+     ;; FooBar => foo-bar
+     ((string-inflection-camelcase-p str)
+      (string-inflection-kebab-case-function str))))
+
+  (defun my-string-inflection-style-cycle ()
+    "foo-bar => foo_bar => FOO_BAR => fooBar => FooBar => foo-bar"
+    (interactive)
+    (string-inflection-insert
+     (my--string-inflection-style-cycle-function
+      (string-inflection-get-current-word))))
+
+  (message "string-inflection"))
 
 
 (use-package yaml-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-  (message "yaml-mode")
-  )
+
+  (message "yaml-mode"))
 
 
 (use-package web-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (message "web-mode")
-  )
+
+  (message "web-mode"))
 
 ;; (use-package smartparens
 ;;   :diminish smartparens-mode
@@ -718,41 +836,6 @@
 ;;   (smartparens-global-mode 1)
 ;;   (setq sp-highlight-pair-overlay nil))
 
-;; (use-package string-inflection
-;;   :config
-;;   ;; (defun my-string-inflection-style-cycle-function (str)
-;;   ;;   "foo_bar => fooBar => foo_bar"
-;;   ;;   (cond
-;;   ;;    ;; foo_bar => fooBar
-;;   ;;    ((string-inflection-underscore-p str)
-;;   ;;     (string-inflection-camelcase-function str))
-;;   ;;    ;; fooBar => foo_bar
-;;   ;;    ((string-inflection-camelcase-p str)
-;;   ;;     (string-inflection-underscore-function str))))
-
-;;   (defun my--string-inflection-style-cycle-function (str)
-;;     "foo-bar => foo_bar => fooBar => FooBar => foo-bar"
-;;     (cond
-;;      ;; foo-bar => foo_bar
-;;      ((string-inflection-kebab-case-p str)
-;;       (string-inflection-underscore-function str))
-;;      ;; foo_bar => fooBar
-;;      ((string-inflection-underscore-p str)
-;;       (string-inflection-camelcase-function str))
-;;      ;; fooBar => FooBar
-;;      ((string-inflection-camelcase-p str)
-;;       (string-inflection-pascal-case-function str))
-;;      ;; FooBar => foo-bar
-;;      ((string-inflection-pascal-case-p str)
-;;       (string-inflection-kebab-case-function str))))
-
-;;   (defun my-string-inflection-style-cycle ()
-;;     "foo_bar => FOO_BAR => FooBar => foo_bar"
-;;     (interactive)
-;;     (string-inflection-insert
-;;      (my--string-inflection-style-cycle-function (string-inflection-get-current-word))))
-
-;;   (global-set-key (kbd "M-<SPC>") 'my-string-inflection-style-cycle))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -773,8 +856,6 @@ point, or when prefix arg, the next N files"
 ;; https://superuser.com/a/566401/606203
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 
-(global-set-key (kbd "<f9>") 'save-buffer)
-
 (defun my-switch-to-last-window ()
   "Switch to most recently used window.
 
@@ -787,22 +868,20 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
       (select-frame frame)
       (select-window win))))
 
-(global-set-key (kbd "<f8>") 'my-switch-to-last-window)
-
 ;; https://stackoverflow.com/a/21058075/5065796
 (defun create-scratch-buffer ()
   "Create a new numbered scratch buffer."
   (interactive)
   (let ((n 0)
-	bufname)
+        bufname)
     (while (progn
-	     (setq bufname (concat "*scratch"
-				   (if (= n 0) "" (int-to-string n))
-				   "*"))
-	     (setq n (1+ n))
-	     (get-buffer bufname)))
+             (setq bufname (concat "*scratch"
+                                   (if (= n 0) "" (int-to-string n))
+                                   "*"))
+             (setq n (1+ n))
+             (get-buffer bufname)))
     (switch-to-buffer (get-buffer-create bufname))
-		     (org-mode)
+                     (org-mode)
   (if (= n 1) initial-major-mode)))
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -818,8 +897,8 @@ expansion.
 Taken from URL
 `https://blog.binchen.org/posts/auto-complete-word-in-emacs-mini-buffer-when-using-evil.html'"
   (set-syntax-table (let* ((table (make-syntax-table)))
-		      (modify-syntax-entry ?/ "." table)
-		      table)))
+                      (modify-syntax-entry ?/ "." table)
+                      table)))
 
 (add-hook 'minibuffer-inactive-mode-hook 'minibuffer-inactive-mode-hook-setup)
 
@@ -831,9 +910,6 @@ Taken from URL
   (insert my-python-break-string)
   (bm-toggle)
   (save-buffer))
-
-(with-eval-after-load "python"
-  (define-key python-mode-map (kbd "<f6>") 'my-insert-breakpoint))
 
 (if (eq system-type 'windows-nt)
     (defvar my-global-default-directory "C:/projects/"
@@ -854,16 +930,12 @@ Taken from URL
   (cd my-global-default-directory)
   (call-interactively 'find-file filename))
 
-(global-set-key (kbd "C-x C-f") 'my-find-file)
-
-(defvar my-python
-  (concat
-   ;; "python3"
-   "C:\\Users\\mtrzcinski\\Anaconda3\\envs\\ushr-acorn\\python.exe"
-   " "
-   )
+(defvar my-python nil
   "Python interpreter to be used in shell calls.")
 
+(if (eq system-type 'windows-nt)
+    (setq my-python (concat "python3" " "))
+  (setq my-python (concat "C:\\Users\\mtrzcinski\\Anaconda3\\envs\\ushr-acorn\\python.exe" " ")))
 
 (defun my-set-python (exe)
   "Set python executable."
@@ -880,13 +952,13 @@ Creates new shell process if none exists.
 
 See URL `https://stackoverflow.com/a/7053298/5065796'"
   (let ((proc (get-process "shell"))
-	pbuf)
+        pbuf)
     (unless proc
       (let ((currbuff (current-buffer)))
-	(shell)
-	(switch-to-buffer currbuff)
-	(setq proc (get-process "shell"))
-	))
+        (shell)
+        (switch-to-buffer currbuff)
+        (setq proc (get-process "shell"))
+        ))
     (setq pbuff (process-buffer proc))
     (setq command-and-go (concat command "\n"))
     (with-current-buffer pbuff
@@ -905,15 +977,8 @@ See URL `https://stackoverflow.com/a/7053298/5065796'"
 (defun my-kill-python ()
   "Kill Python."
   (interactive)
-  (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\""))
-
-(global-set-key (kbd "<apps>") 'my-kill-python)
-
-(global-set-key (kbd "<f10>")
-		(lambda() (interactive)
-		  (save-some-buffers t nil)
-		  (my-kill-python)
-		  (my-sh-send-command my-global-shell-command)))
+  (if (eq system-type 'windows-nt)
+      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
 
 ;; todo make interactive, read envs dir for available envs
 (defun my-conda-activate ()
@@ -932,14 +997,10 @@ frequently.  It is like a permanent version of
   (setq my-global-shell-command (concat my-python (buffer-file-name)))
   (message "Set `my-global-shell-command' to \"%s\"" my-global-shell-command))
 
-(global-set-key (kbd "<C-S-f10>") 'my-set-global-shell-command-to-current-file)
-
 (defun my-buffer-file-to-shell ()
   "Send current buffer file to shell as python call."
   (interactive)
   (my-sh-send-command (concat my-python (buffer-file-name))))
-
-(global-set-key (kbd "<S-f10>") 'my-buffer-file-to-shell)
 
 (defun my-newline-without-break-of-line ()
   "Create a new line without breaking the current line and move
@@ -948,19 +1009,6 @@ the cursor down."
   (let ((oldpos (point)))
     (end-of-line)
     (newline-and-indent)))
-
-(defun my-remap-dash-and-underscore ()
-  (interactive)
-  (define-key python-mode-map "-" #'(lambda () (interactive) (insert "_")))
-  (define-key python-mode-map "_" #'(lambda () (interactive) (insert "-"))))
-
-(add-hook 'python-mode-hook 'my-remap-dash-and-underscore)
-
-(define-key comint-mode-map "-" #'(lambda () (interactive) (insert "_")))
-(define-key comint-mode-map "_" #'(lambda () (interactive) (insert "-")))
-
-(define-key comint-mode-map (kbd "C-l") 'comint-clear-buffer)
-(define-key comint-mode-map (kbd "C-x C-l") 'recenter-top-bottom)
 
 (defun my-comint-exec-hook ()
   (interactive)
@@ -978,11 +1026,9 @@ REGION unfills the region.  See URL
 `https://www.emacswiki.org/emacs/UnfillParagraph'"
   (interactive (progn (barf-if-buffer-read-only) '(t)))
   (let ((fill-column (point-max))
-	;; This would override `fill-column' if it's an integer.
-	(emacs-lisp-docstring-fill-column t))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
-
-(define-key global-map "\M-Q" 'my-unfill-paragraph)
 
 (defun my-create-shell ()
     "Create shell with a given name.
@@ -996,8 +1042,8 @@ Taken from URL `https://stackoverflow.com/a/36450889/5065796'"
   "Open Windows Explorer to folder containing file."
   (interactive)
   (let* ((file (or (buffer-file-name (current-buffer)) my-global-default-directory))
-	 (dir (file-name-directory file))
-	 (windows-dir (subst-char-in-string ?/ ?\\ dir)))
+         (dir (file-name-directory file))
+         (windows-dir (subst-char-in-string ?/ ?\\ dir)))
     (start-process "explorer" nil "explorer.exe" windows-dir)))
 
 ;; (defun my-open-windows-explorer (&optional start end)
@@ -1005,34 +1051,3 @@ Taken from URL `https://stackoverflow.com/a/36450889/5065796'"
 ;;   (message "%s" (buffer-substring-no-properties start end)
 
 ;;	   ))
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; bindings
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; inevitably something screws up with bindings, put them at the end
-;; to ensure they're the last thing set (unless there are late loads)
-
-;; Create personal prefix map
-(define-prefix-command 'my-map)
-(global-set-key (kbd "C-x i") 'my-map)
-(define-key my-map (kbd "i") '(lambda() (interactive) (find-file "~/.emacs.d/init.el")))
-(define-key my-map (kbd "n") '(lambda() (interactive) (find-file "~/.emacs.d/notes.org")))
-(define-key my-map (kbd "c") '(lambda() (interactive) (find-file "~/.emacs.d/classic-init.el")))
-
-;; Disable stupid minimize hotkeys
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
-
-;; Rebind save-some-buffers because sometimes I mistype C-x C-s.  If
-;; kill-some-buffers doesn't get a binding why should
-;; save-some-buffers?
-(global-set-key (kbd "C-x s") 'save-buffer)
-
-(define-key emacs-lisp-mode-map (kbd "C-<next>") 'forward-page)  ; C-PgUp goto previous linebreak
-(define-key emacs-lisp-mode-map (kbd "C-<prior>") 'backward-page) ; C-PgDown goto next linebreak
-
-(define-key key-translation-map (kbd "<next>") (kbd "<tab>"))
-(define-key key-translation-map (kbd "<prior>") (kbd "<escape>"))
