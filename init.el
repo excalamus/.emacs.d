@@ -285,6 +285,14 @@
   (if my-debug (message "define-word")))
 
 
+(use-package dap-mode
+  :config
+  (require 'python-dap)
+  (setq dap-python-debugger 'debugpy)
+
+  (if my-debug (message "dap-mode")))
+
+
 (use-package dumb-jump
   :config
 
