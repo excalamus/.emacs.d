@@ -3,6 +3,9 @@
 ;; Maintain package consistency across multiple devices using
 ;; straight.el with use-package.el.
 
+(defvar my-debug nil
+  "Toggle package load messaging.")
+
   ; C-q C-l
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bootstrap
@@ -87,7 +90,7 @@
 ;; Change yes-no prompts to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Make occur window open to the side
+;; Make occur window open in side-window
 (setq
  display-buffer-alist
  '(("\\*Occur\\*"
@@ -253,13 +256,13 @@
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (setq aw-background nil)
 
-  (message "ace-window"))
+  (if my-debug (message "ace-window")))
 
 
 (use-package ag
   :config
 
-  (message "ag"))
+  (if my-debug (message "ag")))
 
 
 (use-package bm
@@ -463,7 +466,7 @@
 
     ) ; general-after-init
 
-  (message "general"))
+  (if my-debug (message "general")))
 
 
 (use-package elpy
@@ -495,14 +498,14 @@
           python-shell-interpreter-args "--simple-prompt")
     (setq elpy-rpc-python-command "python"))
 
-  (message "elpy"))
+  (if my-debug (message "elpy")))
 
 
 (use-package ess
   :init (require 'ess-site)
   :config
 
-  (message "ess"))
+  (if my-debug (message "ess")))
 
 
 (use-package evil
@@ -522,7 +525,7 @@
   (setq evil-visual-state-cursor '("gray" box))
   (setq evil-motion-state-cursor '("plum3" box))
 
-  (message "evil"))
+  (if my-debug (message "evil")))
 
 
 (use-package evil-lion
@@ -530,7 +533,7 @@
   :config
   (evil-lion-mode 1)
 
-  (message "evil-lion"))
+  (if my-debug (message "evil-lion")))
 
 
 (use-package evil-surround
@@ -538,25 +541,25 @@
   :config
   (global-evil-surround-mode 1)
 
-  (message "evil-surround"))
+  (if my-debug (message "evil-surround")))
 
 
 (use-package expand-region
   :config
 
-  (message "expand-region"))
+  (if my-debug (message "expand-region")))
 
 
 (use-package flycheck
   :config
 
-  (message "flycheck"))
+  (if my-debug (message "flycheck")))
 
 
 (use-package helm
   :config
 
-  (message "helm"))
+  (if my-debug (message "helm")))
 
 
 (use-package helm-swoop
@@ -590,7 +593,7 @@
                       :inherit            'secondary-selection)
 
 
-  (message "helm-swoop"))
+  (if my-debug (message "helm-swoop")))
 
 
 (use-package hi-lock
@@ -626,20 +629,20 @@
   (set-face-attribute 'hi-green  nil                       :foreground "gray30" :distant-foreground "light green" :box "dim gray")
   (set-face-attribute 'hi-blue   nil                       :foreground "gray30" :distant-foreground "light blue " :box "dim gray")
 
-  (message "hi-lock"))
+  (if my-debug (message "hi-lock")))
 
 
 (use-package htmlize
   :config
 
-  (message "htmlize"))
+  (if my-debug (message "htmlize")))
 
 
 ;; https://github.com/jwiegley/use-package#use-package-chords
 (use-package key-chord
   :config (key-chord-mode 1)
 
-  (message "key-chord"))
+  (if my-debug (message "key-chord")))
 
 
 (when (eq system-type 'gnu/linux)
@@ -648,7 +651,7 @@
     :config
     (setq ledger-post-amount-alignment-column 60)
 
-    (message "ledger-mode")))
+    (if my-debug (message "ledger-mode"))))
 
 
 (use-package magit
@@ -657,7 +660,7 @@
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
   :config
 
-  (message "magit"))
+  (if my-debug (message "magit")))
 
 
 (use-package markdown-mode
@@ -668,20 +671,22 @@
   (setq markdown-command "multimarkdown")
   :config
 
-  (message "markdown-mode"))
+  (if my-debug (message "markdown-mode")))
 
 
 (use-package markdown-toc
   :config
 
-  (message "markdown-mode"))
+  (if my-debug (message "markdown-mode")))
+
 
 (use-package nameless
   :init
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   :config
 
-  (message "nameless"))
+  (if my-debug (message "nameless")))
+
 
 ;; This step works some magic. For details:
 ;; https://github.com/raxod502/straight.el#integration-with-org
@@ -738,7 +743,7 @@
   ;; https://emacs.stackexchange.com/a/51112/15177
   (advice-add 'org-archive-subtree :after #'org-save-all-org-buffers)
 
-  (message "org"))
+  (if my-debug (message "org")))
 
 ;; 
 ;; (use-package ox-confluence
@@ -746,7 +751,7 @@
 ;;   :config
 ;;   (require 'ox-confluence)
 
-;;   (message "ox-confluence") ;;   )
+;;   (if my-debug (message "ox-confluence") ;;   ))
 
 ;; 
 ;; (use-package ox-confluence-en
@@ -757,19 +762,19 @@
   :config
   (right-click-context-mode 1)
 
-  (message "right-click-context"))
+  (if my-debug (message "right-click-context")))
 
 
 (use-package rg
   :config
 
-  (message "rg"))
+  (if my-debug (message "rg")))
 
 
 (use-package simple-httpd
   :config
 
-  (message "simple-httpd"))
+  (if my-debug (message "simple-httpd")))
 
 
 (use-package smart-tab
@@ -778,7 +783,7 @@
   :config
   (global-smart-tab-mode 1)
 
-  (message "smart-tab"))
+  (if my-debug (message "smart-tab")))
 
 
 (use-package string-inflection
@@ -809,27 +814,27 @@
      (my--string-inflection-style-cycle-function
       (string-inflection-get-current-word))))
 
-  (message "string-inflection"))
+  (if my-debug (message "string-inflection")))
 
 
 (use-package sx
   :config
 
-  (message "sx"))
+  (if my-debug (message "sx")))
 
 
 (use-package yaml-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
-  (message "yaml-mode"))
+  (if my-debug (message "yaml-mode")))
 
 
 (use-package web-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
-  (message "web-mode"))
+  (if my-debug (message "web-mode")))
 
 ;; (use-package smartparens
 ;;   :diminish smartparens-mode
@@ -940,8 +945,8 @@ Taken from URL
   "Python interpreter to be used in shell calls.")
 
 (if (eq system-type 'windows-nt)
-    (setq my-python (concat "python3" " "))
-  (setq my-python (concat "C:\\Users\\mtrzcinski\\Anaconda3\\envs\\ushr-acorn\\python.exe" " ")))
+    (setq my-python (concat "C:\\Users\\mtrzcinski\\Anaconda3\\envs\\ushr-acorn\\python.exe" " "))
+  (setq my-python (concat "python3" " ")))
 
 (defun my-set-python (exe)
   "Set python executable."
