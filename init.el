@@ -270,25 +270,25 @@
   (setq bm-cycle-all-buffers t)
   :config
 
-  (message "bm"))
+  (if my-debug (message "bm")))
 
 
 (use-package comment-dwim-2
   :config
 
-  (message "comment-dwim-2"))
+  (if my-debug (message "comment-dwim-2")))
 
 
 (use-package define-word
   :config
 
-  (message "define-word"))
+  (if my-debug (message "define-word")))
 
 
 (use-package dumb-jump
   :config
 
-  (message "dumb-jump"))
+  (if my-debug (message "dumb-jump")))
 
 
 (use-package general
