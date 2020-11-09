@@ -287,7 +287,7 @@
 
 (use-package dap-mode
   :config
-  (require 'python-dap)
+  (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
 
   (if my-debug (message "dap-mode")))
@@ -787,7 +787,7 @@
 
 (use-package smart-tab
   ;; owner moved repo and uses "main" instead of "master"
-  :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab" :branch "main")
+  :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main")
   :config
   (global-smart-tab-mode 1)
 
