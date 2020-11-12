@@ -949,7 +949,7 @@ Taken from URL
   (save-buffer))
 
 (if (eq system-type 'windows-nt)
-    (defvar my-global-default-directory "C:/projects/"
+    (defvar my-global-default-directory "C:\\projects\\"
       "Global default directory.")
   (defvar my-global-default-directory "~/Projects/"
     "Global default directory."))
