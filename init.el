@@ -404,6 +404,10 @@
      )
     (general-def
       :keymaps 'comint-mode-map
+      "<f10>" '(lambda() (interactive)
+                 (save-some-buffers t nil)
+                 (my-kill-python)
+                 (my-sh-send-command my-global-shell-command))
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
       )
