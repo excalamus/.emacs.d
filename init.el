@@ -970,8 +970,11 @@ Taken from URL
 (defvar my-python nil
   "Python interpreter to be used in shell calls.")
 
+(defvar my-shell "*shell*"
+  "Shell process buffer to be used in shell calls.")
+
 (if (eq system-type 'windows-nt)
-    (setq my-python (concat "C:\\Users\\mtrzcinski\\Anaconda3\\envs\\ushr-acorn\\python.exe" " "))
+    (setq my-python (concat "python" " "))
   (setq my-python (concat "python3" " ")))
 
 (defun my-set-python (exe)
@@ -982,27 +985,46 @@ Taken from URL
   (setq my-python (concat exe " "))
   (message "Set `my-python' to: %s" my-python))
 
-(defun my-sh-send-command (command)
-  "Send COMMAND to current shell process.
+(defun my-set-shell (pbuff)
+  "Set `my-shell' to process associated with PBUFF buffer."
+  (interactive
+   (list (read-buffer "Process buffer: " nil t '(lambda (x) (processp (get-buffer-process (car x)))))))
+  (setq my-shell pbuff)
+  (message "Set `my-shell' to: %s" my-shell))
 
-Creates new shell process if none exists.
+(defun my-create-shell (name)
+    "Create shell with a given NAME.
+
+NAME should have earmuffs (e.g. *NAME*) if it is to follow Emacs
+naming conventions.  Earmuffs indicate that the buffer is special
+use and not associated with a file.
+
+Returns newly created shell process.
+
+Adapted from URL `https://stackoverflow.com/a/36450889/5065796'"
+    (interactive
+     (let ((name (read-string "shell name: " nil)))
+       (list name)))
+    (let ((name (or name my-shell)))
+      (get-buffer-process (shell name))))
+
+(defun my-sh-send-command (command &optional pbuff)
+  "Send COMMAND to shell process with buffer PBUFF.
+
+Create new shell process if none exists.
 
 See URL `https://stackoverflow.com/a/7053298/5065796'"
-  (let ((proc (get-process "shell"))
-        pbuf)
-    (unless proc
-      (let ((currbuff (current-buffer)))
-        (shell)
-        (switch-to-buffer currbuff)
-        (setq proc (get-process "shell"))
-        ))
-    (setq pbuff (process-buffer proc))
-    (setq command-and-go (concat command "\n"))
+  (let* ((pbuff (or pbuff my-shell))
+         (proc (or (get-buffer-process pbuff)
+                   (let ((currbuff (current-buffer)))
+                     (shell)
+                     (switch-to-buffer currbuff)
+                     (my-create-shell pbuff))))
+         (command-and-go (concat command "\n")))
     (with-current-buffer pbuff
       (goto-char (process-mark proc))
       (insert command-and-go)
-      (move-marker (process-mark proc) (point))
-      )
+      (move-marker (process-mark proc) (point)))
     (process-send-string proc command-and-go)))
 
 (defun my-set-global-shell-command (new-command)
@@ -1066,14 +1088,6 @@ REGION unfills the region.  See URL
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
-
-(defun my-create-shell ()
-    "Create shell with a given name.
-
-Taken from URL `https://stackoverflow.com/a/36450889/5065796'"
-    (interactive);; "Prompt\n shell name:")
-    (let ((shell-name (read-string "shell name: " nil)))
-    (shell (concat "*" shell-name "*"))))
 
 (defun my-open-windows-explorer ()
   "Open Windows Explorer to folder containing file."
