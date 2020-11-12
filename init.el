@@ -55,6 +55,9 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
+;; InnoSetup .iss files are basically ini files
+(add-to-list 'auto-mode-alist '("\\.iss\\'" . conf-mode))
+
 ;; configure autosave directory
 ;; https://stackoverflow.com/a/18330742/5065796
 (defvar my--backup-directory (concat user-emacs-directory "backups"))
