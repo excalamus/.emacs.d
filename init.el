@@ -131,24 +131,35 @@
 
 ;;; Mode line
 (column-number-mode t)
-(setq mode-line-position
-            '((line-number-mode ("%l" (column-number-mode ":%c ")))
-              (-3 "%p")))
+(setq mode-line-position '((line-number-mode ("%l" (column-number-mode ":%c "))) (-3 "%p")))
 (which-function-mode)
 
-;; Just a hack, needs proper attention
+;; ;; Just a hack, needs proper attention
 (setq-default mode-line-format
-              '("%e"
-                evil-mode-line-tag
-                mode-line-mule-info
-                mode-line-modified
-                " "
-                mode-line-buffer-identification
-                " "
-                mode-line-position
-                mode-line-misc-info
-                " "
-                mode-line-end-spaces))
+      '("%e"
+        evil-mode-line-tag
+        mode-line-mule-info
+        mode-line-modified
+        " "
+        mode-line-buffer-identification
+        " "
+        mode-line-position
+        mode-line-misc-info
+        (vc-mode vc-mode)
+        " "
+        mode-line-end-spaces))
+
+;; setting true causes rev in vc-git.el:362 to be nil, causing error in substring
+;; (setq debug-on-error t)
+;; (setq auto-revert-check-vc-info t)
+
+;; Remove Git prefix from vc since only using git
+(setcdr (assq 'vc-mode mode-line-format)
+        '((:eval (replace-regexp-in-string "^ Git" " " vc-mode))))
+
+;; make titlebar the filename
+;; https://emacs.stackexchange.com/a/16836
+(setq-default frame-title-format '("%f"))
 
 ;; Theme advice approach modified from
 ;; https://www.greghendershott.com/2017/02/emacs-themes.html
