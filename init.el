@@ -545,11 +545,19 @@
   (setq evil-undo-system 'undo-redo)
 
   ;; Coordinate states with cursor color
-  (setq evil-emacs-state-cursor '("SkyBlue2" bar))
-  (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
-  (setq evil-insert-state-cursor '("light gray" bar))
-  (setq evil-visual-state-cursor '("gray" box))
-  (setq evil-motion-state-cursor '("plum3" box))
+  (if my-termux
+      (progn
+        (setq evil-emacs-state-tag (propertize " <E> " 'face '((:background "color-117"))))
+        (setq evil-normal-state-tag (propertize " <N> " 'face '((:background "color-130"))))
+        (setq evil-insert-state-tag (propertize " <I> " 'face '((:background "color-244"))))
+        (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
+        (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177")))))
+    (progn
+      (setq evil-emacs-state-cursor '("SkyBlue2" bar))
+      (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
+      (setq evil-insert-state-cursor '("light gray" bar))
+      (setq evil-visual-state-cursor '("gray" box))
+      (setq evil-motion-state-cursor '("plum3" box))))
 
   (if my-debug (message "evil")))
 
@@ -948,11 +956,17 @@ Taken from URL
   (bm-toggle)
   (save-buffer))
 
+(if (file-exists-p "/data/data/com.termux/files/home/")
+    (setq my-termux "termux"))
+
 (if (eq system-type 'windows-nt)
     (defvar my-global-default-directory "C:\\projects\\"
       "Global default directory.")
-  (defvar my-global-default-directory "~/Projects/"
-    "Global default directory."))
+  (if my-termux
+      (defvar my-global-default-directory "/data/data/com.termux/files/home/projects/"
+        "Global default directory.")
+    (defvar my-global-default-directory "~/Projects/"
+      "Global default directory.")))
 
 (defun my-global-default-directory (new-default-directory)
   "Set my-global-default-directory to NEW-DEFAULT-DIRECTORY."
