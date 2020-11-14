@@ -40,6 +40,12 @@
 (use-package use-package-chords
   :config (key-chord-mode 1))
 
+;; Ensure recipe inheritance. Allows for simple :fork override to
+;; clone/pull from personal fork.  M-x straight-fetch-package to
+;; update from fork, C-u M-x straight-fetch-package to fetch from
+;; upstream
+(setq straight-allow-recipe-inheritance t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -267,7 +273,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package ace-window
+(use-package '(ace-window :fork "excalamus/ace-window")
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (setq aw-background nil)
@@ -275,13 +281,13 @@
   (if my-debug (message "ace-window")))
 
 
-(use-package ag
+(use-package '(ag :fork "excalamus/ag")
   :config
 
   (if my-debug (message "ag")))
 
 
-(use-package bm
+(use-package '(bm :fork "excalamus/bm")
   :init
   (setq bm-cycle-all-buffers t)
   :config
@@ -289,19 +295,19 @@
   (if my-debug (message "bm")))
 
 
-(use-package comment-dwim-2
+(use-package '(comment-dwim-2 :fork "excalamus/comment-dwim-2")
   :config
 
   (if my-debug (message "comment-dwim-2")))
 
 
-(use-package define-word
+(use-package '(define-word :fork "excalamus/define-word")
   :config
 
   (if my-debug (message "define-word")))
 
 
-(use-package dap-mode
+(use-package '(dap-mode :fork "excalamus/dap-mode")
   :config
   (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
@@ -309,13 +315,13 @@
   (if my-debug (message "dap-mode")))
 
 
-(use-package dumb-jump
+(use-package '(dumb-jump :fork "excalamus/dumb-jump")
   :config
 
   (if my-debug (message "dumb-jump")))
 
 
-(use-package general
+(use-package '(general :fork "excalamus/general")
   :config
   (require 'ffap)
 
@@ -508,7 +514,7 @@
   (if my-debug (message "general")))
 
 
-(use-package elpy
+(use-package '(elpy :fork "excalamus/elpy")
   :after (:all helm key-chord use-package-chords)
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
@@ -540,14 +546,14 @@
   (if my-debug (message "elpy")))
 
 
-(use-package ess
+(use-package '(ess :fork "excalamus/ess")
   :init (require 'ess-site)
   :config
 
   (if my-debug (message "ess")))
 
 
-(use-package evil
+(use-package '(evil :fork "excalamus/evil")
   :after (:all dumb-jump key-chord)
   :config
   (evil-mode)
@@ -576,7 +582,7 @@
   (if my-debug (message "evil")))
 
 
-(use-package evil-lion
+(use-package '(evil-lion :fork "excalamus/evil-lion")
   :after (:all evil)
   :config
   (evil-lion-mode 1)
@@ -584,7 +590,7 @@
   (if my-debug (message "evil-lion")))
 
 
-(use-package evil-surround
+(use-package '(evil-surround :fork "excalamus/evil-surround")
   :after (:all evil)
   :config
   (global-evil-surround-mode 1)
@@ -592,25 +598,25 @@
   (if my-debug (message "evil-surround")))
 
 
-(use-package expand-region
+(use-package '(expand-region :fork "excalamus/expand-region")
   :config
 
   (if my-debug (message "expand-region")))
 
 
-(use-package flycheck
+(use-package '(flycheck :fork "excalamus/flycheck")
   :config
 
   (if my-debug (message "flycheck")))
 
 
-(use-package helm
+(use-package '(helm :fork "excalamus/helm")
   :config
 
   (if my-debug (message "helm")))
 
 
-(use-package helm-swoop
+(use-package '(helm-swoop :fork "excalamus/helm-swoop")
   :after helm
   :config
 
@@ -680,21 +686,21 @@
   (if my-debug (message "hi-lock")))
 
 
-(use-package htmlize
+(use-package '(htmlize :fork "excalamus/htmlize")
   :config
 
   (if my-debug (message "htmlize")))
 
 
 ;; https://github.com/jwiegley/use-package#use-package-chords
-(use-package key-chord
+(use-package '(key-chord :fork "excalamus/key-chord")
   :config (key-chord-mode 1)
 
   (if my-debug (message "key-chord")))
 
 
 (when (eq system-type 'gnu/linux)
-  (use-package ledger-mode
+  (use-package '(ledger-mode :fork "excalamus/ledger-mode")
     :defer t
     :config
     (setq ledger-post-amount-alignment-column 60)
@@ -702,7 +708,7 @@
     (if my-debug (message "ledger-mode"))))
 
 
-(use-package magit
+(use-package '(magit :fork "excalamus/magit")
   :init
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
@@ -711,7 +717,7 @@
   (if my-debug (message "magit")))
 
 
-(use-package markdown-mode
+(use-package '(markdown-mode :fork "excalamus/markdown-mode")
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
@@ -722,13 +728,13 @@
   (if my-debug (message "markdown-mode")))
 
 
-(use-package markdown-toc
+(use-package '(markdown-toc :fork "excalamus/markdown-toc")
   :config
 
   (if my-debug (message "markdown-mode")))
 
 
-(use-package nameless
+(use-package '(nameless :fork "excalamus/nameless")
   :init
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   :config
@@ -806,20 +812,21 @@
 ;;   :load-path "~/.emacs.d/lisp/")
 
 
-(use-package right-click-context
+(use-package '(right-click-context :fork "excalamus/right-click-context")
   :config
   (right-click-context-mode 1)
 
   (if my-debug (message "right-click-context")))
 
 
-(use-package rg
+(use-package '(rg :fork "excalamus/rg")
   :config
 
   (if my-debug (message "rg")))
 
 
-(use-package simple-httpd
+;; skeeto fork
+(use-package '(simple-httpd :fork "excalamus/simple-httpd")
   :config
 
   (if my-debug (message "simple-httpd")))
@@ -827,14 +834,16 @@
 
 (use-package smart-tab
   ;; owner moved repo and uses "main" instead of "master"
-  :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main")
+  ;; forked via https://stackoverflow.com/a/9288410
+  :straight (:repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main"
+                   :fork (:host github :repo "excalamus/smart-tab" :branch "master")
   :config
   (global-smart-tab-mode 1)
 
   (if my-debug (message "smart-tab")))
 
 
-(use-package string-inflection
+(use-package '(string-inflection :fork "excalamus/string-inflection")
   :config
   (defun my--string-inflection-style-cycle-function (str)
     "foo-bar => foo_bar => FOO_BAR => fooBar => FooBar => foo-bar"
@@ -865,20 +874,20 @@
   (if my-debug (message "string-inflection")))
 
 
-(use-package sx
+(use-package '(sx :fork "excalamus/sx")
   :config
 
   (if my-debug (message "sx")))
 
 
-(use-package yaml-mode
+(use-package '(yaml-mode :fork "excalamus/yaml-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
   (if my-debug (message "yaml-mode")))
 
 
-(use-package web-mode
+(use-package '(web-mode :fork "excalamus/web-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
