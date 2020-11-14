@@ -379,7 +379,8 @@
       ;; "M-@" 'dumb-jump-go
       ;; "M-^" 'dumb-jump-go-other-window
 
-      "C-o" 'dumb-jump-back
+      ;; "C-o" 'dumb-jump-back  ; obsoleted
+      "C-o" 'xref-pop-marker-stack
       )
 
     (general-def
