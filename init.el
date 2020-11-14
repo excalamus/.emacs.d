@@ -549,20 +549,21 @@
   ;; https://github.com/emacs-evil/evil/issues/1074
   (setq evil-undo-system 'undo-redo)
 
+  ;; todo cond fails? maybe window var not set during init?
   ;; Coordinate states with cursor color
-  (if my-termux
+  (if (or (eq window-system 'w32) (eq window-system 'x))  ; todo use memq/member
       (progn
-        (setq evil-emacs-state-tag (propertize " <E> " 'face '((:background "color-117"))))
-        (setq evil-normal-state-tag (propertize " <N> " 'face '((:background "color-130"))))
-        (setq evil-insert-state-tag (propertize " <I> " 'face '((:background "color-244"))))
-        (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
-        (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177")))))
+        (setq evil-emacs-state-cursor '("SkyBlue2" bar))
+        (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
+        (setq evil-insert-state-cursor '("light gray" bar))
+        (setq evil-visual-state-cursor '("gray" box))
+        (setq evil-motion-state-cursor '("plum3" box)))
     (progn
-      (setq evil-emacs-state-cursor '("SkyBlue2" bar))
-      (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
-      (setq evil-insert-state-cursor '("light gray" bar))
-      (setq evil-visual-state-cursor '("gray" box))
-      (setq evil-motion-state-cursor '("plum3" box))))
+      (setq evil-emacs-state-tag (propertize " <E> " 'face '((:background "color-117"))))
+      (setq evil-normal-state-tag (propertize " <N> " 'face '((:background "color-130"))))
+      (setq evil-insert-state-tag (propertize " <I> " 'face '((:background "color-244"))))
+      (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
+      (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177"))))))
 
   (if my-debug (message "evil")))
 
@@ -961,17 +962,11 @@ Taken from URL
   (bm-toggle)
   (save-buffer))
 
-(if (file-exists-p "/data/data/com.termux/files/home/")
-    (setq my-termux "termux"))
-
-(if (eq system-type 'windows-nt)
-    (defvar my-global-default-directory "C:\\projects\\"
-      "Global default directory.")
-  (if my-termux
-      (defvar my-global-default-directory "/data/data/com.termux/files/home/projects/"
-        "Global default directory.")
-    (defvar my-global-default-directory "~/Projects/"
-      "Global default directory.")))
+(let ((dir (cond ((eq system-type 'windows-nt) "C:\\projects\\")
+                 ((eq window-system 'x)) "~/Projects/")
+                 ;; terminal
+                 (t "/data/data/com.termux/files/home/projects/"))))
+  (setq my-global-default-directory dir))
 
 (defun my-global-default-directory (new-default-directory)
   "Set my-global-default-directory to NEW-DEFAULT-DIRECTORY."
