@@ -470,6 +470,12 @@
       "C-<prior>" 'backward-page ; C-PgDown goto next linebreak
       )
 
+    ; won't work in terminal bc of how terminals work
+    (general-def
+      :keymaps 'evil-emacs-state-map
+      [escape] 'evil-normal-state
+      )
+
     (general-def :keymaps 'helm-map "<escape>"  'helm-keyboard-quit)
 
     (general-def
