@@ -206,6 +206,8 @@
 (defun my-dark-theme-hook ()
   "Run after loading dark theme."
   ;; zenburn
+  (if (eq window-system nil)
+      (set-face-attribute 'mode-line-inactive nil :background "color-236"))
   (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
   (setq evil-insert-state-cursor '("gray" bar))
   (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
@@ -560,7 +562,7 @@
         (setq evil-motion-state-cursor '("plum3" box)))
     (progn
       (setq evil-emacs-state-tag (propertize " <E> " 'face '((:background "color-117"))))
-      (setq evil-normal-state-tag (propertize " <N> " 'face '((:background "color-130"))))
+      (setq evil-normal-state-tag (propertize " <N> " 'face '((:background "color-172"))))
       (setq evil-insert-state-tag (propertize " <I> " 'face '((:background "color-244"))))
       (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
       (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177"))))))
