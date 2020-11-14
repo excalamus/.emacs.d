@@ -1128,4 +1128,7 @@ REGION unfills the region.  See URL
 (defun my-suicide ()
   "Kill all Emacs processes."
   (interactive)
-  (shell-command "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\""))
+  (let ((cmd (if (eq system-type 'gnu/linux)
+                 "killall -9 emacs" ; probably won't kill server administered by systemd
+               "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
+    (shell-command cmd)))
