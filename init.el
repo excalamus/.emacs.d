@@ -707,7 +707,7 @@
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
   :config
-
+  (add-hook 'git-commit-mode-hook 'evil-emacs-state)
   (if my-debug (message "magit")))
 
 
