@@ -963,7 +963,7 @@ Taken from URL
   (save-buffer))
 
 (let ((dir (cond ((eq system-type 'windows-nt) "C:\\projects\\")
-                 ((eq window-system 'x)) "~/Projects/")
+                 ((eq window-system 'x) "~/Projects/")
                  ;; terminal
                  (t "/data/data/com.termux/files/home/projects/"))))
   (setq my-global-default-directory dir))
