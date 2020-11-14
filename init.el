@@ -350,6 +350,10 @@
       "<f2>" 'bm-next
       "S-<f2>" 'bm-previous
       "C-<f2>" 'bm-toggle
+      "<f10>" '(lambda() (interactive)
+                 (save-some-buffers t nil)
+                 (my-kill-python)
+                 (my-sh-send-command my-global-shell-command))
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
