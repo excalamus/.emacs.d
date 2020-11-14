@@ -1116,3 +1116,8 @@ REGION unfills the region.  See URL
 ;;   (message "%s" (buffer-substring-no-properties start end)
 
 ;;	   ))
+
+(defun my-suicide ()
+  "Kill all Emacs processes."
+  (interactive)
+  (shell-command "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\""))
