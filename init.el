@@ -1,12 +1,25 @@
 ;;; init.el -- Principium de Excalamus
 
 ;; Maintain package consistency across multiple devices using
-;; straight.el with use-package.el.
+;; straight.el with use-package.el.  Fork packages and point
+;; straight.el to personal repos.  The forks help with submitting pull
+;; requests and provides another point of consistency.
+;;
+;; SSH (e.g. ssh-agent) is hard to get working with Emacs.  To get
+;; authorization during first run, call one of:
+;;
+;;     git config --global credential.helper cache
+;;     git config --global credential.helper wincred
+;;
+;; Use 'cache' for GNU/Linux, 'wincred' for Windows.  This will
+;; temporarily cache credentials for https connections.  See URL:
+;; `https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git'
 
 (defvar my-debug nil
   "Toggle package load messaging.")
 
-  ; C-q C-l
+  ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
+    ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bootstrap
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -169,8 +182,10 @@
 
 ;; Theme advice approach modified from
 ;; https://www.greghendershott.com/2017/02/emacs-themes.html
-(use-package base16-theme)
-(use-package zenburn-theme)
+(use-package base16-theme
+  :straight (:fork "excalamus/base16-emacs"))
+(use-package zenburn-theme
+  :straight (:fork "excalamus/zenburn-emacs"))
 
 (defun my-disable-all-themes ()
   "Disable all enabled themes."
@@ -273,7 +288,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package '(ace-window :fork "excalamus/ace-window")
+;; Way more packages use markdown-mode than you might expect.  When
+;; put in alphabetical order, one of these other packages builds it
+;; first, throwing an error about two build recipes.  See URL
+;; `https://github.com/raxod502/straight.el/issues/518'
+(use-package markdown-mode
+  :straight (:fork "excalamus/markdown-mode")
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "multimarkdown")
+  :config
+
+  (if my-debug (message "markdown-mode")))
+
+
+(use-package ace-window
+  :straight (:fork "excalamus/ace-window")
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (setq aw-background nil)
@@ -281,13 +313,15 @@
   (if my-debug (message "ace-window")))
 
 
-(use-package '(ag :fork "excalamus/ag")
+(use-package ag
+  :straight (:fork "excalamus/ag.el")
   :config
 
-  (if my-debug (message "ag")))
+  (if my-debug (message "ag.el")))
 
 
-(use-package '(bm :fork "excalamus/bm")
+(use-package bm
+  :straight (:fork "excalamus/bm")
   :init
   (setq bm-cycle-all-buffers t)
   :config
@@ -295,19 +329,23 @@
   (if my-debug (message "bm")))
 
 
-(use-package '(comment-dwim-2 :fork "excalamus/comment-dwim-2")
+(use-package comment-dwim-2
+  :after (:all org)
+  :straight (:fork "excalamus/comment-dwim-2")
   :config
 
   (if my-debug (message "comment-dwim-2")))
 
 
-(use-package '(define-word :fork "excalamus/define-word")
+(use-package define-word
+  :straight (:fork "excalamus/define-word")
   :config
 
   (if my-debug (message "define-word")))
 
 
-(use-package '(dap-mode :fork "excalamus/dap-mode")
+(use-package dap-mode
+  :straight (:fork "excalamus/dap-mode")
   :config
   (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
@@ -315,13 +353,15 @@
   (if my-debug (message "dap-mode")))
 
 
-(use-package '(dumb-jump :fork "excalamus/dumb-jump")
+(use-package dumb-jump
+  :straight (:fork "excalamus/dumb-jump")
   :config
 
   (if my-debug (message "dumb-jump")))
 
 
-(use-package '(general :fork "excalamus/general")
+(use-package general
+  :straight (:fork "excalamus/general.el")
   :config
   (require 'ffap)
 
@@ -509,12 +549,13 @@
       "C-c C--" 'org-ctrl-c-minus
       )
 
-    ) ; general-after-init
+    )
 
-  (if my-debug (message "general")))
+  (if my-debug (message "general.el")))
 
 
-(use-package '(elpy :fork "excalamus/elpy")
+(use-package elpy
+  :straight (:fork "excalamus/elpy")
   :after (:all helm key-chord use-package-chords)
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
@@ -546,14 +587,16 @@
   (if my-debug (message "elpy")))
 
 
-(use-package '(ess :fork "excalamus/ess")
+(use-package ess
+  :straight (:fork "excalamus/ess")
   :init (require 'ess-site)
   :config
 
   (if my-debug (message "ess")))
 
 
-(use-package '(evil :fork "excalamus/evil")
+(use-package evil
+  :straight (:fork "excalamus/evil")
   :after (:all dumb-jump key-chord)
   :config
   (evil-mode)
@@ -582,7 +625,8 @@
   (if my-debug (message "evil")))
 
 
-(use-package '(evil-lion :fork "excalamus/evil-lion")
+(use-package evil-lion
+  :straight (:fork "excalamus/evil-lion")
   :after (:all evil)
   :config
   (evil-lion-mode 1)
@@ -590,7 +634,8 @@
   (if my-debug (message "evil-lion")))
 
 
-(use-package '(evil-surround :fork "excalamus/evil-surround")
+(use-package evil-surround
+  :straight (:fork "excalamus/evil-surround")
   :after (:all evil)
   :config
   (global-evil-surround-mode 1)
@@ -598,26 +643,30 @@
   (if my-debug (message "evil-surround")))
 
 
-(use-package '(expand-region :fork "excalamus/expand-region")
+(use-package expand-region
+  :straight (:fork "excalamus/expand-region.el")
   :config
 
-  (if my-debug (message "expand-region")))
+  (if my-debug (message "expand-region.el")))
 
 
-(use-package '(flycheck :fork "excalamus/flycheck")
+(use-package flycheck
+  :straight (:fork "excalamus/flycheck")
   :config
 
   (if my-debug (message "flycheck")))
 
 
-(use-package '(helm :fork "excalamus/helm")
+(use-package helm
+  :straight (:fork "excalamus/helm")
   :config
 
   (if my-debug (message "helm")))
 
 
-(use-package '(helm-swoop :fork "excalamus/helm-swoop")
-  :after helm
+(use-package helm-swoop
+  :straight (:fork "excalamus/helm-swoop")
+  :after (:all helm)
   :config
 
   (defun my--reset-linum-hack ()
@@ -650,6 +699,7 @@
   (if my-debug (message "helm-swoop")))
 
 
+;; bundled with emacs
 (use-package hi-lock
   :init
   (defun my-toggle-global-hl-line-sticky-flag ()
@@ -686,21 +736,23 @@
   (if my-debug (message "hi-lock")))
 
 
-(use-package '(htmlize :fork "excalamus/htmlize")
+(use-package htmlize
+  :straight (:fork "excalamus/emacs-htmlize")
   :config
 
-  (if my-debug (message "htmlize")))
+  (if my-debug (message "emacs-htmlize")))
 
-
-;; https://github.com/jwiegley/use-package#use-package-chords
-(use-package '(key-chord :fork "excalamus/key-chord")
-  :config (key-chord-mode 1)
+;; 
+;; ;; https://github.com/jwiegley/use-package#use-package-chords
+;; (use-package '(key-chord :fork "excalamus/key-chord")
+;;   :config (key-chord-mode 1)
 
-  (if my-debug (message "key-chord")))
+;;   (if my-debug (message "key-chord")))
 
 
 (when (eq system-type 'gnu/linux)
-  (use-package '(ledger-mode :fork "excalamus/ledger-mode")
+  (use-package ledger-mode
+    :straight (:fork "excalamus/ledger-mode")
     :defer t
     :config
     (setq ledger-post-amount-alignment-column 60)
@@ -708,7 +760,8 @@
     (if my-debug (message "ledger-mode"))))
 
 
-(use-package '(magit :fork "excalamus/magit")
+(use-package magit
+  :straight (:fork "excalamus/magit")
   :init
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
@@ -717,24 +770,16 @@
   (if my-debug (message "magit")))
 
 
-(use-package '(markdown-mode :fork "excalamus/markdown-mode")
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init
-  (setq markdown-command "multimarkdown")
+(use-package markdown-toc
+  :after (:all markdown-mode)
+  :straight (:fork "excalamus/markdown-toc")
   :config
 
-  (if my-debug (message "markdown-mode")))
+  (if my-debug (message "markdown-toc")))
 
 
-(use-package '(markdown-toc :fork "excalamus/markdown-toc")
-  :config
-
-  (if my-debug (message "markdown-mode")))
-
-
-(use-package '(nameless :fork "excalamus/nameless")
+(use-package nameless
+  :straight (:fork "excalamus/nameless")
   :init
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   :config
@@ -742,10 +787,11 @@
   (if my-debug (message "nameless")))
 
 
-;; This step works some magic. For details:
-;; https://github.com/raxod502/straight.el#integration-with-org
+;; This step works some magic.  Not even attempting to build from a
+;; fork. For details, see URL:
+;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
-  :after (helm helm-swoop)
+  :after (:all helm helm-swoop)
   :config
   (setq org-edit-src-content-indentation 0)
   (setq org-src-tab-acts-natively t)
@@ -799,51 +845,43 @@
 
   (if my-debug (message "org")))
 
-;; 
-;; (use-package ox-confluence
-;;   :straight (:type git :repo "https://github.com/sdelafond/org-confluence")
-;;   :config
-;;   (require 'ox-confluence)
-
-;;   (if my-debug (message "ox-confluence") ;;   ))
-
-;; 
-;; (use-package ox-confluence-en
-;;   :load-path "~/.emacs.d/lisp/")
-
 
-(use-package '(right-click-context :fork "excalamus/right-click-context")
+(use-package right-click-context
+  :straight (:fork "excalamus/right-click-context")
   :config
   (right-click-context-mode 1)
 
   (if my-debug (message "right-click-context")))
 
 
-(use-package '(rg :fork "excalamus/rg")
+(use-package rg
+  :straight (:fork "excalamus/rg.el")
   :config
 
-  (if my-debug (message "rg")))
+  (if my-debug (message "rg.el")))
 
 
 ;; skeeto fork
-(use-package '(simple-httpd :fork "excalamus/simple-httpd")
+(use-package simple-httpd
+  :straight (:fork "excalamus/emacs-web-server")
   :config
 
-  (if my-debug (message "simple-httpd")))
+  (if my-debug (message "emacs-web-server")))
 
 
 (use-package smart-tab
   ;; owner moved repo and uses "main" instead of "master"
   ;; forked via https://stackoverflow.com/a/9288410
-  :straight (:repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main"
-                   :fork (:host github :repo "excalamus/smart-tab" :branch "master")
+  :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main"
+             :fork (:host github :repo "excalamus/smart-tab" :branch "master"))
   :config
   (global-smart-tab-mode 1)
 
   (if my-debug (message "smart-tab")))
 
 
-(use-package '(string-inflection :fork "excalamus/string-inflection")
+(use-package string-inflection
+  :straight (:fork "excalamus/string-inflection")
   :config
   (defun my--string-inflection-style-cycle-function (str)
     "foo-bar => foo_bar => FOO_BAR => fooBar => FooBar => foo-bar"
@@ -874,36 +912,27 @@
   (if my-debug (message "string-inflection")))
 
 
-(use-package '(sx :fork "excalamus/sx")
+(use-package sx
+  :straight (:fork "excalamus/sx.el")
   :config
 
-  (if my-debug (message "sx")))
+  (if my-debug (message "sx.el")))
 
 
-(use-package '(yaml-mode :fork "excalamus/yaml-mode")
+(use-package yaml-mode
+  :straight (:fork "excalamus/yaml-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
   (if my-debug (message "yaml-mode")))
 
 
-(use-package '(web-mode :fork "excalamus/web-mode")
+(use-package web-mode
+  :straight (:fork "excalamus/web-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
   (if my-debug (message "web-mode")))
-
-;; (use-package smartparens
-;;   :diminish smartparens-mode
-;;   :config
-;;   ;; (require 'smartparens)
-;;   (sp-pair "(" ")" :unless '(sp-point-before-word-p))
-;;   (sp-pair "\"" "\"" :unless '(sp-point-before-word-p sp-point-after-word-p))
-;;   (sp-pair "[" "]" :unless '(sp-point-before-word-p))
-;;   (sp-pair "'" "'" :unless '(sp-point-before-word-p))
-;;   (smartparens-global-mode 1)
-;;   (setq sp-highlight-pair-overlay nil))
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1127,12 +1156,6 @@ REGION unfills the region.  See URL
          (dir (file-name-directory file))
          (windows-dir (subst-char-in-string ?/ ?\\ dir)))
     (start-process "explorer" nil "explorer.exe" windows-dir)))
-
-;; (defun my-open-windows-explorer (&optional start end)
-;;   (interactive "r")
-;;   (message "%s" (buffer-substring-no-properties start end)
-
-;;	   ))
 
 (defun my-suicide ()
   "Kill all Emacs processes."
