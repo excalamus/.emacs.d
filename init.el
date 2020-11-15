@@ -385,7 +385,8 @@
       :prefix "C-x i"
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
-      "c" '(lambda () (interactive) (find-file "~/.emacs.d/classic-init.el"))
+      "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
+      "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
       )
 
     (general-def
