@@ -15,7 +15,7 @@
 ;; temporarily cache credentials for https connections.  See URL:
 ;; `https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git'
 
-(defvar my-debug nil
+(defvar xc/debug nil
   "Toggle package load messaging.")
 
   ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
@@ -79,10 +79,10 @@
 
 ;; configure autosave directory
 ;; https://stackoverflow.com/a/18330742/5065796
-(defvar my--backup-directory (concat user-emacs-directory "backups"))
-(if (not (file-exists-p my--backup-directory))
-        (make-directory my--backup-directory t))
-(setq backup-directory-alist `(("." . ,my--backup-directory))) ; put backups in current dir and in my--backup-directory
+(defvar xc/-backup-directory (concat user-emacs-directory "backups"))
+(if (not (file-exists-p xc/-backup-directory))
+        (make-directory xc/-backup-directory t))
+(setq backup-directory-alist `(("." . ,xc/-backup-directory))) ; put backups in current dir and in xc/-backup-directory
 (setq make-backup-files t               ; backup of a file the first time it is saved.
       backup-by-copying t               ; don't clobber symlinks
       version-control t                 ; version numbers for backup files
@@ -187,44 +187,44 @@
 (use-package zenburn-theme
   :straight (:fork "excalamus/zenburn-emacs"))
 
-(defun my-disable-all-themes ()
+(defun xc/disable-all-themes ()
   "Disable all enabled themes."
   (interactive)
   (mapc #'disable-theme custom-enabled-themes))
 
-(defvar my-theme-hooks nil
+(defvar xc/theme-hooks nil
   "((theme-id . function) ...)")
 
-(defun my-add-theme-hook (theme-id hook-func)
-  (add-to-list 'my-theme-hooks (cons theme-id hook-func)))
+(defun xc/add-theme-hook (theme-id hook-func)
+  (add-to-list 'xc/theme-hooks (cons theme-id hook-func)))
 
-(defun my-load-theme-advice (f theme-id &optional no-confirm no-enable &rest args)
+(defun xc/load-theme-advice (f theme-id &optional no-confirm no-enable &rest args)
   "Enhances `load-theme' in two ways:
 1. Disables enabled themes for a clean slate.
-2. Calls functions registered using `my-add-theme-hook'."
+2. Calls functions registered using `xc/add-theme-hook'."
   (unless no-enable
-    (my-disable-all-themes))
+    (xc/disable-all-themes))
   (prog1
       (apply f theme-id no-confirm no-enable args)
     (unless no-enable
-      (pcase (assq theme-id my-theme-hooks)
+      (pcase (assq theme-id xc/theme-hooks)
         (`(,_ . ,f) (funcall f))))))
 
 (advice-add 'load-theme
             :around
-            #'my-load-theme-advice)
+            #'xc/load-theme-advice)
 
-(defvar my-theme-dark nil
+(defvar xc/theme-dark nil
   "My dark theme.")
 
-(defvar my-theme-light nil
+(defvar xc/theme-light nil
   "My light theme.")
 
-(setq my-theme-dark 'zenburn)
-(setq my-theme-light 'base16-tomorrow)
+(setq xc/theme-dark 'zenburn)
+(setq xc/theme-light 'base16-tomorrow)
 
 ;; Add to hook to reload these automatically
-(defun my-dark-theme-hook ()
+(defun xc/dark-theme-hook ()
   "Run after loading dark theme."
   ;; zenburn
   (if (eq window-system nil)
@@ -234,9 +234,9 @@
   (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
   (set-face-attribute 'mode-line nil :background "gray40")
   (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
-  (set-face-attribute 'my-hi-comint nil :background "dim gray"))
+  (set-face-attribute 'xc/hi-comint nil :background "dim gray"))
 
-(defun my-light-theme-hook ()
+(defun xc/light-theme-hook ()
   "Run after loading light theme."
   ;; base16-tomorrow
   (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
@@ -245,42 +245,42 @@
   (set-face-attribute 'mode-line-inactive nil :background "white smoke")
   (set-face-attribute 'org-mode-line-clock nil :background "white" :inherit nil)
   (set-face-attribute 'bm-face nil :background "light cyan" :overline 'unspecified :foreground 'unspecified)
-  (set-face-attribute 'my-hi-comint nil :background "light gray"))
+  (set-face-attribute 'xc/hi-comint nil :background "light gray"))
 
-(my-add-theme-hook my-theme-dark #'my-dark-theme-hook)
-(my-add-theme-hook my-theme-light #'my-light-theme-hook)
+(xc/add-theme-hook xc/theme-dark #'xc/dark-theme-hook)
+(xc/add-theme-hook xc/theme-light #'xc/light-theme-hook)
 
-(defvar my-theme-type nil
+(defvar xc/theme-type nil
   "Type of current theme.")
 
-(setq my-theme-type 'dark)
+(setq xc/theme-type 'dark)
 
-(defun my-theme-toggle (&optional type)
+(defun xc/theme-toggle (&optional type)
   "Toggle theme to TYPE."
   (interactive)
-  (unless type (setq type my-theme-type))
+  (unless type (setq type xc/theme-type))
   (cond ((eq type 'dark)
-         (disable-theme my-theme-light)
-         (load-theme my-theme-dark t nil)
-         (setq my-theme-type 'dark))
+         (disable-theme xc/theme-light)
+         (load-theme xc/theme-dark t nil)
+         (setq xc/theme-type 'dark))
         ((eq type 'light)
-         (disable-theme my-theme-dark)
-         (load-theme my-theme-light t nil)
-         (setq my-theme-type 'light))))
+         (disable-theme xc/theme-dark)
+         (load-theme xc/theme-light t nil)
+         (setq xc/theme-type 'light))))
 
-(defun my-theme-switch ()
+(defun xc/theme-switch ()
   "Switch from dark theme to light or vice versa."
   (interactive)
-  (cond ((eq my-theme-type 'light)
-         (my-theme-toggle 'dark))
-        ((eq my-theme-type 'dark)
-         (my-theme-toggle 'light))))
+  (cond ((eq xc/theme-type 'light)
+         (xc/theme-toggle 'dark))
+        ((eq xc/theme-type 'dark)
+         (xc/theme-toggle 'light))))
 
 ;; theme config depends on ace-window and bm
 (with-eval-after-load "ace-window"
   (with-eval-after-load "bm"
     (with-eval-after-load "hi-lock"
-      (my-theme-toggle))))
+      (xc/theme-toggle))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -301,7 +301,7 @@
   (setq markdown-command "multimarkdown")
   :config
 
-  (if my-debug (message "markdown-mode")))
+  (if xc/debug (message "markdown-mode")))
 
 
 (use-package ace-window
@@ -310,14 +310,14 @@
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (setq aw-background nil)
 
-  (if my-debug (message "ace-window")))
+  (if xc/debug (message "ace-window")))
 
 
 (use-package ag
   :straight (:fork "excalamus/ag.el")
   :config
 
-  (if my-debug (message "ag.el")))
+  (if xc/debug (message "ag.el")))
 
 
 (use-package bm
@@ -326,7 +326,7 @@
   (setq bm-cycle-all-buffers t)
   :config
 
-  (if my-debug (message "bm")))
+  (if xc/debug (message "bm")))
 
 
 (use-package comment-dwim-2
@@ -334,14 +334,14 @@
   :straight (:fork "excalamus/comment-dwim-2")
   :config
 
-  (if my-debug (message "comment-dwim-2")))
+  (if xc/debug (message "comment-dwim-2")))
 
 
 (use-package define-word
   :straight (:fork "excalamus/define-word")
   :config
 
-  (if my-debug (message "define-word")))
+  (if xc/debug (message "define-word")))
 
 
 (use-package dap-mode
@@ -350,14 +350,14 @@
   (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
 
-  (if my-debug (message "dap-mode")))
+  (if xc/debug (message "dap-mode")))
 
 
 (use-package dumb-jump
   :straight (:fork "excalamus/dumb-jump")
   :config
 
-  (if my-debug (message "dumb-jump")))
+  (if xc/debug (message "dumb-jump")))
 
 
 (use-package general
@@ -391,7 +391,7 @@
     (general-def
       :keymaps 'override
       "C-x s" 'save-buffer
-      "<f8>" 'my-switch-to-last-window
+      "<f8>" 'xc/switch-to-last-window
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
       "C-S-j" 'helm-swoop-without-pre-input
@@ -400,21 +400,21 @@
       "C-<f2>" 'bm-toggle
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (my-kill-python)
-                 (my-sh-send-command my-global-shell-command))
+                 (xc/kill-python)
+                 (xc/sh-send-command xc/global-shell-command))
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
-      "C-x C-f" 'my-find-file
+      "C-x C-f" 'xc/find-file
       )
 
     (general-def
       :keymaps 'override
       :states '(normal insert)
-      (general-chord "jk") 'my-newline-without-break-of-line
+      (general-chord "jk") 'xc/newline-without-break-of-line
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
-      "\M-Q" 'my-unfill-paragraph
+      "\M-Q" 'xc/unfill-paragraph
       )
 
     (general-def
@@ -442,7 +442,7 @@
       "=" 'er/expand-region
       "+" 'er/contract-region
       "b" 'helm-buffers-list
-      "f" 'my-find-file
+      "f" 'xc/find-file
       "k" 'kill-buffer
       "o" 'ace-window
       "s" 'save-buffer
@@ -459,8 +459,8 @@
       :keymaps 'comint-mode-map
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (my-kill-python)
-                 (my-sh-send-command my-global-shell-command))
+                 (xc/kill-python)
+                 (xc/sh-send-command xc/global-shell-command))
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
       )
@@ -485,21 +485,21 @@
       "<pause>" 'elpy-test-pytest-runner
       ;; "<insert>" 'elpy-test-pytest-runner
       "C-c o" 'elpy-occur-definitions
-      "<apps>" 'my-kill-python
-      "<f6>" 'my-insert-breakpoint
+      "<apps>" 'xc/kill-python
+      "<f6>" 'xc/insert-breakpoint
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (my-kill-python)
-                 (my-sh-send-command my-global-shell-command))
-      "<C-S-f10>" 'my-set-global-shell-command-to-current-file
-      "<S-f10>" 'my-buffer-file-to-shell
+                 (xc/kill-python)
+                 (xc/sh-send-command xc/global-shell-command))
+      "<C-S-f10>" 'xc/set-global-shell-command-to-current-file
+      "<S-f10>" 'xc/buffer-file-to-shell
       )
     (general-def
       :keymaps 'elpy-mode-map
       :states 'normal
       :prefix "SPC"
       "d" 'elpy-occur-definitions
-      "c" 'my-string-inflection-style-cycle
+      "c" 'xc/string-inflection-style-cycle
       )
 
     (general-def
@@ -551,7 +551,7 @@
 
     )
 
-  (if my-debug (message "general.el")))
+  (if xc/debug (message "general.el")))
 
 
 (use-package elpy
@@ -584,7 +584,7 @@
           python-shell-interpreter-args "--simple-prompt")
     (setq elpy-rpc-python-command "python"))
 
-  (if my-debug (message "elpy")))
+  (if xc/debug (message "elpy")))
 
 
 (use-package ess
@@ -592,7 +592,7 @@
   :init (require 'ess-site)
   :config
 
-  (if my-debug (message "ess")))
+  (if xc/debug (message "ess")))
 
 
 (use-package evil
@@ -622,7 +622,7 @@
       (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
       (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177"))))))
 
-  (if my-debug (message "evil")))
+  (if xc/debug (message "evil")))
 
 
 (use-package evil-lion
@@ -631,7 +631,7 @@
   :config
   (evil-lion-mode 1)
 
-  (if my-debug (message "evil-lion")))
+  (if xc/debug (message "evil-lion")))
 
 
 (use-package evil-surround
@@ -640,28 +640,28 @@
   :config
   (global-evil-surround-mode 1)
 
-  (if my-debug (message "evil-surround")))
+  (if xc/debug (message "evil-surround")))
 
 
 (use-package expand-region
   :straight (:fork "excalamus/expand-region.el")
   :config
 
-  (if my-debug (message "expand-region.el")))
+  (if xc/debug (message "expand-region.el")))
 
 
 (use-package flycheck
   :straight (:fork "excalamus/flycheck")
   :config
 
-  (if my-debug (message "flycheck")))
+  (if xc/debug (message "flycheck")))
 
 
 (use-package helm
   :straight (:fork "excalamus/helm")
   :config
 
-  (if my-debug (message "helm")))
+  (if xc/debug (message "helm")))
 
 
 (use-package helm-swoop
@@ -669,14 +669,14 @@
   :after (:all helm)
   :config
 
-  (defun my--reset-linum-hack ()
+  (defun xc/-reset-linum-hack ()
     "Hack to reset line numbers by switching to next buffer and switching back."
     (progn
       (switch-to-buffer (other-buffer (current-buffer) 1))
       (switch-to-buffer (other-buffer (current-buffer) 1))))
 
-  (add-hook 'helm-after-action-hook 'my--reset-linum-hack)
-  (add-hook 'helm-quit-hook 'my--reset-linum-hack)
+  (add-hook 'helm-after-action-hook 'xc/-reset-linum-hack)
+  (add-hook 'helm-quit-hook 'xc/-reset-linum-hack)
 
   ;; toggle syntax coloring in suggestions
   (setq helm-swoop-speed-or-color t)
@@ -696,13 +696,13 @@
                       :inherit            'secondary-selection)
 
 
-  (if my-debug (message "helm-swoop")))
+  (if xc/debug (message "helm-swoop")))
 
 
 ;; bundled with emacs
 (use-package hi-lock
   :init
-  (defun my-toggle-global-hl-line-sticky-flag ()
+  (defun xc/toggle-global-hl-line-sticky-flag ()
     "Toggle whether highlighted line persists when switching windows.
 
     This function does not currently behave as expected.  Resetting
@@ -719,7 +719,7 @@
     (global-hl-line-mode -1)
     (global-hl-line-mode 1))
 
-  (defface my-hi-comint
+  (defface xc/hi-comint
     '((t (:background "dim gray")))
     "Face for comint mode."
     :group 'hi-lock-faces)
@@ -733,21 +733,21 @@
   (set-face-attribute 'hi-green  nil                       :foreground "gray30" :distant-foreground "light green" :box "dim gray")
   (set-face-attribute 'hi-blue   nil                       :foreground "gray30" :distant-foreground "light blue " :box "dim gray")
 
-  (if my-debug (message "hi-lock")))
+  (if xc/debug (message "hi-lock")))
 
 
 (use-package htmlize
   :straight (:fork "excalamus/emacs-htmlize")
   :config
 
-  (if my-debug (message "emacs-htmlize")))
+  (if xc/debug (message "emacs-htmlize")))
 
 ;; 
 ;; ;; https://github.com/jwiegley/use-package#use-package-chords
 ;; (use-package '(key-chord :fork "excalamus/key-chord")
 ;;   :config (key-chord-mode 1)
 
-;;   (if my-debug (message "key-chord")))
+;;   (if xc/debug (message "key-chord")))
 
 
 (when (eq system-type 'gnu/linux)
@@ -757,7 +757,7 @@
     :config
     (setq ledger-post-amount-alignment-column 60)
 
-    (if my-debug (message "ledger-mode"))))
+    (if xc/debug (message "ledger-mode"))))
 
 
 (use-package magit
@@ -767,7 +767,7 @@
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
   :config
   (add-hook 'git-commit-mode-hook 'evil-emacs-state)
-  (if my-debug (message "magit")))
+  (if xc/debug (message "magit")))
 
 
 (use-package markdown-toc
@@ -775,7 +775,7 @@
   :straight (:fork "excalamus/markdown-toc")
   :config
 
-  (if my-debug (message "markdown-toc")))
+  (if xc/debug (message "markdown-toc")))
 
 
 (use-package nameless
@@ -784,7 +784,7 @@
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   :config
 
-  (if my-debug (message "nameless")))
+  (if xc/debug (message "nameless")))
 
 
 ;; This step works some magic.  Not even attempting to build from a
@@ -831,7 +831,7 @@
      (latex . t)
      ))
 
-  (defun my-new-clock-task ()
+  (defun xc/new-clock-task ()
     "Switch to new task by clocking in after clocking out."
     (interactive)
     (org-clock-out)
@@ -843,14 +843,14 @@
   ;; https://emacs.stackexchange.com/a/51112/15177
   (advice-add 'org-archive-subtree :after #'org-save-all-org-buffers)
 
-  (if my-debug (message "org")))
+  (if xc/debug (message "org")))
 
 
 (use-package peut-publier
   :straight (:repo "https://github.com/excalamus/peut-publier.git")
   :config
 
-  (if my-debug (message "peut-publier")))
+  (if xc/debug (message "peut-publier")))
 
 
 (use-package right-click-context
@@ -858,14 +858,14 @@
   :config
   (right-click-context-mode 1)
 
-  (if my-debug (message "right-click-context")))
+  (if xc/debug (message "right-click-context")))
 
 
 (use-package rg
   :straight (:fork "excalamus/rg.el")
   :config
 
-  (if my-debug (message "rg.el")))
+  (if xc/debug (message "rg.el")))
 
 
 ;; skeeto fork
@@ -873,7 +873,7 @@
   :straight (:fork "excalamus/emacs-web-server")
   :config
 
-  (if my-debug (message "emacs-web-server")))
+  (if xc/debug (message "emacs-web-server")))
 
 
 (use-package smart-tab
@@ -884,13 +884,13 @@
   :config
   (global-smart-tab-mode 1)
 
-  (if my-debug (message "smart-tab")))
+  (if xc/debug (message "smart-tab")))
 
 
 (use-package string-inflection
   :straight (:fork "excalamus/string-inflection")
   :config
-  (defun my--string-inflection-style-cycle-function (str)
+  (defun xc/-string-inflection-style-cycle-function (str)
     "foo-bar => foo_bar => FOO_BAR => fooBar => FooBar => foo-bar"
     (cond
      ;; foo-bar => foo_bar
@@ -909,21 +909,21 @@
      ((string-inflection-camelcase-p str)
       (string-inflection-kebab-case-function str))))
 
-  (defun my-string-inflection-style-cycle ()
+  (defun xc/string-inflection-style-cycle ()
     "foo-bar => foo_bar => FOO_BAR => fooBar => FooBar => foo-bar"
     (interactive)
     (string-inflection-insert
-     (my--string-inflection-style-cycle-function
+     (xc/-string-inflection-style-cycle-function
       (string-inflection-get-current-word))))
 
-  (if my-debug (message "string-inflection")))
+  (if xc/debug (message "string-inflection")))
 
 
 (use-package sx
   :straight (:fork "excalamus/sx.el")
   :config
 
-  (if my-debug (message "sx.el")))
+  (if xc/debug (message "sx.el")))
 
 
 (use-package yaml-mode
@@ -931,7 +931,7 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
-  (if my-debug (message "yaml-mode")))
+  (if xc/debug (message "yaml-mode")))
 
 
 (use-package web-mode
@@ -939,7 +939,7 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
-  (if my-debug (message "web-mode")))
+  (if xc/debug (message "web-mode")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -949,18 +949,18 @@
 ;; https://stackoverflow.com/a/1110487
 (eval-after-load "dired"
   '(progn
-     (defun my-dired-find-file (&optional arg)
+     (defun xc/dired-find-file (&optional arg)
        "Open each of the marked files, or the file under the
 point, or when prefix arg, the next N files"
        (interactive "P")
        (mapc 'find-file (dired-get-marked-files nil arg)))
-     (define-key dired-mode-map "F" 'my-dired-find-file)))
+     (define-key dired-mode-map "F" 'xc/dired-find-file)))
 
 ;; Auto-refresh dired on file change
 ;; https://superuser.com/a/566401/606203
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 
-(defun my-switch-to-last-window ()
+(defun xc/switch-to-last-window ()
   "Switch to most recently used window.
 
 See URL `https://emacs.stackexchange.com/a/7411/15177'"
@@ -1006,12 +1006,12 @@ Taken from URL
 
 (add-hook 'minibuffer-inactive-mode-hook 'minibuffer-inactive-mode-hook-setup)
 
-(setq my-python-break-string "import ipdb; ipdb.set_trace(context=10)")
+(setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
 
-(defun my-insert-breakpoint ()
+(defun xc/insert-breakpoint ()
   (interactive)
-  (my-newline-without-break-of-line)
-  (insert my-python-break-string)
+  (xc/newline-without-break-of-line)
+  (insert xc/python-break-string)
   (bm-toggle)
   (save-buffer))
 
@@ -1019,47 +1019,47 @@ Taken from URL
                  ((eq window-system 'x) "~/Projects/")
                  ;; terminal
                  (t "/data/data/com.termux/files/home/projects/"))))
-  (setq my-global-default-directory dir))
+  (setq xc/global-default-directory dir))
 
-(defun my-global-default-directory (new-default-directory)
-  "Set my-global-default-directory to NEW-DEFAULT-DIRECTORY."
+(defun xc/global-default-directory (new-default-directory)
+  "Set xc/global-default-directory to NEW-DEFAULT-DIRECTORY."
   (interactive "DSet global default directory: ")
-  (setq my-global-default-directory new-default-directory))
+  (setq xc/global-default-directory new-default-directory))
 
-(defun my-find-file (&optional filename)
-  "Switch to a buffer visiting FILENAME, defaulting to `my-global-default-directory'."
+(defun xc/find-file (&optional filename)
+  "Switch to a buffer visiting FILENAME, defaulting to `xc/global-default-directory'."
   (interactive)
   (if (null filename)
-      (setq filename my-global-default-directory))
-  (cd my-global-default-directory)
+      (setq filename xc/global-default-directory))
+  (cd xc/global-default-directory)
   (call-interactively 'find-file filename))
 
-(defvar my-python nil
+(defvar xc/python nil
   "Python interpreter to be used in shell calls.")
 
-(defvar my-shell "*shell*"
+(defvar xc/shell "*shell*"
   "Shell process buffer to be used in shell calls.")
 
 (if (eq system-type 'windows-nt)
-    (setq my-python (concat "python" " "))
-  (setq my-python (concat "python3" " ")))
+    (setq xc/python (concat "python" " "))
+  (setq xc/python (concat "python3" " ")))
 
-(defun my-set-python (exe)
+(defun xc/set-python (exe)
   "Set python executable."
   ;; (interactive "fSelect Python executable: ")
   (interactive
    (list (read-file-name "Python executable: " "C:/Users/mtrzcinski/Anaconda3/envs/" nil t)))
-  (setq my-python (concat exe " "))
-  (message "Set `my-python' to: %s" my-python))
+  (setq xc/python (concat exe " "))
+  (message "Set `xc/python' to: %s" xc/python))
 
-(defun my-set-shell (pbuff)
-  "Set `my-shell' to process associated with PBUFF buffer."
+(defun xc/set-shell (pbuff)
+  "Set `xc/shell' to process associated with PBUFF buffer."
   (interactive
    (list (read-buffer "Process buffer: " nil t '(lambda (x) (processp (get-buffer-process (car x)))))))
-  (setq my-shell pbuff)
-  (message "Set `my-shell' to: %s" my-shell))
+  (setq xc/shell pbuff)
+  (message "Set `xc/shell' to: %s" xc/shell))
 
-(defun my-create-shell (name)
+(defun xc/create-shell (name)
     "Create shell with a given NAME.
 
 NAME should have earmuffs (e.g. *NAME*) if it is to follow Emacs
@@ -1072,21 +1072,21 @@ Adapted from URL `https://stackoverflow.com/a/36450889/5065796'"
     (interactive
      (let ((name (read-string "shell name: " nil)))
        (list name)))
-    (let ((name (or name my-shell)))
+    (let ((name (or name xc/shell)))
       (get-buffer-process (shell name))))
 
-(defun my-sh-send-command (command &optional pbuff)
+(defun xc/sh-send-command (command &optional pbuff)
   "Send COMMAND to shell process with buffer PBUFF.
 
 Create new shell process if none exists.
 
 See URL `https://stackoverflow.com/a/7053298/5065796'"
-  (let* ((pbuff (or pbuff my-shell))
+  (let* ((pbuff (or pbuff xc/shell))
          (proc (or (get-buffer-process pbuff)
                    (let ((currbuff (current-buffer)))
                      (shell)
                      (switch-to-buffer currbuff)
-                     (my-create-shell pbuff))))
+                     (xc/create-shell pbuff))))
          (command-and-go (concat command "\n")))
     (with-current-buffer pbuff
       (goto-char (process-mark proc))
@@ -1094,41 +1094,41 @@ See URL `https://stackoverflow.com/a/7053298/5065796'"
       (move-marker (process-mark proc) (point)))
     (process-send-string proc command-and-go)))
 
-(defun my-set-global-shell-command (new-command)
-  "Set `my-global-shell-command' to NEW-COMMAND."
+(defun xc/set-global-shell-command (new-command)
+  "Set `xc/global-shell-command' to NEW-COMMAND."
   (interactive "sShell command: ")
-  (setq my-global-shell-command new-command))
+  (setq xc/global-shell-command new-command))
 
 ;; 16000
-(defun my-kill-python ()
+(defun xc/kill-python ()
   "Kill Python."
   (interactive)
   (if (eq system-type 'windows-nt)
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
 
 ;; todo make interactive, read envs dir for available envs
-(defun my-conda-activate ()
+(defun xc/conda-activate ()
   "Activate conda venv."
   (interactive)
   (insert "C:\\Users\\mtrzcinski\\Anaconda3\\condabin\\conda.bat activate "))
 
-(defun my-set-global-shell-command-to-current-file ()
+(defun xc/set-global-shell-command-to-current-file ()
   "Set the global shell command to use the current file.
 
 This is useful if, for instance, a project was started using one
 file, but later in development another file needs to be called
 frequently.  It is like a permanent version of
-`my-buffer-file-to-shell'."
+`xc/buffer-file-to-shell'."
   (interactive)
-  (setq my-global-shell-command (concat my-python (buffer-file-name)))
-  (message "Set `my-global-shell-command' to \"%s\"" my-global-shell-command))
+  (setq xc/global-shell-command (concat xc/python (buffer-file-name)))
+  (message "Set `xc/global-shell-command' to \"%s\"" xc/global-shell-command))
 
-(defun my-buffer-file-to-shell ()
+(defun xc/buffer-file-to-shell ()
   "Send current buffer file to shell as python call."
   (interactive)
-  (my-sh-send-command (concat my-python (buffer-file-name))))
+  (xc/sh-send-command (concat xc/python (buffer-file-name))))
 
-(defun my-newline-without-break-of-line ()
+(defun xc/newline-without-break-of-line ()
   "Create a new line without breaking the current line and move
 the cursor down."
   (interactive)
@@ -1136,16 +1136,16 @@ the cursor down."
     (end-of-line)
     (newline-and-indent)))
 
-(defun my-comint-exec-hook ()
+(defun xc/comint-exec-hook ()
   (interactive)
-  ;; (highlight-lines-matching-regexp "-->" 'my-hi-comint)
+  ;; (highlight-lines-matching-regexp "-->" 'xc/hi-comint)
   (setq comint-scroll-to-bottom-on-output t)
   (setq truncate-lines t)
   (set-window-scroll-bars (get-buffer-window "*shell*") nil nil 10 'bottom))
 
-(add-hook 'comint-exec-hook #'my-comint-exec-hook)
+(add-hook 'comint-exec-hook #'xc/comint-exec-hook)
 
-(defun my-unfill-paragraph (&optional region)
+(defun xc/unfill-paragraph (&optional region)
   "Make multi-line paragraph into a single line of text.
 
 REGION unfills the region.  See URL
@@ -1156,15 +1156,15 @@ REGION unfills the region.  See URL
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-(defun my-open-windows-explorer ()
+(defun xc/open-windows-explorer ()
   "Open Windows Explorer to folder containing file."
   (interactive)
-  (let* ((file (or (buffer-file-name (current-buffer)) my-global-default-directory))
+  (let* ((file (or (buffer-file-name (current-buffer)) xc/global-default-directory))
          (dir (file-name-directory file))
          (windows-dir (subst-char-in-string ?/ ?\\ dir)))
     (start-process "explorer" nil "explorer.exe" windows-dir)))
 
-(defun my-suicide ()
+(defun xc/suicide ()
   "Kill all Emacs processes."
   (interactive)
   (let ((cmd (if (eq system-type 'gnu/linux)
