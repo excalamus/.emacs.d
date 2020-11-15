@@ -846,6 +846,13 @@
   (if my-debug (message "org")))
 
 
+(use-package peut-publier
+  :straight (:repo "https://github.com/excalamus/peut-publier.git")
+  :config
+
+  (if my-debug (message "peut-publier")))
+
+
 (use-package right-click-context
   :straight (:fork "excalamus/right-click-context")
   :config
