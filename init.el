@@ -1127,7 +1127,10 @@ frequently.  It is like a permanent version of
 (defun xc/buffer-file-to-shell ()
   "Send current buffer file to shell as python call."
   (interactive)
-  (xc/sh-send-command (concat xc/python (buffer-file-name))))
+  (let ((script (buffer-file-name)))
+    (if script
+        (xc/sh-send-command (concat xc/python script))
+      (error "Command not sent. Buffer not visiting file"))))
 
 (defun xc/newline-without-break-of-line ()
   "Create a new line without breaking the current line and move
