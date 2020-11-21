@@ -1027,7 +1027,7 @@ Taken from URL
                  (t "/data/data/com.termux/files/home/projects/"))))
   (setq xc/global-default-directory dir))
 
-(defun xc/global-default-directory (new-default-directory)
+(defun xc/set-global-default-directory (new-default-directory)
   "Set xc/global-default-directory to NEW-DEFAULT-DIRECTORY."
   (interactive "DSet global default directory: ")
   (setq xc/global-default-directory new-default-directory))
