@@ -230,7 +230,7 @@
 (defun xc/dark-theme-hook ()
   "Run after loading dark theme."
   ;; zenburn
-  (if (eq window-system nil)
+  (if (eq xc/device 'terminal)
       (set-face-attribute 'mode-line-inactive nil :background "color-236"))
   (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
   (setq evil-insert-state-cursor '("gray" bar))
@@ -612,9 +612,8 @@
   ;; https://github.com/emacs-evil/evil/issues/1074
   (setq evil-undo-system 'undo-redo)
 
-  ;; todo cond fails? maybe window var not set during init?
   ;; Coordinate states with cursor color
-  (if (or (eq window-system 'w32) (eq window-system 'x))  ; todo use memq/member
+  (if (not (eq xc/device 'terminal))
       (progn
         (setq evil-emacs-state-cursor '("SkyBlue2" bar))
         (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
@@ -756,14 +755,13 @@
 ;;   (if xc/debug (message "key-chord")))
 
 
-(when (eq system-type 'gnu/linux)
-  (use-package ledger-mode
-    :straight (:fork "excalamus/ledger-mode")
-    :defer t
-    :config
-    (setq ledger-post-amount-alignment-column 60)
+(use-package ledger-mode
+  :straight (:fork "excalamus/ledger-mode")
+  :defer t
+  :config
+  (setq ledger-post-amount-alignment-column 60)
 
-    (if xc/debug (message "ledger-mode"))))
+  (if xc/debug (message "ledger-mode")))
 
 
 (use-package magit
@@ -1021,9 +1019,19 @@ Taken from URL
   (bm-toggle)
   (save-buffer))
 
-(let ((dir (cond ((eq system-type 'windows-nt) "C:\\projects\\")
-                 ((eq window-system 'x) "~/Projects/")
-                 ;; terminal
+(defvar xc/device
+  (cond ((file-directory-p "C:\\") 'windows)
+        ((file-directory-p "/home/") 'gnu/linux)
+        ((file-directory-p "/data/data/com.termux/") 'terminal))
+  "Current device.
+
+Either 'windows, 'gnu/linux, or 'terminal.
+
+`system-type' doesn't differentiate X from terminal.
+`window-system' gets assigned after init loads.")
+
+(let ((dir (cond ((eq xc/device 'windows) "C:\\projects\\")
+                 ((eq xc/device 'gnu/linux) "~/Projects/")
                  (t "/data/data/com.termux/files/home/projects/"))))
   (setq xc/global-default-directory dir))
 
@@ -1046,7 +1054,7 @@ Taken from URL
 (defvar xc/shell "*shell*"
   "Shell process buffer to be used in shell calls.")
 
-(if (eq system-type 'windows-nt)
+(if (eq xc/device 'windows)
     (setq xc/python (concat "python" " "))
   (setq xc/python (concat "python3" " ")))
 
