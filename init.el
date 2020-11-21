@@ -1084,15 +1084,20 @@ Adapted from URL `https://stackoverflow.com/a/36450889/5065796'"
 (defun xc/sh-send-command (command &optional pbuff)
   "Send COMMAND to shell process with buffer PBUFF.
 
-Create new shell process if none exists.
+PBUFF is the buffer name string of a process.  If the process
+associated with PBUFF does not exist, it is created.  PBUFF is
+then opened in the other window and control is returned to the
+calling buffer.
 
 See URL `https://stackoverflow.com/a/7053298/5065796'"
   (let* ((pbuff (or pbuff xc/shell))
          (proc (or (get-buffer-process pbuff)
-                   (let ((currbuff (current-buffer)))
-                     (shell)
+                   ;; create new process
+                   (let ((currbuff (current-buffer))
+                         (new-proc (xc/create-shell pbuff)))  ; creates a buried pbuff
+                     (switch-to-buffer-other-window pbuff)
                      (switch-to-buffer currbuff)
-                     (xc/create-shell pbuff))))
+                     new-proc)))
          (command-and-go (concat command "\n")))
     (with-current-buffer pbuff
       (goto-char (process-mark proc))
