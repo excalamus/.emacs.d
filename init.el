@@ -399,13 +399,13 @@
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
       "C-S-j" 'helm-swoop-without-pre-input
-      "<f2>" 'bm-next
-      "S-<f2>" 'bm-previous
+      "<f2>" 'bm-common-next
+      "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (xc/kill-python)
-                 (xc/sh-send-command xc/global-shell-command))
+                 (xc/kill-python)  ; kills aws cli commands
+                 (xc/sh-send-command xc/global-shell-command xc/shell))
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
@@ -414,7 +414,7 @@
 
     (general-def
       :keymaps 'override
-      :states '(normal insert)
+      :states '(normal insert emacs)
       (general-chord "jk") 'xc/newline-without-break-of-line
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
@@ -527,6 +527,8 @@
       )
 
     (general-def :keymaps 'helm-map "<escape>"  'helm-keyboard-quit)
+
+    (general-def :keymaps 'Info-mode-map "a" 'info-apropos)
 
     (general-def
       :keymaps 'magit-status-mode-map
