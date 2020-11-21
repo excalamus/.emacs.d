@@ -172,6 +172,9 @@
 ;; (setq debug-on-error t)
 ;; (setq auto-revert-check-vc-info t)
 
+;; Automatically reload files that have changed on disk
+(global-auto-revert-mode 1)
+
 ;; Remove Git prefix from vc since only using git
 (setcdr (assq 'vc-mode mode-line-format)
         '((:eval (replace-regexp-in-string "^ Git" " " vc-mode))))
