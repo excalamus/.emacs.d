@@ -326,8 +326,8 @@
 (use-package bm
   :straight (:fork "excalamus/bm")
   :init
-  (setq bm-cycle-all-buffers t)
   :config
+  (setq bm-cycle-all-buffers t)
 
   (if xc/debug (message "bm")))
 
