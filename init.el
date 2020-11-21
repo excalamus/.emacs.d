@@ -18,6 +18,17 @@
 (defvar xc/debug nil
   "Toggle package load messaging.")
 
+(defvar xc/device
+  (cond ((file-directory-p "C:\\") 'windows)
+        ((file-directory-p "/home/") 'gnu/linux)
+        ((file-directory-p "/data/data/com.termux/") 'terminal))
+  "Current device.
+
+Either 'windows, 'gnu/linux, or 'terminal.
+
+`system-type' doesn't differentiate X from terminal.
+`window-system' gets assigned after init loads.")
+
   ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
     ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1018,17 +1029,6 @@ Taken from URL
   (insert xc/python-break-string)
   (bm-toggle)
   (save-buffer))
-
-(defvar xc/device
-  (cond ((file-directory-p "C:\\") 'windows)
-        ((file-directory-p "/home/") 'gnu/linux)
-        ((file-directory-p "/data/data/com.termux/") 'terminal))
-  "Current device.
-
-Either 'windows, 'gnu/linux, or 'terminal.
-
-`system-type' doesn't differentiate X from terminal.
-`window-system' gets assigned after init loads.")
 
 (let ((dir (cond ((eq xc/device 'windows) "C:\\projects\\")
                  ((eq xc/device 'gnu/linux) "~/Projects/")
