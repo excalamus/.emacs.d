@@ -1107,7 +1107,10 @@ See URL `https://stackoverflow.com/a/7053298/5065796'"
 
 ;; 16000
 (defun xc/kill-python ()
-  "Kill Python."
+  "Kill Python.
+
+Note: This kills indiscriminantly.  It will kill any system
+process, like the AWS CLI, that runs on the Python interpetor."
   (interactive)
   (if (eq system-type 'windows-nt)
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
