@@ -1127,9 +1127,10 @@ See URL `https://stackoverflow.com/a/7053298/5065796'"
         (raise (or raise nil)))
     (cond
      ((string-equal (buffer-name (current-buffer)) shell)
-      (progn
-        (goto-char (point-max))
-        (message "Already on %s" shell)))
+      (switch-to-prev-buffer))
+      ;; (progn
+      ;;   (goto-char (point-max))
+      ;;   (message "Already on %s" shell)))
      ((get-buffer-window shell t)
       (progn
         (switch-to-buffer-other-frame shell)
