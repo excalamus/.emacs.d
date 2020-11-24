@@ -435,17 +435,18 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
     (general-def
       :states '(normal insert emacs)
-      ;; qwerty bindings
-      "C-]" 'xref-find-definitions
-      "C-}" 'xref-find-definitions-other-window
-      "M-]" 'dumb-jump-go
-      "M-}" 'dumb-jump-go-other-window
 
-      ;; ;; dvp bindings
-      ;; "C-@" 'xref-find-definitions
-      ;; "C-^" 'xref-find-definitions-other-window
-      ;; "M-@" 'dumb-jump-go
-      ;; "M-^" 'dumb-jump-go-other-window
+      ;; ;; qwerty bindings
+      ;; "C-]" 'xref-find-definitions
+      ;; "C-}" 'xref-find-definitions-other-window
+      ;; "M-]" 'dumb-jump-go
+      ;; "M-}" 'dumb-jump-go-other-window
+
+      ;; dvp bindings
+      "C-]" 'xref-find-definitions
+      "C-6" 'xref-find-definitions-other-window
+      "M-]" 'dumb-jump-go
+      "M-6" 'dumb-jump-go-other-window
 
       ;; "C-o" 'dumb-jump-back  ; obsoleted
       "C-o" 'xref-pop-marker-stack
