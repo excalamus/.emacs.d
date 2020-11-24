@@ -407,6 +407,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'override
       "C-x s" 'save-buffer
       "<f8>" 'xc/switch-to-last-window
+      "S-<f8>" '(lambda () (interactive) (xc/switch-to-shell nil t))
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
       "C-S-j" 'helm-swoop-without-pre-input
@@ -1117,6 +1118,28 @@ See URL `https://stackoverflow.com/a/7053298/5065796'"
   "Set `xc/global-shell-command' to NEW-COMMAND."
   (interactive "sShell command: ")
   (setq xc/global-shell-command new-command))
+
+(defun xc/switch-to-shell (&optional shell raise)
+  "Attempt to switch to current SHELL buffer and RAISE."
+  (interactive)
+  (let ((shell (or shell xc/shell))
+        (raise (or raise nil)))
+    (cond
+     ((string-equal (buffer-name (current-buffer)) shell)
+      (progn
+        (goto-char (point-max))
+        (message "Already on %s" shell)))
+     ((get-buffer-window shell t)
+      (progn
+        (switch-to-buffer-other-frame shell)
+        (goto-char (point-max))))
+     ((get-buffer shell)
+      (if raise
+          (progn
+            (switch-to-buffer shell)
+            (goto-char (point-max)))
+        (message "Raising is disabled and %s is not currently visible!" shell)))
+     ((message "No %s buffer exists!" shell)))))
 
 ;; 16000
 (defun xc/kill-python ()
