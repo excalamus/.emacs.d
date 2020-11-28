@@ -414,10 +414,10 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
-      "<f10>" '(lambda() (interactive)
-                 (save-some-buffers t nil)
-                 (xc/kill-python)  ; kills aws cli commands
-                 (xc/sh-send-command xc/global-shell-command xc/shell))
+      ;; "<f10>" '(lambda() (interactive)
+      ;;            (save-some-buffers t nil)
+      ;;            (xc/kill-python)  ; kills aws cli commands
+      ;;            (xc/sh-send-command xc/global-shell-command xc/shell))
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
@@ -474,10 +474,10 @@ Either 'windows, 'gnu/linux, or 'terminal.
      )
     (general-def
       :keymaps 'comint-mode-map
-      "<f10>" '(lambda() (interactive)
-                 (save-some-buffers t nil)
-                 (xc/kill-python)
-                 (xc/sh-send-command xc/global-shell-command))
+      ;; "<f10>" '(lambda() (interactive)
+      ;;            (save-some-buffers t nil)
+      ;;            (xc/kill-python)
+      ;;            (xc/sh-send-command xc/global-shell-command))
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
       )
@@ -504,11 +504,11 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "C-c o" 'elpy-occur-definitions
       "<apps>" 'xc/kill-python
       "<f6>" 'xc/insert-breakpoint
-      "<f10>" '(lambda() (interactive)
-                 (save-some-buffers t nil)
-                 (xc/kill-python)
-                 (xc/sh-send-command xc/global-shell-command))
-      "<C-S-f10>" 'xc/set-global-shell-command-to-current-file
+      ;; "<f10>" '(lambda() (interactive)
+      ;;            (save-some-buffers t nil)
+      ;;            (xc/kill-python)
+      ;;            (xc/sh-send-command xc/global-shell-command))
+      ;; "<C-S-f10>" 'xc/set-global-shell-command-to-current-file
       "<S-f10>" 'xc/buffer-file-to-shell
       )
     (general-def
@@ -870,6 +870,28 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
   (if xc/debug (message "peut-publier")))
 
+;; 
+(use-package peut-gerer
+  :straight (:repo "https://github.com/excalamus/peut-gerer.git" :branch "main")
+  :config
+
+    ;; (setq peut-gerer-project-alist
+    ;;       '(("project-x"
+    ;;          :root "/data/data/com.termux/files/home/projects/project-x/"
+    ;;          :main "main.py"
+    ;;          :venv  "/data/data/com.termux/files/home/projects/project-x/venv/"
+    ;;          :activate "/data/data/com.termux/files/home/projects/project-x/venv/bin/activate"
+    ;;          :commands ("pyinstaller build.spec")
+    ;;          )
+    ;;         ("project-a"
+    ;;          :root "C:\\projects\\project-umbrella\\apps\\project_a\\"
+    ;;          :main "project_a.py"
+    ;;          :venv "C:\\Users\\excalamus\\Anaconda3\\envs\\project_a\\"
+    ;;          :activate "C:\\Users\\excalamus\\Anaconda3\\condabin\\conda.bat activate"
+    ;;          )))
+
+  (if xc/debug (message "peut-gerer")))
+
 
 (use-package right-click-context
   :straight (:fork "excalamus/right-click-context")
@@ -1033,116 +1055,116 @@ Taken from URL
   (bm-toggle)
   (save-buffer))
 
-(let ((dir (cond ((eq xc/device 'windows) "C:\\projects\\")
-                 ((eq xc/device 'gnu/linux) "~/Projects/")
-                 (t "/data/data/com.termux/files/home/projects/"))))
-  (setq xc/global-default-directory dir))
+;; (let ((dir (cond ((eq xc/device 'windows) "C:\\projects\\")
+;;                  ((eq xc/device 'gnu/linux) "~/Projects/")
+;;                  (t "/data/data/com.termux/files/home/projects/"))))
+;;   (setq xc/global-default-directory dir))
 
-(defun xc/set-global-default-directory (new-default-directory)
-  "Set xc/global-default-directory to NEW-DEFAULT-DIRECTORY."
-  (interactive "DSet global default directory: ")
-  (setq xc/global-default-directory new-default-directory))
+;; (defun xc/set-global-default-directory (new-default-directory)
+;;   "Set xc/global-default-directory to NEW-DEFAULT-DIRECTORY."
+;;   (interactive "DSet global default directory: ")
+;;   (setq xc/global-default-directory new-default-directory))
 
-(defun xc/find-file (&optional filename)
-  "Switch to a buffer visiting FILENAME, defaulting to `xc/global-default-directory'."
-  (interactive)
-  (if (null filename)
-      (setq filename xc/global-default-directory))
-  (cd xc/global-default-directory)
-  (call-interactively 'find-file filename))
+;; (defun xc/find-file (&optional filename)
+;;   "Switch to a buffer visiting FILENAME, defaulting to `xc/global-default-directory'."
+;;   (interactive)
+;;   (if (null filename)
+;;       (setq filename xc/global-default-directory))
+;;   (cd xc/global-default-directory)
+;;   (call-interactively 'find-file filename))
 
-(defvar xc/python nil
-  "Python interpreter to be used in shell calls.")
+;; (defvar xc/python nil
+;;   "Python interpreter to be used in shell calls.")
 
-(defvar xc/shell "*shell*"
-  "Shell process buffer to be used in shell calls.")
+;; (defvar xc/shell "*shell*"
+;;   "Shell process buffer to be used in shell calls.")
 
-(if (eq xc/device 'windows)
-    (setq xc/python (concat "python" " "))
-  (setq xc/python (concat "python3" " ")))
+;; (if (eq xc/device 'windows)
+;;     (setq xc/python (concat "python" " "))
+;;   (setq xc/python (concat "python3" " ")))
 
-(defun xc/set-python (exe)
-  "Set python executable."
-  ;; (interactive "fSelect Python executable: ")
-  (interactive
-   (list (read-file-name "Python executable: " "C:/Users/mtrzcinski/Anaconda3/envs/" nil t)))
-  (setq xc/python (concat exe " "))
-  (message "Set `xc/python' to: %s" xc/python))
+;; (defun xc/set-python (exe)
+;;   "Set python executable."
+;;   ;; (interactive "fSelect Python executable: ")
+;;   (interactive
+;;    (list (read-file-name "Python executable: " "C:/Users/mtrzcinski/Anaconda3/envs/" nil t)))
+;;   (setq xc/python (concat exe " "))
+;;   (message "Set `xc/python' to: %s" xc/python))
 
-(defun xc/set-shell (pbuff)
-  "Set `xc/shell' to process associated with PBUFF buffer."
-  (interactive
-   (list (read-buffer "Process buffer: " nil t '(lambda (x) (processp (get-buffer-process (car x)))))))
-  (setq xc/shell pbuff)
-  (message "Set `xc/shell' to: %s" xc/shell))
+;; (defun xc/set-shell (pbuff)
+;;   "Set `xc/shell' to process associated with PBUFF buffer."
+;;   (interactive
+;;    (list (read-buffer "Process buffer: " nil t '(lambda (x) (processp (get-buffer-process (car x)))))))
+;;   (setq xc/shell pbuff)
+;;   (message "Set `xc/shell' to: %s" xc/shell))
 
-(defun xc/create-shell (name)
-    "Create shell with a given NAME.
+;; (defun xc/create-shell (name)
+;;     "Create shell with a given NAME.
 
-NAME should have earmuffs (e.g. *NAME*) if it is to follow Emacs
-naming conventions.  Earmuffs indicate that the buffer is special
-use and not associated with a file.
+;; NAME should have earmuffs (e.g. *NAME*) if it is to follow Emacs
+;; naming conventions.  Earmuffs indicate that the buffer is special
+;; use and not associated with a file.
 
-Returns newly created shell process.
+;; Returns newly created shell process.
 
-Adapted from URL `https://stackoverflow.com/a/36450889/5065796'"
-    (interactive
-     (let ((name (read-string "shell name: " nil)))
-       (list name)))
-    (let ((name (or name xc/shell)))
-      (get-buffer-process (shell name))))
+;; Adapted from URL `https://stackoverflow.com/a/36450889/5065796'"
+;;     (interactive
+;;      (let ((name (read-string "shell name: " nil)))
+;;        (list name)))
+;;     (let ((name (or name xc/shell)))
+;;       (get-buffer-process (shell name))))
 
-(defun xc/sh-send-command (command &optional pbuff)
-  "Send COMMAND to shell process with buffer PBUFF.
+;; (defun xc/sh-send-command (command &optional pbuff)
+;;   "Send COMMAND to shell process with buffer PBUFF.
 
-PBUFF is the buffer name string of a process.  If the process
-associated with PBUFF does not exist, it is created.  PBUFF is
-then opened in the other window and control is returned to the
-calling buffer.
+;; PBUFF is the buffer name string of a process.  If the process
+;; associated with PBUFF does not exist, it is created.  PBUFF is
+;; then opened in the other window and control is returned to the
+;; calling buffer.
 
-See URL `https://stackoverflow.com/a/7053298/5065796'"
-  (let* ((pbuff (or pbuff xc/shell))
-         (proc (or (get-buffer-process pbuff)
-                   ;; create new process
-                   (let ((currbuff (current-buffer))
-                         (new-proc (xc/create-shell pbuff)))  ; creates a buried pbuff
-                     (switch-to-buffer-other-window pbuff)
-                     (switch-to-buffer currbuff)
-                     new-proc)))
-         (command-and-go (concat command "\n")))
-    (with-current-buffer pbuff
-      (goto-char (process-mark proc))
-      (insert command-and-go)
-      (move-marker (process-mark proc) (point)))
-    (process-send-string proc command-and-go)))
+;; See URL `https://stackoverflow.com/a/7053298/5065796'"
+;;   (let* ((pbuff (or pbuff xc/shell))
+;;          (proc (or (get-buffer-process pbuff)
+;;                    ;; create new process
+;;                    (let ((currbuff (current-buffer))
+;;                          (new-proc (xc/create-shell pbuff)))  ; creates a buried pbuff
+;;                      (switch-to-buffer-other-window pbuff)
+;;                      (switch-to-buffer currbuff)
+;;                      new-proc)))
+;;          (command-and-go (concat command "\n")))
+;;     (with-current-buffer pbuff
+;;       (goto-char (process-mark proc))
+;;       (insert command-and-go)
+;;       (move-marker (process-mark proc) (point)))
+;;     (process-send-string proc command-and-go)))
 
-(defun xc/set-global-shell-command (new-command)
-  "Set `xc/global-shell-command' to NEW-COMMAND."
-  (interactive "sShell command: ")
-  (setq xc/global-shell-command new-command))
+;; (defun xc/set-global-shell-command (new-command)
+;;   "Set `xc/global-shell-command' to NEW-COMMAND."
+;;   (interactive "sShell command: ")
+;;   (setq xc/global-shell-command new-command))
 
-(defun xc/switch-to-shell (&optional shell raise)
-  "Attempt to switch to current SHELL buffer and RAISE."
-  (interactive)
-  (let ((shell (or shell xc/shell))
-        (raise (or raise nil)))
-    (cond
-     ((string-equal (buffer-name (current-buffer)) shell)
-      (switch-to-prev-buffer))
-      ;; (progn
-      ;;   (goto-char (point-max))
-      ;;   (message "Already on %s" shell)))
-     ((get-buffer-window shell t)
-      (progn
-        (switch-to-buffer-other-frame shell)
-        (goto-char (point-max))))
-     ((get-buffer shell)
-      (if raise
-          (progn
-            (switch-to-buffer shell)
-            (goto-char (point-max)))
-        (message "Raising is disabled and %s is not currently visible!" shell)))
-     ((message "No %s buffer exists!" shell)))))
+;; (defun xc/switch-to-shell (&optional shell raise)
+;;   "Attempt to switch to current SHELL buffer and RAISE."
+;;   (interactive)
+;;   (let ((shell (or shell xc/shell))
+;;         (raise (or raise nil)))
+;;     (cond
+;;      ((string-equal (buffer-name (current-buffer)) shell)
+;;       (switch-to-prev-buffer))
+;;       ;; (progn
+;;       ;;   (goto-char (point-max))
+;;       ;;   (message "Already on %s" shell)))
+;;      ((get-buffer-window shell t)
+;;       (progn
+;;         (switch-to-buffer-other-frame shell)
+;;         (goto-char (point-max))))
+;;      ((get-buffer shell)
+;;       (if raise
+;;           (progn
+;;             (switch-to-buffer shell)
+;;             (goto-char (point-max)))
+;;         (message "Raising is disabled and %s is not currently visible!" shell)))
+;;      ((message "No %s buffer exists!" shell)))))
 
 ;; 16000
 (defun xc/kill-python ()
@@ -1154,30 +1176,30 @@ process, like the AWS CLI, that runs on the Python interpetor."
   (if (eq system-type 'windows-nt)
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
 
-;; todo make interactive, read envs dir for available envs
-(defun xc/conda-activate ()
-  "Activate conda venv."
-  (interactive)
-  (insert "C:\\Users\\mtrzcinski\\Anaconda3\\condabin\\conda.bat activate "))
+;; ;; todo make interactive, read envs dir for available envs
+;; (defun xc/conda-activate ()
+;;   "Activate conda venv."
+;;   (interactive)
+;;   (insert "C:\\Users\\mtrzcinski\\Anaconda3\\condabin\\conda.bat activate "))
 
-(defun xc/set-global-shell-command-to-current-file ()
-  "Set the global shell command to use the current file.
+;; (defun xc/set-global-shell-command-to-current-file ()
+;;   "Set the global shell command to use the current file.
 
-This is useful if, for instance, a project was started using one
-file, but later in development another file needs to be called
-frequently.  It is like a permanent version of
-`xc/buffer-file-to-shell'."
-  (interactive)
-  (setq xc/global-shell-command (concat xc/python (buffer-file-name)))
-  (message "Set `xc/global-shell-command' to \"%s\"" xc/global-shell-command))
+;; This is useful if, for instance, a project was started using one
+;; file, but later in development another file needs to be called
+;; frequently.  It is like a permanent version of
+;; `xc/buffer-file-to-shell'."
+;;   (interactive)
+;;   (setq xc/global-shell-command (concat xc/python (buffer-file-name)))
+;;   (message "Set `xc/global-shell-command' to \"%s\"" xc/global-shell-command))
 
-(defun xc/buffer-file-to-shell ()
-  "Send current buffer file to shell as python call."
-  (interactive)
-  (let ((script (buffer-file-name)))
-    (if script
-        (xc/sh-send-command (concat xc/python script))
-      (error "Command not sent. Buffer not visiting file"))))
+;; (defun xc/buffer-file-to-shell ()
+;;   "Send current buffer file to shell as python call."
+;;   (interactive)
+;;   (let ((script (buffer-file-name)))
+;;     (if script
+;;         (xc/sh-send-command (concat xc/python script))
+;;       (error "Command not sent. Buffer not visiting file"))))
 
 (defun xc/newline-without-break-of-line ()
   "Create a new line without breaking the current line and move
@@ -1210,7 +1232,7 @@ REGION unfills the region.  See URL
 (defun xc/open-windows-explorer ()
   "Open Windows Explorer to folder containing file."
   (interactive)
-  (let* ((file (or (buffer-file-name (current-buffer)) xc/global-default-directory))
+  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
          (dir (file-name-directory file))
          (windows-dir (subst-char-in-string ?/ ?\\ dir)))
     (start-process "explorer" nil "explorer.exe" windows-dir)))
