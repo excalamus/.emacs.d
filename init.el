@@ -531,6 +531,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'emacs-lisp-mode-map
       "C-<next>" 'forward-page  ; C-PgUp goto previous linebreak
       "C-<prior>" 'backward-page ; C-PgDown goto next linebreak
+      "M-c" 'xc/copy-symbol-at-point
       )
 
     ; won't work in terminal bc of how terminals work
@@ -1221,3 +1222,11 @@ REGION unfills the region.  See URL
                  "killall -9 emacs" ; probably won't kill server administered by systemd
                "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
     (shell-command cmd)))
+
+(defun xc/copy-symbol-at-point ()
+  "Place symbol at point in `kill-ring'."
+  (interactive)
+  (let* ((bounds (bounds-of-thing-at-point 'symbol))
+         (beg (car bounds))
+         (end (cdr bounds)))
+    (kill-ring-save beg end)))
