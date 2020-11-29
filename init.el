@@ -407,17 +407,17 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'override
       "C-x s" 'save-buffer
       "<f8>" 'xc/switch-to-last-window
-      "S-<f8>" '(lambda () (interactive) (xc/switch-to-shell nil t))
+      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to-shell nil t))
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
       "C-S-j" 'helm-swoop-without-pre-input
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
-      ;; "<f10>" '(lambda() (interactive)
-      ;;            (save-some-buffers t nil)
-      ;;            (xc/kill-python)  ; kills aws cli commands
-      ;;            (xc/sh-send-command xc/global-shell-command xc/shell))
+      "<f10>" '(lambda() (interactive)
+                 (save-some-buffers t nil)
+                 (xc/kill-python)  ; kills aws cli commands
+                 (peut-gerer-send-command peut-gerer-command))
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
@@ -474,10 +474,6 @@ Either 'windows, 'gnu/linux, or 'terminal.
      )
     (general-def
       :keymaps 'comint-mode-map
-      ;; "<f10>" '(lambda() (interactive)
-      ;;            (save-some-buffers t nil)
-      ;;            (xc/kill-python)
-      ;;            (xc/sh-send-command xc/global-shell-command))
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
       )
@@ -504,11 +500,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "C-c o" 'elpy-occur-definitions
       "<apps>" 'xc/kill-python
       "<f6>" 'xc/insert-breakpoint
-      ;; "<f10>" '(lambda() (interactive)
-      ;;            (save-some-buffers t nil)
-      ;;            (xc/kill-python)
-      ;;            (xc/sh-send-command xc/global-shell-command))
-      ;; "<C-S-f10>" 'xc/set-global-shell-command-to-current-file
+      "<C-S-f10>" 'peut-gerer-set-command-to-current-file
       "<S-f10>" 'xc/buffer-file-to-shell
       )
     (general-def
