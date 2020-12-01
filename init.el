@@ -779,7 +779,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (setq ledger-post-amount-alignment-column 60)
   (setq ledger-report-auto-refresh-sticky-cursor t)
 
-(if xc/debug (message "ledger-mode")))
+  (if xc/debug (message "ledger-mode")))
 
 
 (use-package magit
