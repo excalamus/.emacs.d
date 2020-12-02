@@ -455,7 +455,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       )
 
     (general-def
-      :states 'normal
+      :states '(normal visual)
       :prefix "SPC"
       ";" 'comment-dwim-2
       "=" 'er/expand-region
@@ -541,6 +541,17 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'Info-mode-map
       "a" 'info-apropos
       "P" '(lambda () (interactive) (Info-goto-node "(python)")))
+
+    (general-def
+      :keymaps 'ledger-mode-map
+      :states 'normal
+      :prefix "SPC"
+      "/" 'ledger-display-balance-at-point
+      "r" 'ledger-report
+      "a" 'ledger-post-align-dwim
+      "t" 'ledger-add-transaction
+      "c" 'ledger-fully-complete-xact
+      )
 
     (general-def
       :keymaps 'magit-status-mode-map
@@ -772,6 +783,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
   :defer t
   :config
   (setq ledger-post-amount-alignment-column 60)
+  (setq ledger-report-auto-refresh-sticky-cursor t)
 
   (if xc/debug (message "ledger-mode")))
 
