@@ -536,7 +536,11 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
     (general-def :keymaps 'helm-map "<escape>"  'helm-keyboard-quit)
 
-    (general-def :keymaps 'Info-mode-map "a" 'info-apropos)
+    ;; https://stackoverflow.com/a/65100142/5065796
+    (general-def
+      :keymaps 'Info-mode-map
+      "a" 'info-apropos
+      "P" '(lambda () (interactive) (Info-goto-node "(python)")))
 
     (general-def
       :keymaps 'magit-status-mode-map
