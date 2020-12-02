@@ -401,6 +401,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
       "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
+      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))
       )
 
     (general-def
@@ -408,6 +409,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "C-x s" 'save-buffer
       "<f8>" 'xc/switch-to-last-window
       "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to-shell nil t))
+      "C-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
+      "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
       "C-S-j" 'helm-swoop-without-pre-input
@@ -459,7 +462,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "=" 'er/expand-region
       "+" 'er/contract-region
       "b" 'helm-buffers-list
-      "f" 'xc/find-file
+      "f" 'find-file
       "k" 'kill-buffer
       "o" 'ace-window
       "s" 'save-buffer
@@ -501,7 +504,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "<apps>" 'xc/kill-python
       "<f6>" 'xc/insert-breakpoint
       "<C-S-f10>" 'peut-gerer-set-command-to-current-file
-      "<S-f10>" 'xc/buffer-file-to-shell
+      "<S-f10>" 'peut-gerer-buffer-file-to-shell
       )
     (general-def
       :keymaps 'elpy-mode-map
@@ -868,9 +871,13 @@ Either 'windows, 'gnu/linux, or 'terminal.
   :config
 
   (if (eq system-type 'windows-nt)
-      (load "C:\\projects\\peut-gerer-projects.el"))
+      (load "~/peut-gerer-projects.el"))
 
   (setq peut-gerer-after-activate-functions '(pyvenv-activate))
+
+  (setq peut-gerer-after-select-functions
+        '((lambda (x) (funcall 'pyvenv-deactivate))
+          pyvenv-activate))
 
   (if xc/debug (message "peut-gerer")))
 
