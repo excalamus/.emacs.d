@@ -424,7 +424,6 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
-      "C-x C-f" 'xc/find-file
       )
 
     (general-def
