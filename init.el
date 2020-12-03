@@ -411,6 +411,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to-shell nil t))
       "C-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
+      "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
       "C-S-j" 'helm-swoop-without-pre-input
@@ -462,10 +463,13 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "+" 'er/contract-region
       "b" 'helm-buffers-list
       "f" 'find-file
+      "F" 'ffap-other-window
       "k" 'kill-buffer
       "o" 'ace-window
       "s" 'save-buffer
-      "g" 'ffap-other-window
+      "g" 'xc/open-file-browser
+      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+      "h" 'info
       )
 
     (general-define-key
