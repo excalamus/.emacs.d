@@ -1021,6 +1021,7 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
       (select-frame frame)
       (select-window win))))
 
+;; todo, when universal, prompt for mode
 ;; https://stackoverflow.com/a/21058075/5065796
 (defun create-scratch-buffer ()
   "Create a new numbered scratch buffer."
@@ -1034,7 +1035,7 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
              (setq n (1+ n))
              (get-buffer bufname)))
     (switch-to-buffer (get-buffer-create bufname))
-                     (org-mode)
+                     (emacs-lisp-mode)
   (if (= n 1) initial-major-mode)))
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
