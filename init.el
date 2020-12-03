@@ -901,7 +901,11 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (add-to-list 'right-click-context-global-menu-tree
                '("Send region"
                  :call (peut-gerer-send-region)
-                 :if (use-region-p)))
+                 :if
+                 (and (use-region-p)
+                      (not
+                       (member (string-trim (buffer-name) "*" "*")
+                               peut-gerer--active-projects-alist)))))
 
   (if xc/debug (message "peut-gerer")))
 
