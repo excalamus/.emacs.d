@@ -1239,13 +1239,16 @@ REGION unfills the region.  See URL
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-(defun xc/open-windows-explorer ()
-  "Open Windows Explorer to folder containing file."
+(defun xc/open-file-browser (&optional file)
+  "Open file explorer to directory containing FILE.
+
+FILE may also be a directory."
   (interactive)
   (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
-         (dir (file-name-directory file))
-         (windows-dir (subst-char-in-string ?/ ?\\ dir)))
-    (start-process "explorer" nil "explorer.exe" windows-dir)))
+         (dir (expand-file-name (file-name-directory file))))
+    (if dir
+        (browse-url-of-file dir)
+      (error "No directory to open"))))
 
 (defun xc/suicide ()
   "Kill all Emacs processes."
