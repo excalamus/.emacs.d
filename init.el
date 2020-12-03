@@ -883,8 +883,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;; 
 (use-package peut-gerer
   :straight (:repo "https://github.com/excalamus/peut-gerer.git" :branch "main")
+  :after (:all right-click-context)
   :config
-
   (if (eq system-type 'windows-nt)
       (load "~/peut-gerer-projects.el"))
 
@@ -893,6 +893,11 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (setq peut-gerer-after-select-functions
         '((lambda (x) (funcall 'pyvenv-deactivate))
           pyvenv-activate))
+
+  (add-to-list 'right-click-context-global-menu-tree
+               '("Send region"
+                 :call (peut-gerer-send-region)
+                 :if (use-region-p)))
 
   (if xc/debug (message "peut-gerer")))
 
