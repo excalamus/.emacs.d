@@ -641,6 +641,9 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (evil-mode)
   (evil-set-initial-state 'help-mode 'emacs)
   (evil-set-initial-state 'Info-mode 'emacs)
+  (evil-set-initial-state 'sx-mode 'emacs)
+  (evil-set-initial-state 'sx-question-mode 'emacs)
+  (evil-set-initial-state 'sx-question-list-mode 'emacs)
 
   ;; https://github.com/emacs-evil/evil/issues/1074
   (setq evil-undo-system 'undo-redo)
@@ -986,6 +989,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
   :straight (:fork "excalamus/sx.el")
   :config
 
+  (setq sx-default-site 'stackoverflow)
   (if xc/debug (message "sx.el")))
 
 
