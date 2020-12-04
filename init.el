@@ -408,8 +408,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'override
       "C-x s" 'save-buffer
       "<f8>" 'xc/switch-to-last-window
-      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to-shell nil t))
-      "C-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
+      "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :main t 0))
+      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :shell t 0))
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-j" 'helm-semantic-or-imenu
@@ -422,9 +422,12 @@ Either 'windows, 'gnu/linux, or 'terminal.
                  (save-some-buffers t nil)
                  (xc/kill-python)  ; kills aws cli commands
                  (peut-gerer-send-command peut-gerer-command))
+      "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-h j" 'describe-face  ; introspect colors
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
+      "C-x o" 'ace-window
+      "<f1>" 'ace-window
       )
 
     (general-def
@@ -470,6 +473,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "g" 'xc/open-file-browser
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "h" 'info
+      "q" 'sx-search
       )
 
     (general-define-key
@@ -482,6 +486,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'comint-mode-map
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
+      "C-r" 'comint-history-isearch-backward
+      "<apps>" 'xc/kill-python
       )
 
     (general-define-key
