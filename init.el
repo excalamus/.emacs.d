@@ -136,6 +136,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;; split ediff vertically
 (setq ediff-split-window-function 'split-window-right)
 
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
@@ -1036,35 +1038,29 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;; extension
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; https://stackoverflow.com/a/1110487
-(eval-after-load "dired"
-  '(progn
-     (defun xc/dired-find-file (&optional arg)
-       "Open each of the marked files, or the file under the
-point, or when prefix arg, the next N files"
-       (interactive "P")
-       (mapc 'find-file (dired-get-marked-files nil arg)))
-     (define-key dired-mode-map "F" 'xc/dired-find-file)))
-
-;; Auto-refresh dired on file change
-;; https://superuser.com/a/566401/606203
-(add-hook 'dired-mode-hook 'auto-revert-mode)
-
-(defun xc/switch-to-last-window ()
-  "Switch to most recently used window.
-
-See URL `https://emacs.stackexchange.com/a/7411/15177'"
+
+(defun xc/comint-exec-hook ()
   (interactive)
-  (let ((win (get-mru-window t t t)))
-    (unless win (error "Last window not found"))
-    (let ((frame (window-frame win)))
-      (raise-frame frame)
-      (select-frame frame)
-      (select-window win))))
+  ;; (highlight-lines-matching-regexp "-->" 'xc/hi-comint)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq truncate-lines t)
+  (set-window-scroll-bars (get-buffer-window "*shell*") nil nil 10 'bottom))
 
+(add-hook 'comint-exec-hook #'xc/comint-exec-hook)
+
+
+(defun xc/copy-symbol-at-point ()
+  "Place symbol at point in `kill-ring'."
+  (interactive)
+  (let* ((bounds (bounds-of-thing-at-point 'symbol))
+         (beg (car bounds))
+         (end (cdr bounds)))
+    (kill-ring-save beg end)))
+
+
 ;; todo, when universal, prompt for mode
 ;; https://stackoverflow.com/a/21058075/5065796
-(defun create-scratch-buffer ()
+(defun xc/create-scratch-buffer ()
   "Create a new numbered scratch buffer."
   (interactive)
   (let ((n 0)
@@ -1079,8 +1075,38 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
                      (emacs-lisp-mode)
   (if (= n 1) initial-major-mode)))
 
-(add-hook 'before-save-hook 'whitespace-cleanup)
+
+;; https://stackoverflow.com/a/1110487
+(eval-after-load "dired"
+  '(progn
+     (defun xc/dired-find-file (&optional arg)
+       "Open each of the marked files, or the file under the
+point, or when prefix arg, the next N files"
+       (interactive "P")
+       (mapc 'find-file (dired-get-marked-files nil arg)))
+     (define-key dired-mode-map "F" 'xc/dired-find-file)))
 
+;; Auto-refresh dired on file change
+;; https://superuser.com/a/566401/606203
+(add-hook 'dired-mode-hook 'auto-revert-mode)
+
+
+(defun xc/duplicate-buffer (&optional dup)
+  "Copy current buffer to new buffer named DUP.
+
+Default DUP name is `#<buffer-name>#'."
+  (interactive)
+  (let* ((orig (buffer-name))
+         (dup (or dup (concat "%" orig "%" ))))
+    (if (not (bufferp dup))
+        (progn
+          (get-buffer-create dup)
+          (switch-to-buffer dup)
+          (insert-buffer-substring orig)
+          (message "Duplicate buffer `%s' created" dup))
+      (error "Duplicate buffer already exists"))))
+
+
 (defun minibuffer-inactive-mode-hook-setup ()
   "Allow autocomplete in minibuffer.
 
@@ -1097,25 +1123,7 @@ Taken from URL
 
 (add-hook 'minibuffer-inactive-mode-hook 'minibuffer-inactive-mode-hook-setup)
 
-(setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
-
-(defun xc/insert-breakpoint ()
-  (interactive)
-  (xc/newline-without-break-of-line)
-  (insert xc/python-break-string)
-  (bm-toggle)
-  (save-buffer))
-
-;; 16000
-(defun xc/kill-python ()
-  "Kill Python.
-
-Note: This kills indiscriminantly.  It will kill any system
-process, like the AWS CLI, that runs on the Python interpetor."
-  (interactive)
-  (if (eq system-type 'windows-nt)
-      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
-
+
 (defun xc/newline-without-break-of-line ()
   "Create a new line without breaking the current line and move
 the cursor down."
@@ -1124,26 +1132,7 @@ the cursor down."
     (end-of-line)
     (newline-and-indent)))
 
-(defun xc/comint-exec-hook ()
-  (interactive)
-  ;; (highlight-lines-matching-regexp "-->" 'xc/hi-comint)
-  (setq comint-scroll-to-bottom-on-output t)
-  (setq truncate-lines t)
-  (set-window-scroll-bars (get-buffer-window "*shell*") nil nil 10 'bottom))
-
-(add-hook 'comint-exec-hook #'xc/comint-exec-hook)
-
-(defun xc/unfill-paragraph (&optional region)
-  "Make multi-line paragraph into a single line of text.
-
-REGION unfills the region.  See URL
-`https://www.emacswiki.org/emacs/UnfillParagraph'"
-  (interactive (progn (barf-if-buffer-read-only) '(t)))
-  (let ((fill-column (point-max))
-        ;; This would override `fill-column' if it's an integer.
-        (emacs-lisp-docstring-fill-column t))
-    (fill-paragraph nil region)))
-
+
 (defun xc/open-file-browser (&optional file)
   "Open file explorer to directory containing FILE.
 
@@ -1155,6 +1144,7 @@ FILE may also be a directory."
         (browse-url-of-file dir)
       (error "No directory to open"))))
 
+
 (defun xc/rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME.
 
@@ -1172,6 +1162,20 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil))))))
 
+
+(defun xc/switch-to-last-window ()
+  "Switch to most recently used window.
+
+See URL `https://emacs.stackexchange.com/a/7411/15177'"
+  (interactive)
+  (let ((win (get-mru-window t t t)))
+    (unless win (error "Last window not found"))
+    (let ((frame (window-frame win)))
+      (raise-frame frame)
+      (select-frame frame)
+      (select-window win))))
+
+
 (defun xc/suicide ()
   "Kill all Emacs processes."
   (interactive)
@@ -1180,25 +1184,40 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
                "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
     (shell-command cmd)))
 
-(defun xc/copy-symbol-at-point ()
-  "Place symbol at point in `kill-ring'."
-  (interactive)
-  (let* ((bounds (bounds-of-thing-at-point 'symbol))
-         (beg (car bounds))
-         (end (cdr bounds)))
-    (kill-ring-save beg end)))
+
+(defun xc/unfill-paragraph (&optional region)
+  "Make multi-line paragraph into a single line of text.
 
-(defun xc/duplicate-buffer (&optional dup)
-  "Copy current buffer to new buffer named DUP.
+REGION unfills the region.  See URL
+`https://www.emacswiki.org/emacs/UnfillParagraph'"
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-paragraph nil region)))
 
-Default DUP name is `#<buffer-name>#'."
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; extension-python
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
+
+(defun xc/insert-breakpoint ()
   (interactive)
-  (let* ((orig (buffer-name))
-         (dup (or dup (concat "%" orig "%" ))))
-    (if (not (bufferp dup))
-        (progn
-          (get-buffer-create dup)
-          (switch-to-buffer dup)
-          (insert-buffer-substring orig)
-          (message "Duplicate buffer `%s' created" dup))
-      (error "Duplicate buffer already exists"))))
+  (xc/newline-without-break-of-line)
+  (insert xc/python-break-string)
+  (bm-toggle)
+  (save-buffer))
+
+
+;; 16000
+(defun xc/kill-python ()
+  "Kill Python.
+
+Note: This kills indiscriminantly.  It will kill any system
+process, like the AWS CLI, that runs on the Python interpetor."
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
