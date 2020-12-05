@@ -92,7 +92,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;; https://stackoverflow.com/a/18330742/5065796
 (defvar xc/-backup-directory (concat user-emacs-directory "backups"))
 (if (not (file-exists-p xc/-backup-directory))
-        (make-directory xc/-backup-directory t))
+    (make-directory xc/-backup-directory t))
 (setq backup-directory-alist `(("." . ,xc/-backup-directory))) ; put backups in current dir and in xc/-backup-directory
 (setq make-backup-files t               ; backup of a file the first time it is saved.
       backup-by-copying t               ; don't clobber symlinks
@@ -168,18 +168,18 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
 ;; ;; Just a hack, needs proper attention
 (setq-default mode-line-format
-      '("%e"
-        evil-mode-line-tag
-        mode-line-mule-info
-        mode-line-modified
-        " "
-        mode-line-buffer-identification
-        " "
-        mode-line-position
-        mode-line-misc-info
-        (vc-mode vc-mode)
-        " "
-        mode-line-end-spaces))
+              '("%e"
+                evil-mode-line-tag
+                mode-line-mule-info
+                mode-line-modified
+                " "
+                mode-line-buffer-identification
+                " "
+                mode-line-position
+                mode-line-misc-info
+                (vc-mode vc-mode)
+                " "
+                mode-line-end-spaces))
 
 ;; setting true causes rev in vc-git.el:362 to be nil, causing error in substring
 ;; (setq debug-on-error t)
@@ -541,8 +541,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "M-c" 'xc/copy-symbol-at-point
       )
 
-    ; won't work in terminal bc of how terminals work
-    (general-def
+    (general-def  ; won't work in terminal bc of how terminals work
       :keymaps 'evil-emacs-state-map
       "<escape>" 'evil-normal-state
       )
@@ -758,7 +757,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
     (interactive)
     (if global-hl-line-sticky-flag
         (setq global-hl-line-sticky-flag nil)
-        (setq global-hl-line-sticky-flag t))
+      (setq global-hl-line-sticky-flag t))
 
     ;; once toggled, the mode needs to be restarted
     (global-hl-line-mode -1)
@@ -859,7 +858,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
            "CURRENT"		  ; todo, active item
            "PENDING"		  ; requires more information (timely)
            "|"	; entries after pipe are considered completed in [%] and [/]
-            ;; closed items
+           ;; closed items
            "DONE"	 ; completed successfully
            "ON-HOLD"	 ; requires more information (indefinite time)
            "CANCELED"	 ; no longer relevant, not completed
@@ -971,7 +970,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
   ;; owner moved repo and uses "main" instead of "master"
   ;; forked via https://stackoverflow.com/a/9288410
   :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main"
-             :fork (:host github :repo "excalamus/smart-tab" :branch "master"))
+                   :fork (:host github :repo "excalamus/smart-tab" :branch "master"))
   :config
   (global-smart-tab-mode 1)
 
@@ -1072,8 +1071,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
              (setq n (1+ n))
              (get-buffer bufname)))
     (switch-to-buffer (get-buffer-create bufname))
-                     (emacs-lisp-mode)
-  (if (= n 1) initial-major-mode)))
+    (emacs-lisp-mode)
+    (if (= n 1) initial-major-mode)))
 
 
 ;; https://stackoverflow.com/a/1110487
