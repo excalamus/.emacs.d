@@ -1202,6 +1202,12 @@ REGION unfills the region.  See URL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(defun xc/conda-activate ()
+  "Activate conda venv."
+  (interactive)
+  (insert "C:\\Users\\mtrzcinski\\Anaconda3\\condabin\\conda.bat activate "))
+
+
 (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
 
 (defun xc/insert-breakpoint ()
@@ -1221,6 +1227,22 @@ process, like the AWS CLI, that runs on the Python interpetor."
   (interactive)
   (if (eq system-type 'windows-nt)
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
+
+
+(defun xc/venv-activate ()
+  "Activate venv."
+  (interactive)
+  (insert "venv\\Scripts\\activate"))
+
+
+(defun xc/venv-create ()
+  "Create Python venv.
+
+I don't keep Python on my path.  Unfortunately, the autocomplete
+in shell.el pulls completions from other buffers, creating a
+chicken and egg problem."
+  (interactive)
+  (insert "\"C:\\python\\python3.6.8-64\\python.exe\" -m venv venv"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
