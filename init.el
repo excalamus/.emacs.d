@@ -406,6 +406,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
     (general-def
       :keymaps 'override
+      "<vertical-line> <mouse-3>" 'balance-windows  ; right-click on vertical to balance-windows
       "C-x s" 'save-buffer
       "<f8>" 'xc/switch-to-last-window
       "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :main t 0))
