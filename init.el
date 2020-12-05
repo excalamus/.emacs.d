@@ -1040,10 +1040,10 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
 (defun xc/comint-exec-hook ()
   (interactive)
-  ;; (highlight-lines-matching-regexp "-->" 'xc/hi-comint)
+  (highlight-lines-matching-regexp "-->" 'xc/hi-comint)
   (setq comint-scroll-to-bottom-on-output t)
   (setq truncate-lines t)
-  (set-window-scroll-bars (get-buffer-window "*shell*") nil nil 10 'bottom))
+  (set-window-scroll-bars (get-buffer-window (current-buffer)) nil nil 10 'bottom))
 
 (add-hook 'comint-exec-hook #'xc/comint-exec-hook)
 
