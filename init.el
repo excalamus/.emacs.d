@@ -1314,3 +1314,18 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
          (beg (car bounds))
          (end (cdr bounds)))
     (kill-ring-save beg end)))
+
+(defun xc/duplicate-buffer (&optional dup)
+  "Copy current buffer to new buffer named DUP.
+
+Default DUP name is `#<buffer-name>#'."
+  (interactive)
+  (let* ((orig (buffer-name))
+         (dup (or dup (concat "%" orig "%" ))))
+    (if (not (bufferp dup))
+        (progn
+          (get-buffer-create dup)
+          (switch-to-buffer dup)
+          (insert-buffer-substring orig)
+          (message "Duplicate buffer `%s' created" dup))
+      (error "Duplicate buffer already exists"))))
