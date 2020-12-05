@@ -637,11 +637,12 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
 (use-package evil
   :straight (:fork "excalamus/evil")
-  :after (:all dumb-jump key-chord)
+  :after (:all dumb-jump key-chord nov sx)
   :config
   (evil-mode)
   (evil-set-initial-state 'help-mode 'emacs)
   (evil-set-initial-state 'Info-mode 'emacs)
+  (evil-set-initial-state 'nov-mode 'emacs)
   (evil-set-initial-state 'sx-mode 'emacs)
   (evil-set-initial-state 'sx-question-mode 'emacs)
   (evil-set-initial-state 'sx-question-list-mode 'emacs)
@@ -827,6 +828,14 @@ Either 'windows, 'gnu/linux, or 'terminal.
   :config
 
   (if xc/debug (message "nameless")))
+
+
+;; https://depp.brause.cc/nov.el/
+(use-package nov
+  :straight (:repo "https://github.com/excalamus/nov.el.git")
+  :config
+  (setq nov-text-width 80)
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 
 ;; This step works some magic.  Not even attempting to build from a
