@@ -943,6 +943,19 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (if xc/debug (message "emacs-web-server")))
 
 
+(use-package smartparens
+  :straight (:fork "excalamus/smartparens")
+  :config
+  (require 'smartparens-config)
+  ;; this behvior doesn't take when configured after startup for some
+  ;; reason.  See `https://github.com/Fuco1/smartparens/issues/965'
+  (sp-pair "(" ")" :unless '(sp-point-before-word-p))
+  (sp-pair "\"" "\"" :unless '(sp-point-before-word-p sp-point-after-word-p))
+  (smartparens-global-mode 1)
+
+  (if xc/debug (message "smartparens")))
+
+
 (use-package smart-tab
   ;; owner moved repo and uses "main" instead of "master"
   ;; forked via https://stackoverflow.com/a/9288410
