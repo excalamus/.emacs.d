@@ -1,5 +1,9 @@
 ;;; init.el -- Principium de Excalamus
 
+;; Author: Matt Trzcinski <excalamus@tutanota.com>
+;; URL: https://github.com/excalamus/.emacs.d.git
+;; Requires: ((emacs "26.1"))
+
 ;; Maintain package consistency across multiple devices using
 ;; straight.el with use-package.el.  Fork packages and point
 ;; straight.el to personal repos.  The forks help with submitting pull
@@ -548,6 +552,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
     (general-def :keymaps 'helm-map "<escape>"  'helm-keyboard-quit)
 
+    ;; How to generate Info docs for Python (and others)!
     ;; https://stackoverflow.com/a/65100142/5065796
     (general-def
       :keymaps 'Info-mode-map
@@ -786,13 +791,6 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
   (if xc/debug (message "emacs-htmlize")))
 
-;; 
-;; ;; https://github.com/jwiegley/use-package#use-package-chords
-;; (use-package '(key-chord :fork "excalamus/key-chord")
-;;   :config (key-chord-mode 1)
-
-;;   (if xc/debug (message "key-chord")))
-
 
 (use-package ledger-mode
   :straight (:fork "excalamus/ledger-mode")
@@ -839,8 +837,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 
-;; This step works some magic.  Not even attempting to build from a
-;; fork. For details, see URL:
+;; This step works some magic.  Not even going to attempt building
+;; from a fork. For details, see URL
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
   :after (:all helm helm-swoop)
