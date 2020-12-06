@@ -1,0 +1,6 @@
+#+TITLE: init.el -- Principium de Excalamus
+
+Maintain package consistency across multiple devices using [[https://github.com/raxod502/straight.el][straight.el]]
+with [[https://github.com/jwiegley/use-package][use-package.el]].  It works by pointing [[https://github.com/raxod502/straight.el][straight.el]] to personal
+forks.  The forks help with submitting pull requests and provides
+another point of consistency (i.e. all devices sync to personal repo).
