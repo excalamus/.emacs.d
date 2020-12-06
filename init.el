@@ -19,22 +19,18 @@
 ;; temporarily cache credentials for https connections.  See URL:
 ;; `https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git'
 
-(defvar xc/debug nil
-  "Toggle package load messaging.")
-
-(defvar xc/device
-  (cond ((file-directory-p "C:\\") 'windows)
-        ((file-directory-p "/home/") 'gnu/linux)
-        ((file-directory-p "/data/data/com.termux/") 'terminal))
-  "Current device.
-
-Either 'windows, 'gnu/linux, or 'terminal.
-
-`system-type' doesn't differentiate X from terminal.
-`window-system' gets assigned after init loads.")
-
   ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
     ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; debug
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar xc/debug nil
+  "Toggle debug mode.")
+
+(if xc/debug (toggle-debug-on-error))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bootstrap
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -77,6 +73,17 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar xc/device
+  (cond ((file-directory-p "C:\\") 'windows)
+        ((file-directory-p "/home/") 'gnu/linux)
+        ((file-directory-p "/data/data/com.termux/") 'terminal))
+  "Current device.
+
+Either 'windows, 'gnu/linux, or 'terminal.
+
+`system-type' doesn't differentiate X from terminal.
+`window-system' gets assigned after init loads.")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
