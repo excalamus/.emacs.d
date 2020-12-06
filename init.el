@@ -850,7 +850,17 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
   :after (:all helm helm-swoop)
+  :init
+  (add-to-list 'load-path
+               (expand-file-name
+                (concat
+                 straight-base-dir
+                 "straight/repos/org/contrib/lisp/")))
   :config
+  (require 'ox-texinfo)
+  (require 'ox-md)
+  (require 'ox-confluence)  ;; in contrib/lisp/
+
   (setq org-edit-src-content-indentation 0)
   (setq org-src-tab-acts-natively t)
   (setq org-src-fontify-natively t)
