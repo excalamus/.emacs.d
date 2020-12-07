@@ -570,11 +570,14 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'ledger-mode-map
       :states 'normal
       :prefix "SPC"
-      "/" 'ledger-display-balance-at-point
+      ;; "n" 'ledger-display-balance-at-point
+      "n" 'xc/balance-at-point
       "r" 'ledger-report
       "a" 'ledger-post-align-dwim
       "t" 'ledger-add-transaction
       "c" 'ledger-fully-complete-xact
+      ";" 'xc/toggle-contiguous-lines
+      "k" 'xc/ledger-kill-current-transaction
       )
 
     (general-def
@@ -906,9 +909,8 @@ Either 'windows, 'gnu/linux, or 'terminal.
     (org-clock-in))
 
   ;; org-mode doesn't automatically save archive files for some
-  ;; stupid reason.  This is a ruthless hack which saves /all/ org
-  ;; buffers in archive.
-  ;; https://emacs.stackexchange.com/a/51112/15177
+  ;; reason.  This is a ruthless hack which saves /all/ org buffers in
+  ;; archive.  https://emacs.stackexchange.com/a/51112/15177
   (advice-add 'org-archive-subtree :after #'org-save-all-org-buffers)
 
   (if xc/debug (message "org")))
@@ -1263,3 +1265,31 @@ chicken and egg problem."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; experimental
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun xc/toggle-contiguous-lines ()
+  "(Un)comment contiguous lines around point."
+  (interactive)
+  (let ((pos (point)))
+    (mark-paragraph)
+    (forward-line)
+    (comment-or-uncomment-region (region-beginning) (region-end))
+    (goto-char pos)))
+
+(defun xc/ledger-kill-current-transaction (pos)
+  "Kill transaction surrounding POS."
+  (interactive "d")
+  (let ((bounds (ledger-navigate-find-xact-extents pos)))
+    (kill-region (car bounds) (cadr bounds))))
+
+(defun xc/balance-at-point ()
+  "Get balance of account at point"
+  (interactive)
+  (let* ((account (ledger-context-field-value (ledger-context-at-point) 'account))
+         (buffer (find-file-noselect (ledger-master-file)))
+         (balance (with-temp-buffer
+                    (apply 'ledger-exec-ledger buffer (current-buffer) "cleared" account nil)
+                    (if (> (buffer-size) 0)
+                        (buffer-substring-no-properties (point-min) (1- (point-max)))
+                      (concat account " is empty.")))))
+    (when balance
+      (message balance))))
