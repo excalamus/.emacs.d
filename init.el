@@ -425,6 +425,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :main t 0))
       "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :shell t 0))
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
+      "C-S-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-create-shell))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-j" 'helm-semantic-or-imenu
       "C-j" 'helm-swoop
@@ -432,6 +433,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
+      ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
                  (xc/kill-python)  ; kills aws cli commands
@@ -941,6 +943,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
                  :call (peut-gerer-send-region)
                  :if
                  (and (use-region-p)
+                      ;; only disables to peut-gerer registered shells
                       (not
                        (member (string-trim (buffer-name) "*" "*")
                                peut-gerer--active-projects-alist)))))
@@ -1259,7 +1262,7 @@ I don't keep Python on my path.  Unfortunately, the autocomplete
 in shell.el pulls completions from other buffers, creating a
 chicken and egg problem."
   (interactive)
-  (insert "\"C:\\python\\python3.6.8-64\\python.exe\" -m venv venv"))
+  (insert "\"C:\\python\\python37\\python.exe\" -m venv venv"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
