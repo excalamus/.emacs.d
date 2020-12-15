@@ -117,7 +117,12 @@ Either 'windows, 'gnu/linux, or 'terminal.
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
       )
 
-(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment "utf-8")
+
 (delete-selection-mode 1)
 (show-paren-mode 1)
 (put 'narrow-to-region 'disabled nil)  ; enabling disables confirmation prompt
