@@ -386,6 +386,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
 (use-package dap-mode
   :straight (:fork "excalamus/dap-mode")
+  :after (:all markdown-mode)
   :config
   (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
