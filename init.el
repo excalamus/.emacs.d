@@ -670,7 +670,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
 (use-package evil
   :straight (:fork "excalamus/evil")
   ;; :after (:all dumb-jump key-chord nov sx)
-  :after (:all dumb-jump key-chord nov sx)
+  :after (:all dumb-jump key-chord sx)
   :config
   (evil-mode)
   (evil-set-initial-state 'help-mode 'emacs)
