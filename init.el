@@ -320,6 +320,14 @@ Either 'windows, 'gnu/linux, or 'terminal.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(use-package yasnippet
+  :straight (:fork "excalamus/yasnippet")
+  :config
+  (yas-global-mode)
+
+  (if xc/debug (message "yasnippet")))
+
+
 ;; Way more packages use markdown-mode than you might expect.  When
 ;; put in alphabetical order, one of these other packages builds it
 ;; first, throwing an error about two build recipes.  See URL
@@ -997,7 +1005,14 @@ Either 'windows, 'gnu/linux, or 'terminal.
   ;; forked via https://stackoverflow.com/a/9288410
   :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main"
                    :fork (:host github :repo "excalamus/smart-tab" :branch "master"))
+  :after (:all yasnippet)
   :config
+  ;; Enable smart-tab, i.e. expand word or indent
+  ;; put yasnippet in hippie-expansion list
+  ;; https://github.com/haxney/smart-tab/issues/1
+  (add-to-list 'hippie-expand-try-functions-list
+               'yas/hippie-try-expand)
+
   (global-smart-tab-mode 1)
 
   (if xc/debug (message "smart-tab")))
