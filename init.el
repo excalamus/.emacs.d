@@ -457,7 +457,13 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
       "C-x o" 'ace-window
-      "<f1>" 'ace-window
+      "<f1>" '(lambda ()
+                (interactive)
+                (if xc/on-demand-window
+                    (call-interactively 'xc/on-demand-window-goto)
+                  (call-interactively 'ace-window)))
+      "S-<f1>" 'xc/on-demand-window-set
+      "C-<f1>" 'ace-window
       )
 
     (general-def
