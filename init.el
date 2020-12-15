@@ -1038,20 +1038,20 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (if xc/debug (message "sx.el")))
 
 
-(use-package yaml-mode
-  :straight (:fork "excalamus/yaml-mode")
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
-  (if xc/debug (message "yaml-mode")))
-
-
 (use-package web-mode
   :straight (:fork "excalamus/web-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
   (if xc/debug (message "web-mode")))
+
+
+(use-package yaml-mode
+  :straight (:fork "excalamus/yaml-mode")
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+  (if xc/debug (message "yaml-mode")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
