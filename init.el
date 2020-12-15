@@ -818,6 +818,17 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
   (if xc/debug (message "emacs-htmlize")))
 
+;; on windows, you need to install Hunspell
+;; https://sourceforge.net/projects/ezwinports/files/
+;; https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/EZWinPorts.html
+(use-package ispell
+  :if (eq system-type 'windows-nt)
+  :config
+  (setq ispell-program-name "C:/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe")
+  (setq ispell-local-dictionary "en_US")
+  (setq ispell-local-dictionary-alist
+      '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8))))
+
 
 (use-package ledger-mode
   :straight (:fork "excalamus/ledger-mode")
