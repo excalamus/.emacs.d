@@ -492,7 +492,9 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "M-6" 'dumb-jump-go-other-window
 
       ;; "C-o" 'dumb-jump-back  ; obsoleted
-      "C-o" 'xref-pop-marker-stack
+      ;; "C-o" 'xref-pop-marker-stack
+      "C-o" 'evil-jump-backward
+      "C-i" 'evil-jump-forward
       )
 
     (general-def
