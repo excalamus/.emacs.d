@@ -123,6 +123,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
+(setq-default abbrev-mode t)
 (delete-selection-mode 1)
 (show-paren-mode 1)
 (put 'narrow-to-region 'disabled nil)  ; enabling disables confirmation prompt
