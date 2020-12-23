@@ -829,6 +829,13 @@ permanent binding.")
   (if xc/debug (message "hi-lock")))
 
 
+(use-package git-timemachine
+  :straight (:host github :repo "excalamus/git-timemachine")
+  :config
+
+  (if xc/debug (message "git-timemachine")))
+
+
 (use-package htmlize
   :straight (:fork "excalamus/emacs-htmlize")
   :config
