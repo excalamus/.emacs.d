@@ -1021,24 +1021,6 @@ Either 'windows, 'gnu/linux, or 'terminal.
   (if xc/debug (message "smartparens")))
 
 
-(use-package smart-tab
-  ;; owner moved repo and uses "main" instead of "master"
-  ;; forked via https://stackoverflow.com/a/9288410
-  :straight (:type git :repo "https://git.genehack.net/genehack/smart-tab.git" :branch "main"
-                   :fork (:host github :repo "excalamus/smart-tab" :branch "master"))
-  :after (:all yasnippet)
-  :config
-  ;; Enable smart-tab, i.e. expand word or indent
-  ;; put yasnippet in hippie-expansion list
-  ;; https://github.com/haxney/smart-tab/issues/1
-  (add-to-list 'hippie-expand-try-functions-list
-               'yas/hippie-try-expand)
-
-  (global-smart-tab-mode 1)
-
-  (if xc/debug (message "smart-tab")))
-
-
 (use-package string-inflection
   :straight (:fork "excalamus/string-inflection")
   :config
