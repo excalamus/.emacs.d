@@ -1402,33 +1402,3 @@ With ARG (\\[universal-argument]) maximize frame."
     (progn
       (add-hook 'comint-output-filter-functions 'xc/spam-filter)
       (message "Spam filter on"))))
-
-(defvar xc/on-demand-window nil
-  "Target on-demand window.
-
-An on-demand window is one which you wish to return to within the
-current Emacs session but whose importance doesn't warrant a
-permanent binding.")
-
-;; (defvar xc/on-demand-buffer nil
-;;   "Target on-demand buffer.")
-
-(defun xc/on-demand-window-set ()
-  "Set the value of the on-demand window to current window."
-  (interactive)
-  (setq xc/on-demand-window (selected-window))
-  ;; (setq xc/on-demand-buffer (current-buffer))
-  (message "Set on-demand window to: %s" xc/on-demand-window))
-
-(defun xc/on-demand-window-goto ()
-  "Goto `xc/on-demand-window' with `xc/on-demand-buffer'."
-  (interactive)
-  (let ((win xc/on-demand-window))
-    (unless win (error "No on-demand window set! See `xc/on-demand-window-set'."))
-    (if (eq (selected-window) xc/on-demand-window)
-        (error "Already in `xc/on-demand-window'"))
-    (let ((frame (window-frame win)))
-      (raise-frame frame)
-      (select-frame frame)
-      (select-window win))))
-      ;; (switch-to-buffer xc/on-demand-buffer))))
