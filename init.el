@@ -899,6 +899,7 @@ permanent binding.")
   (require 'ox-md)
   (require 'ox-confluence)  ;; in contrib/lisp/
 
+  (setq org-adapt-indentation nil)
   (setq org-edit-src-content-indentation 0)
   (setq org-src-tab-acts-natively t)
   (setq org-src-fontify-natively t)
