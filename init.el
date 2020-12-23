@@ -1404,6 +1404,26 @@ process, like the AWS CLI, that runs on the Python interpetor."
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
 
 
+(defun xc/spam-filter (string)
+  "Filter stupid comint spam."
+  (with-current-buffer (current-buffer)
+      (mark-whole-buffer)
+      (flush-lines "has no notify signal and is not constant")))
+
+
+(defun xc/toggle-spam-filter ()
+  "Toggle spam filter"
+  (interactive)
+  (if (member 'xc/spam-filter comint-output-filter-functions)
+      (progn
+        (setq comint-output-filter-functions
+              (delete 'xc/spam-filter comint-output-filter-functions))
+        (message "Spam filter off"))
+    (progn
+      (add-hook 'comint-output-filter-functions 'xc/spam-filter)
+      (message "Spam filter on"))))
+
+
 (defun xc/venv-activate ()
   "Activate venv."
   (interactive)
@@ -1423,21 +1443,3 @@ chicken and egg problem."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; experimental
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun xc/spam-filter (string)
-  "Filter stupid comint spam."
-  (with-current-buffer (current-buffer)
-      (mark-whole-buffer)
-      (flush-lines "has no notify signal and is not constant")))
-
-(defun xc/toggle-spam-filter ()
-  "Toggle spam filter"
-  (interactive)
-  (if (member 'xc/spam-filter comint-output-filter-functions)
-      (progn
-        (setq comint-output-filter-functions
-              (delete 'xc/spam-filter comint-output-filter-functions))
-        (message "Spam filter off"))
-    (progn
-      (add-hook 'comint-output-filter-functions 'xc/spam-filter)
-      (message "Spam filter on"))))
