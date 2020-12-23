@@ -1150,6 +1150,18 @@ Default DUP name is `#<buffer-name>#'."
       (error "Duplicate buffer already exists"))))
 
 
+(defun xc/jira-issue (&optional issue)
+  "Open Jira ISSUE.
+
+If no issue is given, check for one at point."
+  (interactive)
+  (let* ((issue (or issue (thing-at-point 'symbol t)))
+         (url (concat "https://ushrauto.atlassian.net/browse/" issue)))
+    (if issue
+        (browse-url-default-windows-browser url)
+      (error "No directory to open"))))
+
+
 (defun minibuffer-inactive-mode-hook-setup ()
   "Allow autocomplete in minibuffer.
 
