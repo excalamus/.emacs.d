@@ -608,7 +608,7 @@ permanent binding.")
       "a" 'ledger-post-align-dwim
       "t" 'ledger-add-transaction
       "c" 'ledger-fully-complete-xact
-      ";" 'xc/toggle-contiguous-lines
+      ";" 'xc/toggle-comment-contiguous-lines
       "k" 'xc/ledger-kill-current-transaction
       )
 
@@ -1248,6 +1248,16 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
     (shell-command cmd)))
 
 
+(defun xc/toggle-comment-contiguous-lines ()
+  "(Un)comment contiguous lines around point."
+  (interactive)
+  (let ((pos (point)))
+    (mark-paragraph)
+    (forward-line)
+    (comment-or-uncomment-region (region-beginning) (region-end))
+    (goto-char pos)))
+
+
 (defun xc/unfill-paragraph (&optional region)
   "Make multi-line paragraph into a single line of text.
 
@@ -1337,34 +1347,6 @@ chicken and egg problem."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; experimental
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun xc/toggle-contiguous-lines ()
-  "(Un)comment contiguous lines around point."
-  (interactive)
-  (let ((pos (point)))
-    (mark-paragraph)
-    (forward-line)
-    (comment-or-uncomment-region (region-beginning) (region-end))
-    (goto-char pos)))
-
-(defun xc/ledger-kill-current-transaction (pos)
-  "Kill transaction surrounding POS."
-  (interactive "d")
-  (let ((bounds (ledger-navigate-find-xact-extents pos)))
-    (kill-region (car bounds) (cadr bounds))))
-
-(defun xc/balance-at-point ()
-  "Get balance of account at point"
-  (interactive)
-  (let* ((account (ledger-context-field-value (ledger-context-at-point) 'account))
-         (buffer (find-file-noselect (ledger-master-file)))
-         (balance (with-temp-buffer
-                    (apply 'ledger-exec-ledger buffer (current-buffer) "cleared" account nil)
-                    (if (> (buffer-size) 0)
-                        (buffer-substring-no-properties (point-min) (1- (point-max)))
-                      (concat account " is empty.")))))
-    (when balance
-      (message balance))))
 
 (defun xc/pop-buffer-into-frame (&optional arg)
   "Pop current buffer into its own frame.
