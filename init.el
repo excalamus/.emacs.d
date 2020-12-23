@@ -973,7 +973,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
           pyvenv-activate))
 
   (add-to-list 'right-click-context-global-menu-tree
-               '("Send region"
+               '("Send region to shell"
                  :call (peut-gerer-send-region)
                  :if
                  (and (use-region-p)
