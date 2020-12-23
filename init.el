@@ -875,14 +875,6 @@ Either 'windows, 'gnu/linux, or 'terminal.
 
   (if xc/debug (message "nameless")))
 
-;; 
-;; ;; https://depp.brause.cc/nov.el/
-;; (use-package nov
-;;   :straight (:repo "https://github.com/excalamus/nov.el.git")
-;;   :config
-;;   (setq nov-text-width 80)
-;;   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
-
 
 ;; This step works some magic.  Not even going to attempt building
 ;; from a fork. For details, see URL
