@@ -349,6 +349,10 @@ permanent binding.")
   (setq markdown-command "multimarkdown")
   :config
 
+  ;; ;; allow spaces in minibuffer (e.g. completing-read)
+  ;; (define-key minibuffer-local-completion-map " " nil)
+  ;; (define-key minibuffer-local-must-match-map " " nil)
+
   (if xc/debug (message "markdown-mode")))
 
 
