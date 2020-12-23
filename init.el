@@ -443,6 +443,7 @@ permanent binding.")
       :keymaps 'override
       "<vertical-line> <mouse-3>" 'balance-windows  ; right-click on vertical to balance-windows
       "C-x s" 'save-buffer
+      "<f5>" '(lambda () (interactive) (progn (funcall 'xc/send-line-or-region)))
       "<f8>" 'xc/switch-to-last-window
       "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :main t 0))
       "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :shell t 0))
@@ -982,6 +983,14 @@ permanent binding.")
                        (member (string-trim (buffer-name) "*" "*")
                                peut-gerer--active-projects-alist)))))
 
+  ;; quick hack; create an xc/on-demand-window (C-<f1>), then you can
+  ;; select a region anywhere and send that region to the odw.  For
+  ;; use in exploratory debugging.  Try stuff in the repl, then send
+  ;; that to the script.
+  (add-to-list 'right-click-context-global-menu-tree
+               '("Send region to on-demand-window"
+                 :call (xc/send-line-or-region)))
+
   (if xc/debug (message "peut-gerer")))
 
 
@@ -1250,6 +1259,28 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (rename-buffer new-name)
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil))))))
+
+
+(defun xc/send-line-or-region (&optional beg end buff)
+  "Send region defined by BEG and END to BUFF.
+
+Use current region if BEG and END not provided.  If no region
+provided, send entire line.  Default BUFF is that displayed in
+`xc/on-demand-window'."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end) nil)
+                 (list nil nil nil)))
+  (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
+         (end (or end (if (use-region-p) (region-end)) nil))
+         (substr (or (and beg end (buffer-substring-no-properties beg end))
+                     (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+         (buff (or buff (window-buffer xc/on-demand-window))))
+    (if substr
+        (with-current-buffer buff
+          (insert substr)
+          (end-of-line)
+          (newline-and-indent))
+      (error "Invalid selection"))))
 
 
 (defun xc/switch-to-last-window ()
