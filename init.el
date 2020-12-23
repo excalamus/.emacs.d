@@ -1196,6 +1196,19 @@ the cursor down."
       (select-window win))))
 
 
+(defun xc/org-babel-goto-tangle-file ()
+  "Open tangle file associated with source block at point.
+
+Taken from URL `https://www.reddit.com/r/emacs/comments/jof1p3/visit_tangled_file_with_orgopenatpoint/'
+"
+  (interactive)
+        (if-let* ((args (nth 2 (org-babel-get-src-block-info t)))
+                          (tangle (alist-get :tangle args)))
+                (when (not (equal "no" tangle))
+                  (ffap-other-window tangle)
+                  t)))
+
+
 (defun xc/open-file-browser (&optional file)
   "Open file explorer to directory containing FILE.
 
