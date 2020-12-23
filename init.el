@@ -513,6 +513,7 @@ Either 'windows, 'gnu/linux, or 'terminal.
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "h" 'info
       "q" 'sx-search
+      "x" 'eval-expression
       )
 
     (general-define-key
@@ -566,7 +567,6 @@ Either 'windows, 'gnu/linux, or 'terminal.
       :keymaps 'emacs-lisp-mode-map
       :states 'normal
       :prefix "SPC"
-      "x" 'eval-expression
       "e" 'eval-last-sexp
       )
 
