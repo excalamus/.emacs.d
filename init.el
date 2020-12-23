@@ -1261,6 +1261,32 @@ REGION unfills the region.  See URL
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; extension-ledger
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defun xc/ledger-kill-current-transaction (pos)
+  "Kill transaction surrounding POS."
+  (interactive "d")
+  (let ((bounds (ledger-navigate-find-xact-extents pos)))
+    (kill-region (car bounds) (cadr bounds))))
+
+
+(defun xc/balance-at-point ()
+  "Get balance of account at point"
+  (interactive)
+  (let* ((account (ledger-context-field-value (ledger-context-at-point) 'account))
+         (buffer (find-file-noselect (ledger-master-file)))
+         (balance (with-temp-buffer
+                    (apply 'ledger-exec-ledger buffer (current-buffer) "cleared" account nil)
+                    (if (> (buffer-size) 0)
+                        (buffer-substring-no-properties (point-min) (1- (point-max)))
+                      (concat account " is empty.")))))
+    (when balance
+      (message balance))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; extension-python
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
