@@ -1238,6 +1238,18 @@ Taken from URL `https://www.reddit.com/r/emacs/comments/jof1p3/visit_tangled_fil
                   t)))
 
 
+(defun xc/pop-buffer-into-frame (&optional arg)
+  "Pop current buffer into its own frame.
+
+With ARG (\\[universal-argument]) maximize frame."
+  (interactive "P")
+  (let ((win (display-buffer-pop-up-frame (current-buffer) nil)))
+    (if (and arg win)
+        (progn
+          (select-frame (car (frame-list)))
+          (toggle-frame-maximized) ))))
+
+
 (defun xc/open-file-browser (&optional file)
   "Open file explorer to directory containing FILE.
 
@@ -1411,17 +1423,6 @@ chicken and egg problem."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; experimental
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun xc/pop-buffer-into-frame (&optional arg)
-  "Pop current buffer into its own frame.
-
-With ARG (\\[universal-argument]) maximize frame."
-  (interactive "P")
-  (let ((win (display-buffer-pop-up-frame (current-buffer) nil)))
-    (if (and arg win)
-        (progn
-          (select-frame (car (frame-list)))
-          (toggle-frame-maximized) ))))
 
 (defun xc/spam-filter (string)
   "Filter stupid comint spam."
