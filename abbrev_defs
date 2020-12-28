@@ -5,6 +5,7 @@
     ("addwidget" "addWidget" nil :count 1)
     ("mapwidget" "MapWidget" nil :count 1)
     ("pg" "peut-gerer" nil :count 5)
+    ("pp" "peut-publier" nil :count 0)
     ("qfiledialog" "QFileDialog" nil :count 3)
     ("qhboxlayout" "QHBoxLayout" nil :count 0)
     ("qmainwindow" "QMainWindow" nil :count 2)
@@ -16,4 +17,3 @@
     ("qwebengineview" "QWebEngineView" nil :count 5)
     ("qwidget" "QWidget" nil :count 1)
    ))
-
