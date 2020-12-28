@@ -489,6 +489,14 @@ permanent binding.")
       )
 
     (general-def
+      :states '(normal)
+      ;; "C-o" 'dumb-jump-back  ; obsoleted
+      ;; "C-o" 'xref-pop-marker-stack
+      "C-o" 'evil-jump-backward
+      "C-i" 'evil-jump-forward
+      )
+
+    (general-def
       :states '(normal insert emacs)
 
       ;; ;; qwerty bindings
@@ -502,11 +510,6 @@ permanent binding.")
       "C-6" 'xref-find-definitions-other-window
       "M-]" 'dumb-jump-go
       "M-6" 'dumb-jump-go-other-window
-
-      ;; "C-o" 'dumb-jump-back  ; obsoleted
-      ;; "C-o" 'xref-pop-marker-stack
-      "C-o" 'evil-jump-backward
-      "C-i" 'evil-jump-forward
       )
 
     (general-def
