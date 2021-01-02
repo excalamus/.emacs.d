@@ -757,6 +757,13 @@ permanent binding.")
   (if xc/debug (message "flycheck")))
 
 
+(use-package free-keys
+  :straight (:fork "excalamus/free-keys")
+  :config
+
+  (if xc/debug (message "free-keys")))
+
+
 (use-package helm
   :straight (:fork "excalamus/helm")
   :config
