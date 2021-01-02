@@ -454,16 +454,17 @@ permanent binding.")
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
       "C-S-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-create-shell))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
-      "M-j" 'helm-semantic-or-imenu
-      "C-j" 'helm-swoop
-      "C-S-j" 'helm-swoop-without-pre-input
+      "M-c" 'xc/copy-symbol-at-point
+      "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      "C-S-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
+      "C-j" 'helm-swoop-without-pre-input ; enter navigate-state
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (xc/kill-python)  ; kills aws cli commands
+                 ;; (xc/kill-python)  ; kills aws cli commands
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-h j" 'describe-face  ; introspect colors
@@ -483,6 +484,8 @@ permanent binding.")
       :keymaps 'override
       :states '(normal insert emacs)
       (general-chord "jk") 'xc/newline-without-break-of-line
+      (general-chord "ww") 'evil-normal-state
+      ;; (general-chord "jj") 'evil-normal-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
       "\M-Q" 'xc/unfill-paragraph
@@ -589,7 +592,6 @@ permanent binding.")
       :keymaps 'emacs-lisp-mode-map
       "C-<next>" 'forward-page  ; C-PgUp goto previous linebreak
       "C-<prior>" 'backward-page ; C-PgDown goto next linebreak
-      "M-c" 'xc/copy-symbol-at-point
       )
 
     (general-def  ; won't work in terminal bc of how terminals work
