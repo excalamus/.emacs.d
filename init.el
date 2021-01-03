@@ -1129,8 +1129,10 @@ permanent binding.")
   (interactive)
   (let* ((bounds (bounds-of-thing-at-point 'symbol))
          (beg (car bounds))
-         (end (cdr bounds)))
-    (kill-ring-save beg end)))
+         (end (cdr bounds))
+         (sym (thing-at-point 'symbol)))
+    (kill-ring-save beg end)
+  (message "\"%s\"" sym)))
 
 
 ;; todo, when universal, prompt for mode
