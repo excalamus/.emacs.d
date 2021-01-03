@@ -606,7 +606,10 @@ permanent binding.")
     (general-def
       :keymaps 'Info-mode-map
       "a" 'info-apropos
-      "P" '(lambda () (interactive) (Info-goto-node "(python)")))
+      "G" '(lambda () (interactive) (xc/Info-current-node-to-url 4))
+      "P" '(lambda () (interactive) (Info-goto-node "(python)"))
+      "U" 'xc/Info-current-node-to-url
+      )
 
     (general-def
       :keymaps 'ledger-mode-map
@@ -1182,6 +1185,31 @@ Default DUP name is `#<buffer-name>#'."
           (insert-buffer-substring orig)
           (message "Duplicate buffer `%s' created" dup))
       (error "Duplicate buffer already exists"))))
+
+
+(defun xc/Info-current-node-to-url (&optional arg)
+  "Put the url of the current Info node into the kill ring.
+
+The Info file name and current node are converted to a
+url (hopefully) corresponding to the GNU online documentation.
+With prefix arg, visit url with default web browser and do not
+put url into the kill ring."
+  (interactive "P")
+  (unless Info-current-node
+    (user-error "No current Info node"))
+  (let* ((info-file (if (stringp Info-current-file)
+                (file-name-sans-extension
+                 (file-name-nondirectory Info-current-file))))
+         (node  Info-current-node)
+         (url (concat
+               "https://www.gnu.org/software/emacs/manual/html_node/"
+               info-file "/"
+               (replace-regexp-in-string " " "-" node t)
+               ".html")))
+    (if arg
+        (browse-url-default-browser url)
+      (kill-new url))
+    (message "%s" url)))
 
 
 (defun xc/jira-issue (&optional issue)
