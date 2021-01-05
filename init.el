@@ -437,6 +437,8 @@ permanent binding.")
       :keymaps 'override
       :prefix "C-x i"
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+      "b" '(lambda () (interactive) (find-file "~/.emacs.d/brag.org"))
+      "g" '(lambda () (interactive) (find-file "~/.emacs.d/encyclopedia.org"))
       "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
       "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
@@ -456,7 +458,7 @@ permanent binding.")
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-c" 'xc/copy-symbol-at-point
       "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
-      "C-S-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
+      "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
       "C-j" 'helm-swoop-without-pre-input ; enter navigate-state
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
@@ -464,10 +466,11 @@ permanent binding.")
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 ;; (xc/kill-python)  ; kills aws cli commands
+                 (xc/kill-python)  ; kills aws cli commands
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-h j" 'describe-face  ; introspect colors
+      "C-h C-w" 'define-word-at-point
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
       "C-x o" 'ace-window
@@ -484,8 +487,8 @@ permanent binding.")
       :keymaps 'override
       :states '(normal insert emacs)
       (general-chord "jk") 'xc/newline-without-break-of-line
-      (general-chord "ww") 'evil-normal-state
-      ;; (general-chord "jj") 'evil-normal-state
+      (general-chord "hh") 'evil-emacs-state
+      (general-chord "jj") 'evil-normal-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
       "\M-Q" 'xc/unfill-paragraph
@@ -1489,6 +1492,11 @@ chicken and egg problem."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; experimental
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; idea
+;;
+;; - yank to mark, set mark, move to other location (other window or
+;; within buffer), kill something, yank to the marked location
 
 ;; (defvar xc/quick-bind nil
 ;;   "Quick binding for F5 key.
