@@ -1275,6 +1275,37 @@ the cursor down."
       (select-window win))))
 
 
+(defun xc/open-file-browser (&optional file)
+  "Open file explorer to directory containing FILE.
+
+FILE may also be a directory."
+  (interactive)
+  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
+         (dir (expand-file-name (file-name-directory file))))
+    (if dir
+        (browse-url-of-file dir)
+      (error "No directory to open"))))
+
+
+(defun xc/open-terminal (&optional file)
+  "Open external terminal in directory containing FILE.
+
+FILE may also be a directory.
+
+See URL `https://stackoverflow.com/a/13509208/5065796'"
+  (interactive)
+  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
+         (dir (expand-file-name (file-name-directory file))))
+    (cond ((eq xc/device 'windows)
+           (let (;; create a cmd to create a cmd in desired directory
+                 ;; /C Carries out the command specified by string and then stops.
+                 ;; /K Carries out the command specified by string and continues.
+                 ;; See URL `https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd'
+                 (proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe" "/K" "cd" dir)))
+             (set-process-query-on-exit-flag proc nil)))
+          (t (error "Unable to open terminal")))))
+
+
 (defun xc/org-babel-goto-tangle-file ()
   "Open tangle file associated with source block at point.
 
@@ -1298,18 +1329,6 @@ With ARG (\\[universal-argument]) maximize frame."
         (progn
           (select-frame (car (frame-list)))
           (toggle-frame-maximized) ))))
-
-
-(defun xc/open-file-browser (&optional file)
-  "Open file explorer to directory containing FILE.
-
-FILE may also be a directory."
-  (interactive)
-  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
-         (dir (expand-file-name (file-name-directory file))))
-    (if dir
-        (browse-url-of-file dir)
-      (error "No directory to open"))))
 
 
 (defun xc/rename-file-and-buffer (new-name)
@@ -1488,4 +1507,3 @@ in shell.el pulls completions from other buffers, creating a
 chicken and egg problem."
   (interactive)
   (insert "\"C:\\python\\python37\\python.exe\" -m venv venv"))
-
