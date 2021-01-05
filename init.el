@@ -1520,3 +1520,22 @@ chicken and egg problem."
 ;;                   (if (commandp func)
 ;;                       (call-interactively func)
 ;;                     (funcall func)))))
+
+;; (defun my-add-case-fixed-abbrev (table name expansion)
+;;   "Add abbrev with case-fixed t property."
+;;   (interactive "XAbbrev table (global-abbrev-table): "
+;;    (let ((table (intern-soft (completing-read
+;;           "Abbrev table (global-abbrev-table): "
+;;           abbrev-table-name-list nil t nil nil "global-abbrev-table" )))
+;;          (name (read-string "Abbrev name: "))
+;;          (expansion (read-string "Expansion: ")))
+;;      (list name expansion table)))
+;;   (let ((table (or table global-abbrev-table)))
+;;     (define-abbrev table name expansion nil :case-fixed t)))
+
+;; (eq 'global-abbrev-table (intern-soft "global-abbrev-table"))
+
+;; (define-abbrev (intern-soft "global-abbrev-table") "duder" "man" nil :case-fixed t)
+
+;; (my-add-case-fixed-abbrev "my-abbrev" "my-expansion" "global-abbrev-table")
+;; (write-abbrev-file)
