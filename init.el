@@ -471,6 +471,8 @@ permanent binding.")
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-c" 'xc/copy-symbol-at-point
       "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank...
+      "C-M-y" 'helm-show-kill-ring
       "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
       "C-j" 'helm-swoop-without-pre-input ; enter navigate-state
       "<f2>" 'bm-common-next
@@ -1426,6 +1428,14 @@ REGION unfills the region.  See URL
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
+
+
+(defun xc/yank-pop-forwards (arg)
+  "Pop ARGth item off the kill ring.
+
+See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/emacs/KillingAndYanking'"
+  (interactive "p")
+  (yank-pop (- arg)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
