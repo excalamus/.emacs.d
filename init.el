@@ -433,16 +433,28 @@ permanent binding.")
      "<prior>" "<escape>"
      )
 
+    (if (eq xc/device 'windows)
+        (general-def
+          :keymaps 'override
+          :prefix "C-x i"
+          "b" '(lambda () (interactive) (find-file "~/brag.org"))
+          "g" '(lambda () (interactive) (find-file "~/glossary.org"))
+          "n" '(lambda () (interactive) (find-file "~/notes.org"))
+          )
+      (general-def
+        :keymaps 'override
+        :prefix "C-x i"
+        "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
+        )
+      )
+
     (general-def
       :keymaps 'override
       :prefix "C-x i"
       "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "b" '(lambda () (interactive) (find-file "~/.emacs.d/brag.org"))
       "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
-      "g" '(lambda () (interactive) (find-file "~/.emacs.d/glossary.org"))
-      "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
       "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))
       )
 
@@ -528,13 +540,14 @@ permanent binding.")
       "b" 'helm-buffers-list
       "f" 'find-file
       "F" 'ffap-other-window
+      "g" 'xc/open-file-browser
+      "h" 'info
+      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "k" 'kill-buffer
       "o" 'ace-window
-      "s" 'save-buffer
-      "g" 'xc/open-file-browser
-      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "h" 'info
       "q" 'sx-search
+      "s" 'save-buffer
+      "t" 'xc/open-terminal
       "x" 'eval-expression
       )
 
