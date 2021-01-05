@@ -437,14 +437,14 @@ permanent binding.")
         (general-def
           :keymaps 'override
           :prefix "C-x i"
-          "b" '(lambda () (interactive) (find-file "~/brag.org"))
-          "g" '(lambda () (interactive) (find-file "~/glossary.org"))
-          "n" '(lambda () (interactive) (find-file "~/notes.org"))
+          "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
+          "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
+          "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
           )
       (general-def
         :keymaps 'override
         :prefix "C-x i"
-        "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
+        "n" '(lambda () (interactive) (find-file "~/Documents/notes.org"))
         )
       )
 
@@ -455,7 +455,7 @@ permanent binding.")
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
-      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))
+      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))  ; %APPDATA% on Windows
       )
 
     (general-def
