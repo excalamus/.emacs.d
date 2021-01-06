@@ -38,6 +38,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; add fixed case abbrev
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (defun my-add-case-fixed-abbrev (table name expansion)
 ;;   "Add abbrev with case-fixed t property."
 ;;   (interactive "XAbbrev table (global-abbrev-table): "
@@ -56,3 +57,30 @@
 
 ;; (my-add-case-fixed-abbrev "my-abbrev" "my-expansion" "global-abbrev-table")
 ;; (write-abbrev-file)
+
+(defun my-add-case-fixed-abbrev (name expansion &optional table)
+  "Add abbrev with case-fixed t property."
+  (interactive
+   (let ((table (symbol-value (intern-soft (completing-read
+          "Abbrev table (global-abbrev-table): "
+          abbrev-table-name-list nil t nil nil "global-abbrev-table" ))))
+         (name (read-string "Abbrev name: "))
+         (expansion (read-string "Expansion: ")))
+     (list name expansion table)))
+  (let ((table (or table global-abbrev-table)))
+    (define-abbrev table name expansion nil :case-fixed t)))
+
+(defun my-test (&optional table)
+  "junk"
+   (let ((table (intern-soft (completing-read
+          "Abbrev table (global-abbrev-table): "
+          abbrev-table-name-list nil t nil nil "global-abbrev-table" )))
+         )
+   (message "%s" (symbol-value table))
+  ))
+
+(my-test)
+
+(my-add-case-fixed-abbrev "myAbbrev" "myExpansion")
+(my-add-case-fixed-abbrev "myAbbrev" "myExpansion" global-abbrev-table)
+(write-abbrev-file "~/.emacs.d/test-abbrev")
