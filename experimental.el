@@ -140,3 +140,17 @@ two words
 fruit
 
 FOO
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; start standalone emacs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun xc/emacs-standalone (&optional arg)
+  "Start standalone instance of Emacs."
+  (interactive "p")
+  (cond ((eql arg 1)
+         (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe")))
+        ((eql arg 4)
+         (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe" "-q")))
+        (t (error "Invalid arg")))
+  (set-process-query-on-exit-flag proc nil))
