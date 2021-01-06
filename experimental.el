@@ -59,28 +59,84 @@
 ;; (write-abbrev-file)
 
 (defun my-add-case-fixed-abbrev (name expansion &optional table)
-  "Add abbrev with case-fixed t property."
+  "Add fixed case abbrev with NAME and EXPANSION into TABLE.
+
+TABLE is optional; defaults to `global-abbrev-table'."
   (interactive
    (let ((table (symbol-value (intern-soft (completing-read
           "Abbrev table (global-abbrev-table): "
-          abbrev-table-name-list nil t nil nil "global-abbrev-table" ))))
+          abbrev-table-name-list nil t nil nil "global-abbrev-table"))))
          (name (read-string "Abbrev name: "))
          (expansion (read-string "Expansion: ")))
      (list name expansion table)))
   (let ((table (or table global-abbrev-table)))
     (define-abbrev table name expansion nil :case-fixed t)))
 
-(defun my-test (&optional table)
-  "junk"
-   (let ((table (intern-soft (completing-read
-          "Abbrev table (global-abbrev-table): "
-          abbrev-table-name-list nil t nil nil "global-abbrev-table" )))
-         )
-   (message "%s" (symbol-value table))
-  ))
+(defun my-add-case-fixed-abbrev2 (name expansion &optional fixed table)
+  "Add fixed case abbrev with NAME and EXPANSION into TABLE.
 
-(my-test)
+FIXED optionally sets case-fixed; default if nil.
+TABLE is optional; defaults to `global-abbrev-table'."
+  (interactive
+   (let* ((name (read-string "Abbrev name: "))
+          (arg (prefix-numeric-value current-prefix-arg))
+          (exp (and (>= arg 0)
+                    (buffer-substring-no-properties
+                     (point)
+                     (if (= arg 0) (mark)
+                       (save-excursion (forward-word (- arg)) (point))))))
+          (expansion (read-string "Expansion: " exp))
+          (table (symbol-value (intern-soft (completing-read
+            "Abbrev table (global-abbrev-table): "
+            abbrev-table-name-list nil t nil nil "global-abbrev-table"))))
+          (fixed (y-or-n-p (format "Fix case? "))))
+     (list name expansion fixed table)))
+  (let ((table (or table global-abbrev-table))
+        (fixed (or fixed nil)))
+    (set-text-properties 0 (length name) nil name)
+    (set-text-properties 0 (length expansion) nil expansion)
+    (if (or (null expansion)
+            (not (abbrev-expansion name table))
+            (y-or-n-p (format "%s expands to \"%s\"; redefine? "
+                              name (abbrev-expansion name table))))
+        (define-abbrev table name expansion nil :case-fixed fixed))))
 
-(my-add-case-fixed-abbrev "myAbbrev" "myExpansion")
-(my-add-case-fixed-abbrev "myAbbrev" "myExpansion" global-abbrev-table)
-(write-abbrev-file "~/.emacs.d/test-abbrev")
+(defun add-abbrev (table type arg)
+  (let ((exp (and (>= arg 0)
+                  (buffer-substring-no-properties
+                   (point)
+                   (if (= arg 0) (mark)
+                     (save-excursion (forward-word (- arg)) (point))))))
+        name)
+    (setq name
+          (read-string (format (if exp "%s abbrev for \"%s\": "
+                                 "Undefine %s abbrev: ")
+                               type exp)))
+    (set-text-properties 0 (length name) nil name)
+    (if (or (null exp)
+            (not (abbrev-expansion name table))
+            (y-or-n-p (format "%s expands to \"%s\"; redefine? "
+                              name (abbrev-expansion name table))))
+        (define-abbrev table (downcase name) exp))
+    ))
+
+(defun my-test (arg)
+  (interactive
+   (let (
+         (arg (read))
+     (list banana arg)
+                 ))
+
+  (message "%s %s" arg fruit)
+  )
+
+  (write-abbrev-file "~/.emacs.d/test_abbrev")
+  (write-abbrev-file)
+
+setText
+
+two words
+
+fruit
+
+FOO
