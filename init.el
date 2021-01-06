@@ -471,7 +471,7 @@ permanent binding.")
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-c" 'xc/copy-symbol-at-point
       "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
-      "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank...
+      "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank... (use C-p for evil-paste-pop)
       "C-M-y" 'helm-show-kill-ring
       "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
       "C-j" 'helm-swoop-without-pre-input ; enter navigate-state
@@ -1375,11 +1375,13 @@ provided, send entire line.  Default BUFF is that displayed in
                  (list nil nil nil)))
   (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
-         (substr (or (and beg end (buffer-substring-no-properties beg end))
-                     (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+         (substr (string-trim
+                  (or (and beg end (buffer-substring-no-properties beg end))
+                     (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
          (buff (or buff (window-buffer xc/on-demand-window))))
     (if substr
-        (with-current-buffer buff
+        (with-selected-window xc/on-demand-window
+          (setq-local window-point-insertion-type t)
           (insert substr)
           (end-of-line)
           (newline-and-indent))
