@@ -598,6 +598,7 @@ permanent binding.")
       :prefix "SPC"
       "d" 'elpy-occur-definitions
       "c" 'xc/string-inflection-style-cycle
+      "u" 'xc/pyside-lookup
       )
 
     (general-def
@@ -1496,6 +1497,34 @@ process, like the AWS CLI, that runs on the Python interpetor."
   (interactive)
   (if (eq system-type 'windows-nt)
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
+
+
+(defun xc/pyside-lookup (&optional arg)
+  "Lookup symbol at point in PySide online documentation.
+
+When called with prefix, search within the online PySide
+documentation.
+
+\(fn)"
+  (interactive "p")
+  (let* ((bounds (bounds-of-thing-at-point 'symbol))
+         (beg (car bounds))
+         (end (cdr bounds))
+         (sym (thing-at-point 'symbol))
+         (direct-url (concat
+                      "https://doc-snapshots.qt.io/qtforpython-5.15/PySide2/QtWidgets/"
+                      sym
+                      ".html"
+                      ))
+         (search-url (concat
+                      "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q="
+                      sym
+                      )))
+    (cond ((eql arg 1)
+           (browse-url-default-browser direct-url))
+          ((eql arg 4)
+           (browse-url-default-browser search-url))
+          (t (error "Invalid prefix")))))
 
 
 (defun xc/spam-filter (string)
