@@ -92,6 +92,8 @@ An on-demand window is one which you wish to return to within the
 current Emacs session but whose importance doesn't warrant a
 permanent binding.")
 
+(defvar xc/atlassian ""
+  "Atlassian url for use with `xc/jira-issue'.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; settings
@@ -1294,13 +1296,20 @@ put url into the kill ring."
     (message "%s" url)))
 
 
-(defun xc/jira-issue (&optional issue)
+(defun xc/jira-issue (&optional issue beg end)
   "Open Jira ISSUE.
 
-If no issue is given, check for one at point."
+Use ISSUE when given.  Otherwise, if a region is selected, lookup
+using region defined by BEG and END.  When no region or issue
+given, check for issue numebr at point."
   (interactive)
-  (let* ((issue (or issue (thing-at-point 'symbol t)))
-         (url (concat "https://ushrauto.atlassian.net/browse/" issue)))
+  (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
+         (end (or end (if (use-region-p) (region-end)) nil))
+         (thing (or issue (thing-at-point 'symbol t)))
+         (issue (or issue (if (use-region-p)
+                              (and beg end (buffer-substring-no-properties beg end))
+                            thing)))
+         (url (concat xc/atlassian issue)))
     (if issue
         (browse-url-default-windows-browser url)
       (error "No directory to open"))))
