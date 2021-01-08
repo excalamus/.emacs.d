@@ -486,6 +486,7 @@ permanent binding.")
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-h j" 'describe-face  ; introspect colors
       "C-h C-w" 'define-word-at-point
+      "C-x a d" 'xc/define-abbrev
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
       "C-x o" 'ace-window
@@ -1135,6 +1136,49 @@ permanent binding.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; extension
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defun xc/define-abbrev (name expansion &optional fixed table interp)
+  "Define abbrev with NAME and EXPANSION for last word(s) before point in TABLE.
+
+FIXED sets case-fixed; default is nil.
+
+TABLE defaults to `global-abbrev-table'.
+
+Behaves similarly to `add-global-abbrev'.  The prefix argument
+specifies the number of words before point that form the
+expansion; or zero means the region is the expansion.  A negative
+argument means to undefine the specified abbrev.  This command
+uses the minibuffer to read the abbreviation.
+
+Abbrevs are overwritten without prompt when called from Lisp.
+
+\(fn NAME EXPANSION &optional FIXED TABLE)"
+  (interactive
+   (let* ((arg (prefix-numeric-value current-prefix-arg))
+          (exp (and (>= arg 0)
+                    (buffer-substring-no-properties
+                     (point)
+                     (if (= arg 0) (mark)
+                       (save-excursion (forward-word (- arg)) (point))))))
+          (name (read-string (format (if exp "Abbev name: "
+                                       "Undefine abbrev: "))))
+          (expansion (and exp (read-string "Expansion: " exp)))
+          (table (symbol-value (intern-soft (completing-read
+            "Abbrev table (global-abbrev-table): "
+            abbrev-table-name-list nil t nil nil "global-abbrev-table"))))
+          (fixed (and exp (y-or-n-p (format "Fix case? ")))))
+     (list name expansion fixed table t)))
+  (let ((table (or table global-abbrev-table))
+        (fixed (or fixed nil)))
+    (set-text-properties 0 (length name) nil name)
+    (set-text-properties 0 (length expansion) nil expansion)
+    (if (or (null expansion)                     ; there is expansion to set,
+            (not (abbrev-expansion name table))  ; the expansion is not already defined
+            (not interp)                         ; and we're not calling from code (calling interactively)
+            (y-or-n-p (format "%s expands to \"%s\"; redefine? "
+                              name (abbrev-expansion name table))))
+        (define-abbrev table name expansion nil :case-fixed fixed))))
 
 
 (defun xc/comint-exec-hook ()
