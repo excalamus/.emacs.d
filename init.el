@@ -790,6 +790,13 @@ permanent binding.")
   (if xc/debug (message "free-keys")))
 
 
+(use-package git-timemachine
+  :straight (:host github :repo "excalamus/git-timemachine")
+  :config
+
+  (if xc/debug (message "git-timemachine")))
+
+
 (use-package helm
   :straight (:fork "excalamus/helm")
   :config
@@ -869,11 +876,11 @@ permanent binding.")
   (if xc/debug (message "hi-lock")))
 
 
-(use-package git-timemachine
-  :straight (:host github :repo "excalamus/git-timemachine")
+(use-package iedit
+  :straight (:fork "excalamus/iedit")
   :config
 
-  (if xc/debug (message "git-timemachine")))
+  (if xc/debug (message "iedit")))
 
 
 (use-package htmlize
@@ -1562,9 +1569,11 @@ documentation.
 
 \(fn)"
   (interactive "p")
-  (let* ((bounds (bounds-of-thing-at-point 'symbol))
-         (beg (car bounds))
-         (end (cdr bounds))
+  (let* (
+         ;; (prev-sym (buffer-substring-no-properties
+         ;;            (save-excursion (forward-word (- 2)) (point))
+         ;;            (save-excursion (forward-word (- 1)) (point))
+                    ;; ))
          (sym (thing-at-point 'symbol))
          (direct-url (concat
                       "https://doc-snapshots.qt.io/qtforpython-5.15/PySide2/QtWidgets/"
@@ -1576,7 +1585,11 @@ documentation.
                       sym
                       )))
     (cond ((eql arg 1)
-           (browse-url-default-browser direct-url))
+           (let ((buff (get-buffer-window "*eww*")))
+             (if buff
+                 (with-selected-window buff
+                   (eww direct-url))
+               (eww direct-url))))
           ((eql arg 4)
            (browse-url-default-browser search-url))
           (t (error "Invalid prefix")))))
