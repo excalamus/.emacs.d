@@ -92,6 +92,8 @@ An on-demand window is one which you wish to return to within the
 current Emacs session but whose importance doesn't warrant a
 permanent binding.")
 
+(defvar xc/atlassian ""
+  "Atlassian url for use with `xc/jira-issue'.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; settings
@@ -433,14 +435,29 @@ permanent binding.")
      "<prior>" "<escape>"
      )
 
+    (if (eq xc/device 'windows)
+        (general-def
+          :keymaps 'override
+          :prefix "C-x i"
+          "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
+          "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
+          "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
+          )
+      (general-def
+        :keymaps 'override
+        :prefix "C-x i"
+        "n" '(lambda () (interactive) (find-file "~/Documents/notes.org"))
+        )
+      )
+
     (general-def
       :keymaps 'override
       :prefix "C-x i"
-      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "n" '(lambda () (interactive) (find-file "~/.emacs.d/notes.org"))
-      "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
-      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))
+      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+      "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
+      "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
+      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))  ; %APPDATA% on Windows
       )
 
     (general-def
@@ -454,9 +471,12 @@ permanent binding.")
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
       "C-S-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-create-shell))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
-      "M-j" 'helm-semantic-or-imenu
-      "C-j" 'helm-swoop
-      "C-S-j" 'helm-swoop-without-pre-input
+      "M-c" 'xc/copy-symbol-at-point
+      "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank... (use C-p for evil-paste-pop)
+      "C-M-y" 'helm-show-kill-ring
+      "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
+      "C-j" 'helm-swoop-without-pre-input ; enter navigate-state
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
@@ -469,6 +489,7 @@ permanent binding.")
       "C-h j" 'describe-face  ; introspect colors
       "C-h C-f" 'find-function
       "C-h C-w" 'define-word-at-point ; masks define-no-warranty
+      "C-x a d" 'xc/define-abbrev
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
       "C-x o" 'ace-window
@@ -485,6 +506,8 @@ permanent binding.")
       :keymaps 'override
       :states '(normal insert emacs)
       (general-chord "jk") 'xc/newline-without-break-of-line
+      (general-chord "hh") 'evil-emacs-state
+      (general-chord "jj") 'evil-normal-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
       "\M-Q" 'xc/unfill-paragraph
@@ -523,13 +546,14 @@ permanent binding.")
       "b" 'helm-buffers-list
       "f" 'find-file
       "F" 'ffap-other-window
+      "g" 'xc/open-file-browser
+      "h" 'info
+      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "k" 'kill-buffer
       "o" 'ace-window
-      "s" 'save-buffer
-      "g" 'xc/open-file-browser
-      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "h" 'info
       "q" 'sx-search
+      "s" 'save-buffer
+      "t" 'xc/open-terminal
       "x" 'eval-expression
       )
 
@@ -578,6 +602,7 @@ permanent binding.")
       :prefix "SPC"
       "d" 'elpy-occur-definitions
       "c" 'xc/string-inflection-style-cycle
+      "u" 'xc/pyside-lookup
       )
 
     (general-def
@@ -591,7 +616,6 @@ permanent binding.")
       :keymaps 'emacs-lisp-mode-map
       "C-<next>" 'forward-page  ; C-PgUp goto previous linebreak
       "C-<prior>" 'backward-page ; C-PgDown goto next linebreak
-      "M-c" 'xc/copy-symbol-at-point
       )
 
     (general-def  ; won't work in terminal bc of how terminals work
@@ -606,7 +630,10 @@ permanent binding.")
     (general-def
       :keymaps 'Info-mode-map
       "a" 'info-apropos
-      "P" '(lambda () (interactive) (Info-goto-node "(python)")))
+      "G" '(lambda () (interactive) (xc/Info-current-node-to-url 4))
+      "P" '(lambda () (interactive) (Info-goto-node "(python)"))
+      "U" 'xc/Info-current-node-to-url
+      )
 
     (general-def
       :keymaps 'ledger-mode-map
@@ -760,6 +787,20 @@ permanent binding.")
   (if xc/debug (message "flycheck")))
 
 
+(use-package free-keys
+  :straight (:fork "excalamus/free-keys")
+  :config
+
+  (if xc/debug (message "free-keys")))
+
+
+(use-package git-timemachine
+  :straight (:host github :repo "excalamus/git-timemachine")
+  :config
+
+  (if xc/debug (message "git-timemachine")))
+
+
 (use-package helm
   :straight (:fork "excalamus/helm")
   :config
@@ -839,11 +880,11 @@ permanent binding.")
   (if xc/debug (message "hi-lock")))
 
 
-(use-package git-timemachine
-  :straight (:host github :repo "excalamus/git-timemachine")
+(use-package iedit
+  :straight (:fork "excalamus/iedit")
   :config
 
-  (if xc/debug (message "git-timemachine")))
+  (if xc/debug (message "iedit")))
 
 
 (use-package htmlize
@@ -1108,6 +1149,49 @@ permanent binding.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(defun xc/define-abbrev (name expansion &optional fixed table interp)
+  "Define abbrev with NAME and EXPANSION for last word(s) before point in TABLE.
+
+FIXED sets case-fixed; default is nil.
+
+TABLE defaults to `global-abbrev-table'.
+
+Behaves similarly to `add-global-abbrev'.  The prefix argument
+specifies the number of words before point that form the
+expansion; or zero means the region is the expansion.  A negative
+argument means to undefine the specified abbrev.  This command
+uses the minibuffer to read the abbreviation.
+
+Abbrevs are overwritten without prompt when called from Lisp.
+
+\(fn NAME EXPANSION &optional FIXED TABLE)"
+  (interactive
+   (let* ((arg (prefix-numeric-value current-prefix-arg))
+          (exp (and (>= arg 0)
+                    (buffer-substring-no-properties
+                     (point)
+                     (if (= arg 0) (mark)
+                       (save-excursion (forward-word (- arg)) (point))))))
+          (name (read-string (format (if exp "Abbev name: "
+                                       "Undefine abbrev: "))))
+          (expansion (and exp (read-string "Expansion: " exp)))
+          (table (symbol-value (intern-soft (completing-read
+            "Abbrev table (global-abbrev-table): "
+            abbrev-table-name-list nil t nil nil "global-abbrev-table"))))
+          (fixed (and exp (y-or-n-p (format "Fix case? ")))))
+     (list name expansion fixed table t)))
+  (let ((table (or table global-abbrev-table))
+        (fixed (or fixed nil)))
+    (set-text-properties 0 (length name) nil name)
+    (set-text-properties 0 (length expansion) nil expansion)
+    (if (or (null expansion)                     ; there is expansion to set,
+            (not (abbrev-expansion name table))  ; the expansion is not already defined
+            (not interp)                         ; and we're not calling from code (calling interactively)
+            (y-or-n-p (format "%s expands to \"%s\"; redefine? "
+                              name (abbrev-expansion name table))))
+        (define-abbrev table name expansion nil :case-fixed fixed))))
+
+
 (defun xc/comint-exec-hook ()
   (interactive)
   (highlight-lines-matching-regexp "-->" 'xc/hi-comint)
@@ -1123,8 +1207,10 @@ permanent binding.")
   (interactive)
   (let* ((bounds (bounds-of-thing-at-point 'symbol))
          (beg (car bounds))
-         (end (cdr bounds)))
-    (kill-ring-save beg end)))
+         (end (cdr bounds))
+         (sym (thing-at-point 'symbol)))
+    (kill-ring-save beg end)
+  (message "\"%s\"" sym)))
 
 
 ;; todo, when universal, prompt for mode
@@ -1176,13 +1262,56 @@ Default DUP name is `#<buffer-name>#'."
       (error "Duplicate buffer already exists"))))
 
 
-(defun xc/jira-issue (&optional issue)
+(defun xc/emacs-standalone (&optional arg)
+  "Start standalone instance of Emacs."
+  (interactive "p")
+  (cond ((eql arg 1)
+         (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe")))
+        ((eql arg 4)
+         (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe" "-q")))
+        (t (error "Invalid arg")))
+  (set-process-query-on-exit-flag proc nil))
+
+
+(defun xc/Info-current-node-to-url (&optional arg)
+  "Put the url of the current Info node into the kill ring.
+
+The Info file name and current node are converted to a
+url (hopefully) corresponding to the GNU online documentation.
+With prefix arg, visit url with default web browser and do not
+put url into the kill ring."
+  (interactive "P")
+  (unless Info-current-node
+    (user-error "No current Info node"))
+  (let* ((info-file (if (stringp Info-current-file)
+                (file-name-sans-extension
+                 (file-name-nondirectory Info-current-file))))
+         (node  Info-current-node)
+         (url (concat
+               "https://www.gnu.org/software/emacs/manual/html_node/"
+               info-file "/"
+               (replace-regexp-in-string " " "-" node t)
+               ".html")))
+    (if arg
+        (browse-url-default-browser url)
+      (kill-new url))
+    (message "%s" url)))
+
+
+(defun xc/jira-issue (&optional issue beg end)
   "Open Jira ISSUE.
 
-If no issue is given, check for one at point."
+Use ISSUE when given.  Otherwise, if a region is selected, lookup
+using region defined by BEG and END.  When no region or issue
+given, check for issue numebr at point."
   (interactive)
-  (let* ((issue (or issue (thing-at-point 'symbol t)))
-         (url (concat "https://ushrauto.atlassian.net/browse/" issue)))
+  (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
+         (end (or end (if (use-region-p) (region-end)) nil))
+         (thing (or issue (thing-at-point 'symbol t)))
+         (issue (or issue (if (use-region-p)
+                              (and beg end (buffer-substring-no-properties beg end))
+                            thing)))
+         (url (concat xc/atlassian issue)))
     (if issue
         (browse-url-default-windows-browser url)
       (error "No directory to open"))))
@@ -1235,6 +1364,37 @@ the cursor down."
       (select-window win))))
 
 
+(defun xc/open-file-browser (&optional file)
+  "Open file explorer to directory containing FILE.
+
+FILE may also be a directory."
+  (interactive)
+  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
+         (dir (expand-file-name (file-name-directory file))))
+    (if dir
+        (browse-url-of-file dir)
+      (error "No directory to open"))))
+
+
+(defun xc/open-terminal (&optional file)
+  "Open external terminal in directory containing FILE.
+
+FILE may also be a directory.
+
+See URL `https://stackoverflow.com/a/13509208/5065796'"
+  (interactive)
+  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
+         (dir (expand-file-name (file-name-directory file))))
+    (cond ((eq xc/device 'windows)
+           (let (;; create a cmd to create a cmd in desired directory
+                 ;; /C Carries out the command specified by string and then stops.
+                 ;; /K Carries out the command specified by string and continues.
+                 ;; See URL `https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd'
+                 (proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe" "/K" "cd" dir)))
+             (set-process-query-on-exit-flag proc nil)))
+          (t (error "Unable to open terminal")))))
+
+
 (defun xc/org-babel-goto-tangle-file ()
   "Open tangle file associated with source block at point.
 
@@ -1258,18 +1418,6 @@ With ARG (\\[universal-argument]) maximize frame."
         (progn
           (select-frame (car (frame-list)))
           (toggle-frame-maximized) ))))
-
-
-(defun xc/open-file-browser (&optional file)
-  "Open file explorer to directory containing FILE.
-
-FILE may also be a directory."
-  (interactive)
-  (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
-         (dir (expand-file-name (file-name-directory file))))
-    (if dir
-        (browse-url-of-file dir)
-      (error "No directory to open"))))
 
 
 (defun xc/rename-file-and-buffer (new-name)
@@ -1301,11 +1449,13 @@ provided, send entire line.  Default BUFF is that displayed in
                  (list nil nil nil)))
   (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
-         (substr (or (and beg end (buffer-substring-no-properties beg end))
-                     (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+         (substr (string-trim
+                  (or (and beg end (buffer-substring-no-properties beg end))
+                     (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
          (buff (or buff (window-buffer xc/on-demand-window))))
     (if substr
-        (with-current-buffer buff
+        (with-selected-window xc/on-demand-window
+          (setq-local window-point-insertion-type t)
           (insert substr)
           (end-of-line)
           (newline-and-indent))
@@ -1354,6 +1504,14 @@ REGION unfills the region.  See URL
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
+
+
+(defun xc/yank-pop-forwards (arg)
+  "Pop ARGth item off the kill ring.
+
+See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/emacs/KillingAndYanking'"
+  (interactive "p")
+  (yank-pop (- arg)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1421,6 +1579,40 @@ process, like the AWS CLI, that runs on the Python interpetor."
       (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
 
 
+(defun xc/pyside-lookup (&optional arg)
+  "Lookup symbol at point in PySide online documentation.
+
+When called with prefix, search within the online PySide
+documentation.
+
+\(fn)"
+  (interactive "p")
+  (let* (
+         ;; (prev-sym (buffer-substring-no-properties
+         ;;            (save-excursion (forward-word (- 2)) (point))
+         ;;            (save-excursion (forward-word (- 1)) (point))
+                    ;; ))
+         (sym (thing-at-point 'symbol))
+         (direct-url (concat
+                      "https://doc-snapshots.qt.io/qtforpython-5.15/PySide2/QtWidgets/"
+                      sym
+                      ".html"
+                      ))
+         (search-url (concat
+                      "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q="
+                      sym
+                      )))
+    (cond ((eql arg 1)
+           (let ((buff (get-buffer-window "*eww*")))
+             (if buff
+                 (with-selected-window buff
+                   (eww direct-url))
+               (eww direct-url))))
+          ((eql arg 4)
+           (browse-url-default-browser search-url))
+          (t (error "Invalid prefix")))))
+
+
 (defun xc/spam-filter (string)
   "Filter stupid comint spam."
   (with-current-buffer (current-buffer)
@@ -1455,31 +1647,3 @@ in shell.el pulls completions from other buffers, creating a
 chicken and egg problem."
   (interactive)
   (insert "\"C:\\python\\python37\\python.exe\" -m venv venv"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; experimental
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (defvar xc/quick-bind nil
-;;   "Quick binding for F5 key.
-
-;; Must be a function that takes no arguments.")
-
-;; (defun xc/set-quick-bind ()
-;;   "Set function to `xc/quick-bind'."
-;;   (interactive)
-;;   (let ((func (intern (completing-read "Set `xc/quick-bind' to: " obarray #'functionp))))
-;;     (fset 'xc/quick-bind (symbol-function 'func))
-;;     (message "Set `xc/quick-bind' to %s" func)))
-
-;; (defun xc/test ()
-;;   "Say hello"
-;;   (message "Hello!"))
-
-;; (funcall
-;; (lambda () (interactive)
-;;                 (let ((func (symbol-function xc/quick-bind)))
-;;                   (if (commandp func)
-;;                       (call-interactively func)
-;;                     (funcall func)))))
