@@ -1625,7 +1625,7 @@ documentation.
           ((eql arg 4)  ; "C-u", expand search to be "universal"
            (let* ((buff (get-buffer-window "*eww*"))
                   (completion-ignore-case t)
-                  (module (completing-read "Select module: " xc/pyside-modules nil 'confirm))
+                  (module (completing-read "Select module: " xc/pyside-modules nil 'confirm "Qt"))
                   (direct-url (concat
                                "https://doc-snapshots.qt.io/qtforpython-5.15/PySide2/"
                                module "/"
