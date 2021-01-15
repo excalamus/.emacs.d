@@ -1571,19 +1571,17 @@ process, like the AWS CLI, that runs on the Python interpetor."
 
 
 (defun xc/pyside-lookup (&optional arg)
-  "Lookup symbol at point in PySide online documentation.
+  "Lookup symbol at point in PySide2 online documentation.
 
-When called with prefix, search within the online PySide
+Tries to lookup symbol in QWidget documentation.
+
+When called with universal prefix, prompt for module.  When
+called with negative prefix, search within the online PySide
 documentation.
 
 \(fn)"
   (interactive "p")
-  (let* (
-         ;; (prev-sym (buffer-substring-no-properties
-         ;;            (save-excursion (forward-word (- 2)) (point))
-         ;;            (save-excursion (forward-word (- 1)) (point))
-                    ;; ))
-         (sym (thing-at-point 'symbol))
+  (let* ((sym (thing-at-point 'symbol))
          (direct-url (concat
                       "https://doc-snapshots.qt.io/qtforpython-5.15/PySide2/QtWidgets/"
                       sym
@@ -1593,13 +1591,26 @@ documentation.
                       "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q="
                       sym
                       )))
-    (cond ((eql arg 1)
+    (cond ((eql arg 1) ; no prefix
            (let ((buff (get-buffer-window "*eww*")))
              (if buff
                  (with-selected-window buff
                    (eww direct-url))
                (eww direct-url))))
-          ((eql arg 4)
+          ((eql arg 4)  ; "C-u", expand search to be "universal"
+           (let* ((buff (get-buffer-window "*eww*"))
+                  (completion-ignore-case t)
+                  (module (completing-read "Select module: " xc/pyside-modules nil 'confirm))
+                  (direct-url (concat
+                               "https://doc-snapshots.qt.io/qtforpython-5.15/PySide2/"
+                               module "/"
+                               (thing-at-point 'symbol)
+                               ".html")))
+             (if buff
+                 (with-selected-window buff
+                   (eww direct-url))
+               (eww direct-url))))
+          ((eql arg -1)  ; "C--", it's 'negative' to have to leave Emacs
            (browse-url-default-browser search-url))
           (t (error "Invalid prefix")))))
 
