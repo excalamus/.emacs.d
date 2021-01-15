@@ -1047,7 +1047,19 @@ permanent binding.")
                '("Send region to on-demand-window"
                  :call (xc/send-line-or-region)))
 
+  (add-to-list 'right-click-context-global-menu-tree
+               '("Open Jira ticket"
+                 :call (xc/jira-issue)))
+
   (if xc/debug (message "peut-gerer")))
+
+
+(use-package qml-mode
+  :straight (:fork "excalamus/qml-mode")
+  :config
+  (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
+
+  (if xc/debug (message "qml-mode")))
 
 
 (use-package right-click-context
