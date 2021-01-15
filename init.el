@@ -490,7 +490,8 @@ permanent binding.")
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-h j" 'describe-face  ; introspect colors
-      "C-h C-w" 'define-word-at-point
+      "C-h C-f" 'find-function
+      "C-h C-w" 'define-word-at-point ; masks define-no-warranty
       "C-x a d" 'xc/define-abbrev
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
@@ -650,6 +651,7 @@ permanent binding.")
       "c" 'ledger-fully-complete-xact
       ";" 'xc/toggle-comment-contiguous-lines
       "k" 'xc/ledger-kill-current-transaction
+      "y" 'xc/ledger-kill-ring-save-current-transaction
       )
 
     (general-def
@@ -1539,6 +1541,13 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
   (let ((bounds (ledger-navigate-find-xact-extents pos)))
     (kill-region (car bounds) (cadr bounds))))
 
+
+(defun xc/ledger-kill-ring-save-current-transaction (pos)
+  "Save transaction surrounding POS to kill ring without
+killing."
+  (interactive "d")
+  (let ((bounds (ledger-navigate-find-xact-extents pos)))
+    (kill-ring-save (car bounds) (cadr bounds))))
 
 (defun xc/balance-at-point ()
   "Get balance of account at point"
