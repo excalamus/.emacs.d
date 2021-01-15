@@ -164,6 +164,8 @@ permanent binding.")
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
+(add-hook 'eww-after-render-hook 'evil-emacs-state)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
@@ -424,6 +426,7 @@ permanent binding.")
 
     ;; Disable stupid minimize hotkeys
     (general-unbind
+      "M-v"
       "C-z"
       "C-x C-z")
 
@@ -499,6 +502,7 @@ permanent binding.")
                   (call-interactively 'ace-window)))
       "S-<f1>" 'xc/on-demand-window-set
       "C-<f1>" 'ace-window
+      "C-=" 'iedit-mode
       )
 
     (general-def
