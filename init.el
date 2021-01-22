@@ -1217,6 +1217,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "string-inflection")))
 
 
+(use-package sql
+  :config
+  ;; load project profiles, kept here versus lisp/ for security sake
+  (if (eq system-type 'windows-nt)
+      (load "~/sql-connections.el"))
+
+  (if xc/debug (message "sql")))
+
+
 (use-package sx
   :straight (:fork "excalamus/sx.el")
   :config
