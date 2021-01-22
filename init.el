@@ -113,7 +113,19 @@ permanent binding.")
 ;; that never gets loaded or read
 (setq custom-file "~/.emacs.d/custom-set.el")
 
-(add-to-list 'load-path "~/.emacs.d/lisp/")
+(defun xc/load-directory (dir &optional ext)
+  "Load all files in DIR with extension EXT.
+
+Default EXT is \".el\".
+
+See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
+  (let* ((load-it (lambda (f)
+                   (load-file (concat (file-name-as-directory dir) f))))
+        (ext (or ext ".el"))
+        (ext-reg (concat "\\" ext "$")))
+    (mapc load-it (directory-files dir nil ext-reg))))
+
+(xc/load-directory "~/.emacs.d/lisp/")
 
 ;; InnoSetup .iss files are basically ini files
 (add-to-list 'auto-mode-alist '("\\.iss\\'" . conf-mode))
