@@ -407,6 +407,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "bm")))
 
 
+(use-package csv-mode
+  :config
+
+  (if xc/debug (message "csv-mode")))
+
+
 (use-package comment-dwim-2
   :after (:all org)
   :straight (:fork "excalamus/comment-dwim-2")
