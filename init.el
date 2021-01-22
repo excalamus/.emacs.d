@@ -609,11 +609,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
      "-" #'(lambda () (interactive) (insert "_"))
      "_" #'(lambda () (interactive) (insert "-"))
      )
-    (general-def
-      :keymaps 'elpy-mode-map
-      "<C-return>" 'nil
-      "<C-S-return>" 'nil
-      )
+    ;; (general-def
+    ;;   :keymaps 'elpy-mode-map
+    ;;   "<C-return>" 'nil
+    ;;   "<C-S-return>" 'nil
+    ;;   )
     (general-def
       :keymaps 'elpy-mode-map
       "<C-S-return>"'elpy-shell-send-statement
@@ -665,6 +665,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "G" '(lambda () (interactive) (xc/Info-current-node-to-url 4))
       "P" '(lambda () (interactive) (Info-goto-node "(python)"))
       "U" 'xc/Info-current-node-to-url
+      "h" 'nil  ; hitting 'h' by accident kills all window arrangement
       )
 
     (general-def
@@ -1107,6 +1108,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :straight (:repo "https://github.com/excalamus/peut-gerer.git" :branch "main")
   :after (:all right-click-context)
   :config
+  ;; load project profiles, kept here versus lisp/ for security sake
   (if (eq system-type 'windows-nt)
       (load "~/peut-gerer-projects.el"))
 
@@ -1690,7 +1692,8 @@ process, like the AWS CLI, that runs on the Python interpetor."
 
 Tries to lookup symbol in QWidget documentation.
 
-When called with universal prefix, prompt for module.  When
+When called with universal prefix, prompt for module.  This
+requires list of modules (provided in `pyside-modules.el').  When
 called with negative prefix, search within the online PySide
 documentation.
 
