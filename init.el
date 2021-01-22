@@ -94,6 +94,16 @@ permanent binding.")
 
 (defvar xc/atlassian ""
   "Atlassian url for use with `xc/jira-issue'.")
+
+(defvar xc/pyside-modules
+  '("QtCore" "Qt3DAnimation" "QtGui" "QtHelp" "QtNetwork" "QtOpenGL" "QtPrintSupport" "QtQml"
+    "QtCharts" "QtQuick" "QtDataVisualization" "QtQuickWidgets" "QtTextToSpeech" "QtSql"
+    "QtMultimedia" "QtMultimediaWidgets" "QtMacExtras" "QtSvg" "QtUiTools" "QtTest" "QtConcurrent"
+    "QtAxContainer" "QtWebEngineCore" "QtWebEngineWidgets" "QtWebChannel" "QtWebSockets" "QtWidgets"
+    "QtWinExtras" "QtX11Extras" "QtXml" "QtXmlPatterns" "Qt3DCore" "Qt3DExtras" "Qt3DInput" "Qt3DLogic"
+    "Qt3DRender" "QtPositioning" "QtLocation" "QtSensors" "QtScxml")
+  "List of Qt modules for use in `xc/pyside-lookup'.")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; settings
