@@ -44,16 +44,16 @@
 ;; bootstrap straight.el.  See https://github.com/raxod502/straight.el#getting-started
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+    (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+    (bootstrap-version 5))
+(unless (file-exists-p bootstrap-file)
+(with-current-buffer
+    (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+(load bootstrap-file nil 'nomessage))
 
 ;; This configures straight with use-package.  It also ensures that
 ;; use-package is installed.
@@ -62,7 +62,7 @@
 
 ;; extend use-package with key-chord
 (use-package use-package-chords
-  :config (key-chord-mode 1))
+:config (key-chord-mode 1))
 
 ;; Ensure recipe inheritance. Allows for simple :fork override to
 ;; clone/pull from personal fork.  M-x straight-fetch-package to
@@ -86,23 +86,23 @@ Either 'windows, 'gnu/linux, or 'terminal.
 `window-system' gets assigned after init loads.")
 
 (defvar xc/on-demand-window nil
-  "Target on-demand window.
+"Target on-demand window.
 
 An on-demand window is one which you wish to return to within the
 current Emacs session but whose importance doesn't warrant a
 permanent binding.")
 
 (defvar xc/atlassian ""
-  "Atlassian url for use with `xc/jira-issue'.")
+"Atlassian url for use with `xc/jira-issue'.")
 
 (defvar xc/pyside-modules
-  '("QtCore" "Qt3DAnimation" "QtGui" "QtHelp" "QtNetwork" "QtOpenGL" "QtPrintSupport" "QtQml"
-    "QtCharts" "QtQuick" "QtDataVisualization" "QtQuickWidgets" "QtTextToSpeech" "QtSql"
-    "QtMultimedia" "QtMultimediaWidgets" "QtMacExtras" "QtSvg" "QtUiTools" "QtTest" "QtConcurrent"
-    "QtAxContainer" "QtWebEngineCore" "QtWebEngineWidgets" "QtWebChannel" "QtWebSockets" "QtWidgets"
-    "QtWinExtras" "QtX11Extras" "QtXml" "QtXmlPatterns" "Qt3DCore" "Qt3DExtras" "Qt3DInput" "Qt3DLogic"
-    "Qt3DRender" "QtPositioning" "QtLocation" "QtSensors" "QtScxml")
-  "List of Qt modules for use in `xc/pyside-lookup'.")
+'("QtCore" "Qt3DAnimation" "QtGui" "QtHelp" "QtNetwork" "QtOpenGL" "QtPrintSupport" "QtQml"
+"QtCharts" "QtQuick" "QtDataVisualization" "QtQuickWidgets" "QtTextToSpeech" "QtSql"
+"QtMultimedia" "QtMultimediaWidgets" "QtMacExtras" "QtSvg" "QtUiTools" "QtTest" "QtConcurrent"
+"QtAxContainer" "QtWebEngineCore" "QtWebEngineWidgets" "QtWebChannel" "QtWebSockets" "QtWidgets"
+"QtWinExtras" "QtX11Extras" "QtXml" "QtXmlPatterns" "Qt3DCore" "Qt3DExtras" "Qt3DInput" "Qt3DLogic"
+"Qt3DRender" "QtPositioning" "QtLocation" "QtSensors" "QtScxml")
+"List of Qt modules for use in `xc/pyside-lookup'.")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -114,16 +114,16 @@ permanent binding.")
 (setq custom-file "~/.emacs.d/custom-set.el")
 
 (defun xc/load-directory (dir &optional ext)
-  "Load all files in DIR with extension EXT.
+"Load all files in DIR with extension EXT.
 
 Default EXT is \".el\".
 
 See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
-  (let* ((load-it (lambda (f)
-                   (load-file (concat (file-name-as-directory dir) f))))
-        (ext (or ext ".el"))
-        (ext-reg (concat "\\" ext "$")))
-    (mapc load-it (directory-files dir nil ext-reg))))
+(let* ((load-it (lambda (f)
+                (load-file (concat (file-name-as-directory dir) f))))
+    (ext (or ext ".el"))
+    (ext-reg (concat "\\" ext "$")))
+(mapc load-it (directory-files dir nil ext-reg))))
 
 (xc/load-directory "~/.emacs.d/lisp/")
 
@@ -134,19 +134,19 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; https://stackoverflow.com/a/18330742/5065796
 (defvar xc/-backup-directory (concat user-emacs-directory "backups"))
 (if (not (file-exists-p xc/-backup-directory))
-    (make-directory xc/-backup-directory t))
+(make-directory xc/-backup-directory t))
 (setq backup-directory-alist `(("." . ,xc/-backup-directory))) ; put backups in current dir and in xc/-backup-directory
 (setq make-backup-files t               ; backup of a file the first time it is saved.
-      backup-by-copying t               ; don't clobber symlinks
-      version-control t                 ; version numbers for backup files
-      delete-old-versions t             ; delete excess backup files silently
-      delete-by-moving-to-trash t
-      kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
-      kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
-      auto-save-default t               ; auto-save every buffer that visits a file
-      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
-      )
+    backup-by-copying t               ; don't clobber symlinks
+    version-control t                 ; version numbers for backup files
+    delete-old-versions t             ; delete excess backup files silently
+    delete-by-moving-to-trash t
+    kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
+    kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
+    auto-save-default t               ; auto-save every buffer that visits a file
+    auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+    auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+    )
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -173,13 +173,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; Make occur window open in side-window
 (setq
- display-buffer-alist
- '(("\\*Occur\\*"
-    display-buffer-in-side-window
-    (side . right)
-    (slot . 0)
-    (window-width . fit-window-to-buffer))
-   ))
+display-buffer-alist
+'(("\\*Occur\\*"
+display-buffer-in-side-window
+(side . right)
+(slot . 0)
+(window-width . fit-window-to-buffer))
+))
 
 ;; split ediff vertically
 (setq ediff-split-window-function 'split-window-right)
@@ -205,11 +205,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; https://stackoverflow.com/a/296316
 ;; Values in 1/10pt, so 100 will give you 10pt, etc.
 (if (eq system-type 'windows-nt)
-    (set-face-attribute 'default nil
-                        :family "DejaVu Sans Mono"
-                        :height 100
-                        :weight 'normal
-                        :width 'normal))
+(set-face-attribute 'default nil
+                    :family "DejaVu Sans Mono"
+                    :height 100
+                    :weight 'normal
+                    :width 'normal))
 
 ;;; Mode line
 (column-number-mode t)
@@ -218,18 +218,18 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; ;; Just a hack, needs proper attention
 (setq-default mode-line-format
-              '("%e"
-                evil-mode-line-tag
-                mode-line-mule-info
-                mode-line-modified
-                " "
-                mode-line-buffer-identification
-                " "
-                mode-line-position
-                mode-line-misc-info
-                (vc-mode vc-mode)
-                " "
-                mode-line-end-spaces))
+            '("%e"
+            evil-mode-line-tag
+            mode-line-mule-info
+            mode-line-modified
+            " "
+            mode-line-buffer-identification
+            " "
+            mode-line-position
+            mode-line-misc-info
+            (vc-mode vc-mode)
+            " "
+            mode-line-end-spaces))
 
 ;; setting true causes rev in vc-git.el:362 to be nil, causing error in substring
 ;; (setq debug-on-error t)
@@ -240,7 +240,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; Remove Git prefix from vc since only using git
 (setcdr (assq 'vc-mode mode-line-format)
-        '((:eval (replace-regexp-in-string "^ Git" " " vc-mode))))
+    '((:eval (replace-regexp-in-string "^ Git" " " vc-mode))))
 
 ;; make titlebar the filename
 ;; https://emacs.stackexchange.com/a/16836
@@ -249,104 +249,104 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; Theme advice approach modified from
 ;; https://www.greghendershott.com/2017/02/emacs-themes.html
 (use-package base16-theme
-  :straight (:fork "excalamus/base16-emacs"))
+:straight (:fork "excalamus/base16-emacs"))
 (use-package zenburn-theme
-  :straight (:fork "excalamus/zenburn-emacs"))
+:straight (:fork "excalamus/zenburn-emacs"))
 
 (defun xc/disable-all-themes ()
-  "Disable all enabled themes."
-  (interactive)
-  (mapc #'disable-theme custom-enabled-themes))
+"Disable all enabled themes."
+(interactive)
+(mapc #'disable-theme custom-enabled-themes))
 
 (defvar xc/theme-hooks nil
-  "((theme-id . function) ...)")
+"((theme-id . function) ...)")
 
 (defun xc/add-theme-hook (theme-id hook-func)
-  (add-to-list 'xc/theme-hooks (cons theme-id hook-func)))
+(add-to-list 'xc/theme-hooks (cons theme-id hook-func)))
 
 (defun xc/load-theme-advice (f theme-id &optional no-confirm no-enable &rest args)
-  "Enhances `load-theme' in two ways:
+"Enhances `load-theme' in two ways:
 1. Disables enabled themes for a clean slate.
 2. Calls functions registered using `xc/add-theme-hook'."
-  (unless no-enable
-    (xc/disable-all-themes))
-  (prog1
-      (apply f theme-id no-confirm no-enable args)
-    (unless no-enable
-      (pcase (assq theme-id xc/theme-hooks)
-        (`(,_ . ,f) (funcall f))))))
+(unless no-enable
+(xc/disable-all-themes))
+(prog1
+    (apply f theme-id no-confirm no-enable args)
+(unless no-enable
+    (pcase (assq theme-id xc/theme-hooks)
+    (`(,_ . ,f) (funcall f))))))
 
 (advice-add 'load-theme
-            :around
-            #'xc/load-theme-advice)
+        :around
+        #'xc/load-theme-advice)
 
 (defvar xc/theme-dark nil
-  "My dark theme.")
+"My dark theme.")
 
 (defvar xc/theme-light nil
-  "My light theme.")
+"My light theme.")
 
 (setq xc/theme-dark 'zenburn)
 (setq xc/theme-light 'base16-tomorrow)
 
 ;; Add to hook to reload these automatically
 (defun xc/dark-theme-hook ()
-  "Run after loading dark theme."
-  ;; zenburn
-  (if (eq xc/device 'terminal)
-      (set-face-attribute 'mode-line-inactive nil :background "color-236"))
-  (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
-  (setq evil-insert-state-cursor '("gray" bar))
-  (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
-  (set-face-attribute 'mode-line nil :background "gray40")
-  (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
-  (set-face-attribute 'xc/hi-comint nil :background "dim gray"))
+"Run after loading dark theme."
+;; zenburn
+(if (eq xc/device 'terminal)
+    (set-face-attribute 'mode-line-inactive nil :background "color-236"))
+(set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
+(setq evil-insert-state-cursor '("gray" bar))
+(set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
+(set-face-attribute 'mode-line nil :background "gray40")
+(set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
+(set-face-attribute 'xc/hi-comint nil :background "dim gray"))
 
 (defun xc/light-theme-hook ()
-  "Run after loading light theme."
-  ;; base16-tomorrow
-  (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
-  (set-face-attribute 'hl-line nil :background "gray96" :foreground 'unspecified)
-  (set-face-attribute 'mode-line nil :background "light gray")
-  (set-face-attribute 'mode-line-inactive nil :background "white smoke")
-  (set-face-attribute 'org-mode-line-clock nil :background "white" :inherit nil)
-  (set-face-attribute 'bm-face nil :background "light cyan" :overline 'unspecified :foreground 'unspecified)
-  (set-face-attribute 'xc/hi-comint nil :background "light gray"))
+"Run after loading light theme."
+;; base16-tomorrow
+(set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
+(set-face-attribute 'hl-line nil :background "gray96" :foreground 'unspecified)
+(set-face-attribute 'mode-line nil :background "light gray")
+(set-face-attribute 'mode-line-inactive nil :background "white smoke")
+(set-face-attribute 'org-mode-line-clock nil :background "white" :inherit nil)
+(set-face-attribute 'bm-face nil :background "light cyan" :overline 'unspecified :foreground 'unspecified)
+(set-face-attribute 'xc/hi-comint nil :background "light gray"))
 
 (xc/add-theme-hook xc/theme-dark #'xc/dark-theme-hook)
 (xc/add-theme-hook xc/theme-light #'xc/light-theme-hook)
 
 (defvar xc/theme-type nil
-  "Type of current theme.")
+"Type of current theme.")
 
 (setq xc/theme-type 'dark)
 
 (defun xc/theme-toggle (&optional type)
-  "Toggle theme to TYPE."
-  (interactive)
-  (unless type (setq type xc/theme-type))
-  (cond ((eq type 'dark)
-         (disable-theme xc/theme-light)
-         (load-theme xc/theme-dark t nil)
-         (setq xc/theme-type 'dark))
-        ((eq type 'light)
-         (disable-theme xc/theme-dark)
-         (load-theme xc/theme-light t nil)
-         (setq xc/theme-type 'light))))
+"Toggle theme to TYPE."
+(interactive)
+(unless type (setq type xc/theme-type))
+(cond ((eq type 'dark)
+        (disable-theme xc/theme-light)
+        (load-theme xc/theme-dark t nil)
+        (setq xc/theme-type 'dark))
+    ((eq type 'light)
+        (disable-theme xc/theme-dark)
+        (load-theme xc/theme-light t nil)
+        (setq xc/theme-type 'light))))
 
 (defun xc/theme-switch ()
-  "Switch from dark theme to light or vice versa."
-  (interactive)
-  (cond ((eq xc/theme-type 'light)
-         (xc/theme-toggle 'dark))
-        ((eq xc/theme-type 'dark)
-         (xc/theme-toggle 'light))))
+"Switch from dark theme to light or vice versa."
+(interactive)
+(cond ((eq xc/theme-type 'light)
+        (xc/theme-toggle 'dark))
+    ((eq xc/theme-type 'dark)
+        (xc/theme-toggle 'light))))
 
 ;; theme config depends on ace-window and bm
 (with-eval-after-load "ace-window"
-  (with-eval-after-load "bm"
-    (with-eval-after-load "hi-lock"
-      (xc/theme-toggle))))
+(with-eval-after-load "bm"
+(with-eval-after-load "hi-lock"
+    (xc/theme-toggle))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -355,11 +355,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package yasnippet
-  :straight (:fork "excalamus/yasnippet")
-  :config
-  (yas-global-mode)
+:straight (:fork "excalamus/yasnippet")
+:config
+(yas-global-mode)
 
-  (if xc/debug (message "yasnippet")))
+(if xc/debug (message "yasnippet")))
 
 
 ;; Way more packages use markdown-mode than you might expect.  When
@@ -367,129 +367,129 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; first, throwing an error about two build recipes.  See URL
 ;; `https://github.com/raxod502/straight.el/issues/518'
 (use-package markdown-mode
-  :straight (:fork "excalamus/markdown-mode")
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init
-  (setq markdown-command "multimarkdown")
-  :config
+:straight (:fork "excalamus/markdown-mode")
+:mode (("README\\.md\\'" . gfm-mode)
+        ("\\.md\\'" . markdown-mode)
+        ("\\.markdown\\'" . markdown-mode))
+:init
+(setq markdown-command "multimarkdown")
+:config
 
-  ;; ;; allow spaces in minibuffer (e.g. completing-read)
-  ;; (define-key minibuffer-local-completion-map " " nil)
-  ;; (define-key minibuffer-local-must-match-map " " nil)
+;; ;; allow spaces in minibuffer (e.g. completing-read)
+;; (define-key minibuffer-local-completion-map " " nil)
+;; (define-key minibuffer-local-must-match-map " " nil)
 
-  (if xc/debug (message "markdown-mode")))
+(if xc/debug (message "markdown-mode")))
 
 
 (use-package ace-window
-  :straight (:fork "excalamus/ace-window")
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (setq aw-background nil)
+:straight (:fork "excalamus/ace-window")
+:config
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+(setq aw-background nil)
 
-  (if xc/debug (message "ace-window")))
+(if xc/debug (message "ace-window")))
 
 
 (use-package ag
-  :straight (:fork "excalamus/ag.el")
-  :config
+:straight (:fork "excalamus/ag.el")
+:config
 
-  (if xc/debug (message "ag.el")))
+(if xc/debug (message "ag.el")))
 
 
 (use-package bm
-  :straight (:fork "excalamus/bm")
-  :init
-  :config
-  (setq bm-cycle-all-buffers t)
+:straight (:fork "excalamus/bm")
+:init
+:config
+(setq bm-cycle-all-buffers t)
 
-  (if xc/debug (message "bm")))
+(if xc/debug (message "bm")))
 
 
 (use-package csv-mode
-  :config
+:config
 
-  (if xc/debug (message "csv-mode")))
+(if xc/debug (message "csv-mode")))
 
 
 (use-package comment-dwim-2
-  :after (:all org)
-  :straight (:fork "excalamus/comment-dwim-2")
-  :config
+:after (:all org)
+:straight (:fork "excalamus/comment-dwim-2")
+:config
 
-  (if xc/debug (message "comment-dwim-2")))
+(if xc/debug (message "comment-dwim-2")))
 
 
 (use-package define-word
-  :straight (:fork "excalamus/define-word")
-  :config
+:straight (:fork "excalamus/define-word")
+:config
 
-  (if xc/debug (message "define-word")))
+(if xc/debug (message "define-word")))
 
 
 (use-package dap-mode
-  :straight (:fork "excalamus/dap-mode")
-  :after (:all markdown-mode)
-  :config
-  (require 'dap-python)
-  (setq dap-python-debugger 'debugpy)
+:straight (:fork "excalamus/dap-mode")
+:after (:all markdown-mode)
+:config
+(require 'dap-python)
+(setq dap-python-debugger 'debugpy)
 
-  (if xc/debug (message "dap-mode")))
+(if xc/debug (message "dap-mode")))
 
 
 (use-package dumb-jump
-  :straight (:fork "excalamus/dumb-jump")
-  :config
+:straight (:fork "excalamus/dumb-jump")
+:config
 
-  (if xc/debug (message "dumb-jump")))
+(if xc/debug (message "dumb-jump")))
 
 
 (use-package general
-  :straight (:fork "excalamus/general.el")
-  :config
-  (require 'ffap)
+:straight (:fork "excalamus/general.el")
+:config
+(require 'ffap)
 
-  (general-after-init
+(general-after-init
 
-    ;; Disable stupid minimize hotkeys
-    (general-unbind
-      "M-v"
-      "C-z"
-      "C-x C-z")
+;; Disable stupid minimize hotkeys
+(general-unbind
+    "M-v"
+    "C-z"
+    "C-x C-z")
 
-    (general-define-key
-     :keymaps 'key-translation-map
-     ;; "M-x" "M-q"  ; dvp
-     ;; "M-q" "M-x"  ; dvp
-     "<next>" "<tab>"
-     "<prior>" "<escape>"
-     )
+(general-define-key
+    :keymaps 'key-translation-map
+    ;; "M-x" "M-q"  ; dvp
+    ;; "M-q" "M-x"  ; dvp
+    "<next>" "<tab>"
+    "<prior>" "<escape>"
+    )
 
-    (if (eq xc/device 'windows)
-        (general-def
-          :keymaps 'override
-          :prefix "C-x i"
-          "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
-          "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
-          "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
-          )
-      (general-def
+(if (eq xc/device 'windows)
+    (general-def
         :keymaps 'override
         :prefix "C-x i"
-        "n" '(lambda () (interactive) (find-file "~/Documents/notes.org"))
+        "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
+        "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
+        "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
         )
-      )
-
     (general-def
-      :keymaps 'override
-      :prefix "C-x i"
-      "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
-      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
-      "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
-      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))  ; %APPDATA% on Windows
-      )
+    :keymaps 'override
+    :prefix "C-x i"
+    "n" '(lambda () (interactive) (find-file "~/Documents/notes.org"))
+    )
+    )
+
+(general-def
+    :keymaps 'override
+    :prefix "C-x i"
+    "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
+    "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+    "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
+    "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
+    "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))  ; %APPDATA% on Windows
+    )
 
     (general-def
       :keymaps 'override
