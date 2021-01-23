@@ -86,3 +86,68 @@
 ;; (python-shell-get-buffer)
 
 ;; (previous-window)
+
+(defvar peut-gerer-on-demand-window nil
+  "Target on-demand window.
+
+An on-demand window is one which you wish to return to within the
+current Emacs session but whose importance doesn't warrant a
+permanent binding.")
+
+(defvar peut-gerer-on-demand-buffer nil
+  "target on-demand buffer.
+
+An on-demand buffer is one which you wish to return to within the
+current Emacs session but whose importance doesn't warrant a
+permanent binding.")
+
+
+(defun peut-gerer-set-on-demand-window (&optional win)
+  "Set the value of the `peut-gerer-on-demand-window' to WIN.
+
+Use selected window if WIN is nil."
+  (interactive)
+  (let ((win (or win (selected-window))))
+    (if (windowp win)
+        (setq peut-gerer-on-demand-window win)
+      (error (format "Invalid window %s" win)))
+    (message "Set on-demand window to: %s" peut-gerer-on-demand-window)))
+
+
+(defun peut-gerer-set-on-demand-buffer (&optional buff)
+  "Set the value of the `peut-gerer-on-demand-buffer' to BUFF.
+
+Use current buffer if BUFF is nil."
+  (interactive)
+  (let ((buff (or buff (current-buffer))))
+    (if (bufferp buff)
+        (setq peut-gerer-on-demand-buffer buff)
+      (error (format "Invalid buffer %s" buff)))
+    (message "Set on-demand buffer to: %s" peut-gerer-on-demand-buffer)))
+
+
+(defun peut-gerer-send-line-or-region (&optional buff prefix postfix beg end)
+  "Send region defined by BEG and END to BUFF.
+
+Use current region if BEG and END not provided.  If no region
+provided, send entire line.  Default BUFF is that displayed in
+`peut-gerer-on-demand-buffer'."
+  (interactive (if (use-region-p)
+                   (list nil nil nil (region-beginning) (region-end))
+                 (list nil nil nil nil nil)))
+  (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
+         (end (or end (if (use-region-p) (region-end)) nil))
+         (substr (string-trim
+                  (or (and beg end (buffer-substring-no-properties beg end))
+                     (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
+         (buff (or buff (if peut-gerer-on-demand-buffer
+                            peut-gerer-on-demand-buffer
+                          (error "No target buffer")))))
+    (if substr
+        (with-current-buffer buff
+          (dolist (fun prefix) (funcall fun))
+          (insert substr)
+          (dolist (fun postfix) (funcall fun)))
+      (error "Invalid selection"))))
+
+(peut-gerer-send-line-or-region )
