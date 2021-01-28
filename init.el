@@ -1787,3 +1787,15 @@ in shell.el pulls completions from other buffers, creating a
 chicken and egg problem."
   (interactive)
   (insert "\"C:\\python\\python37\\python.exe\" -m venv venv"))
+
+
+(defun xc/qt-live-code ()
+  "Call ipython interactively with live-code toggle."
+  (interactive)
+  (insert "ipython -i -- qt_live_code.py live"))
+
+(defun xc/run-python-with-qt-live-code ()
+  (interactive)
+  (let ((current-prefix-arg '(4))
+       (python-shell-interpreter-args "-i -- qt_live_code.py live"))
+    (call-interactively 'run-python )))
