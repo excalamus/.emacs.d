@@ -489,7 +489,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
-      "l" '(lambda () (interactive) (find-file "~/local-lisp.el"))  ; %APPDATA% on Windows
+      "s" '(lambda () (interactive) (find-file "~/secret-lisp.el"))  ; %APPDATA% on Windows
       )
 
     (general-def :keymaps 'override
@@ -998,6 +998,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
   :config
+
+  ;; For privacy's sake, define `magit-repository-directories' in
+  ;; secret-lisp.el:
+  ;;
+  ;; (setq magit-repository-directories
+  ;;       '(("C:/path/to/project1/repo/" . 0)
+  ;;         ("C:/path/to/project2/repo/" . 0)
+  ;;         ))
+
   (add-hook 'git-commit-mode-hook 'evil-emacs-state)
 
   (setq magit-repolist-columns
@@ -1116,6 +1125,24 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :straight (:repo "https://github.com/excalamus/peut-gerer.git" :branch "main")
   :after (:all right-click-context)
   :config
+
+  ;; For privacy's sake, define `peut-gerer-project-alist' in secret-lisp.el:
+  ;;
+  ;;     (setq peut-gerer-project-alist
+  ;;           '(("project-x"
+  ;;              :root "/data/data/com.termux/files/home/projects/project-x/"
+  ;;              :main "main.py"
+  ;;              :venv  "/data/data/com.termux/files/home/projects/project-x/venv/"
+  ;;              :activate "/data/data/com.termux/files/home/projects/project-x/venv/bin/activate"
+  ;;              :commands ("pyinstaller build.spec")
+  ;;              )
+  ;;             ("project-a"
+  ;;              :root "C:\\projects\\project-umbrella\\apps\\project_a\\"
+  ;;              :main "project_a.py"
+  ;;              :venv "C:\\Users\\excalamus\\Anaconda3\\envs\\project_a\\"
+  ;;              :activate "C:\\Users\\excalamus\\Anaconda3\\condabin\\conda.bat activate"
+  ;;              )))
+
 
   (setq peut-gerer-after-activate-functions '(pyvenv-activate))
 
