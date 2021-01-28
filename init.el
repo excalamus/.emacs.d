@@ -127,6 +127,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (xc/load-directory "~/.emacs.d/lisp/")
 
+;; load secret customizations which aren't versioned here
+(if (eq system-type 'windows-nt)
+    (add-hook 'after-init-hook (lambda () (load "~/secret-lisp.el"))))
+
 ;; InnoSetup .iss files are basically ini files
 (add-to-list 'auto-mode-alist '("\\.iss\\'" . conf-mode))
 
@@ -473,6 +477,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
           "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
           "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
           "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
+          "m" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/monorepo.org"))
           )
       (general-def
         :keymaps 'override
@@ -488,7 +493,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
       "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
-      "p" '(lambda () (interactive) (find-file "~/peut-gerer-projects.el"))  ; %APPDATA% on Windows
+      "l" '(lambda () (interactive) (find-file "~/local-lisp.el"))  ; %APPDATA% on Windows
       )
 
     (general-def
@@ -523,6 +528,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-x a d" 'xc/define-abbrev
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
+      "C-x l" 'magit-list-repositories
       "C-x o" 'ace-window
       "<f1>" '(lambda ()
                 (interactive)
@@ -769,6 +775,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (evil-set-initial-state 'help-mode 'emacs)
   (evil-set-initial-state 'Info-mode 'emacs)
   ;; (evil-set-initial-state 'nov-mode 'emacs)
+  (evil-set-initial-state 'magit-repolist-mode 'emacs)
   (evil-set-initial-state 'sx-mode 'emacs)
   (evil-set-initial-state 'sx-question-mode 'emacs)
   (evil-set-initial-state 'sx-question-list-mode 'emacs)
@@ -1009,11 +1016,29 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (use-package magit
   :straight (:fork "excalamus/magit")
+  :after (:all evil)
   :init
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
   :config
   (add-hook 'git-commit-mode-hook 'evil-emacs-state)
+
+  (setq magit-repolist-columns
+        '(("Name"    25 magit-repolist-column-ident                  ())
+          ("D"        1 magit-repolist-column-dirty                  ())
+          ("B<P"      3 magit-repolist-column-unpulled-from-pushremote
+           ((:right-align t)
+            (:help-echo "Pushremote changes not in branch")))
+          ("B<U"      3 magit-repolist-column-unpulled-from-upstream
+           ((:right-align t)
+            (:help-echo "Upstream changes not in branch")))
+          ("B>U"      3 magit-repolist-column-unpushed-to-upstream
+           ((:right-align t)
+            (:help-echo "Local changes not in upstream")))
+          ("Version" 25 magit-repolist-column-version                ())
+          ("Path"    99 magit-repolist-column-path                   ())
+          ))
+
   (if xc/debug (message "magit")))
 
 
@@ -1114,9 +1139,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :straight (:repo "https://github.com/excalamus/peut-gerer.git" :branch "main")
   :after (:all right-click-context)
   :config
-  ;; load project profiles, kept here versus lisp/ for security sake
-  (if (eq system-type 'windows-nt)
-      (load "~/peut-gerer-projects.el"))
 
   (setq peut-gerer-after-activate-functions '(pyvenv-activate))
 
