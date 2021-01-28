@@ -523,7 +523,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-x a d" 'xc/define-abbrev
       "C-x b" 'helm-buffers-list
       "C-x g" 'magit-status
-      "C-x l" 'magit-list-repositories
+      "C-x r" 'magit-list-repositories
       "C-x o" 'ace-window
       "<f1>" '(lambda ()
                 (interactive)
@@ -903,18 +903,18 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "hi-lock")))
 
 
-(use-package iedit
-  :straight (:fork "excalamus/iedit")
-  :config
-
-  (if xc/debug (message "iedit")))
-
-
 (use-package htmlize
   :straight (:fork "excalamus/emacs-htmlize")
   :config
 
   (if xc/debug (message "emacs-htmlize")))
+
+
+(use-package iedit
+  :straight (:fork "excalamus/iedit")
+  :config
+
+  (if xc/debug (message "iedit")))
 
 ;; on windows, you need to install Hunspell
 ;; https://sourceforge.net/projects/ezwinports/files/
@@ -926,6 +926,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq ispell-local-dictionary "en_US")
   (setq ispell-local-dictionary-alist
         '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8))))
+
+
+(use-package keycast
+  :straight (:fork "excalamus/keycast")
+  :config
+
+  (if xc/debug (message "keycast")))
 
 
 (use-package language-detection
