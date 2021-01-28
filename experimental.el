@@ -87,14 +87,14 @@
 
 ;; (previous-window)
 
-(defvar peut-gerer-on-demand-window nil
+(defvar exp-on-demand-window nil
   "Target on-demand window.
 
 An on-demand window is one which you wish to return to within the
 current Emacs session but whose importance doesn't warrant a
 permanent binding.")
 
-(defvar peut-gerer-on-demand-buffer nil
+(defvar exp-on-demand-buffer nil
   "target on-demand buffer.
 
 An on-demand buffer is one which you wish to return to within the
@@ -102,36 +102,36 @@ current Emacs session but whose importance doesn't warrant a
 permanent binding.")
 
 
-(defun peut-gerer-set-on-demand-window (&optional win)
-  "Set the value of the `peut-gerer-on-demand-window' to WIN.
+(defun exp-set-on-demand-window (&optional win)
+  "Set the value of the `exp-on-demand-window' to WIN.
 
 Use selected window if WIN is nil."
   (interactive)
   (let ((win (or win (selected-window))))
     (if (windowp win)
-        (setq peut-gerer-on-demand-window win)
+        (setq exp-on-demand-window win)
       (error (format "Invalid window %s" win)))
-    (message "Set on-demand window to: %s" peut-gerer-on-demand-window)))
+    (message "Set on-demand window to: %s" exp-on-demand-window)))
 
 
-(defun peut-gerer-set-on-demand-buffer (&optional buff)
-  "Set the value of the `peut-gerer-on-demand-buffer' to BUFF.
+(defun exp-set-on-demand-buffer (&optional buff)
+  "Set the value of the `exp-on-demand-buffer' to BUFF.
 
 Use current buffer if BUFF is nil."
   (interactive)
   (let ((buff (or buff (current-buffer))))
     (if (bufferp buff)
-        (setq peut-gerer-on-demand-buffer buff)
+        (setq exp-on-demand-buffer buff)
       (error (format "Invalid buffer %s" buff)))
-    (message "Set on-demand buffer to: %s" peut-gerer-on-demand-buffer)))
+    (message "Set on-demand buffer to: %s" exp-on-demand-buffer)))
 
 
-(defun peut-gerer-send-line-or-region (&optional buff prefix postfix beg end)
+(defun exp-send-line-or-region (&optional buff prefix postfix beg end)
   "Send region defined by BEG and END to BUFF.
 
 Use current region if BEG and END not provided.  If no region
 provided, send entire line.  Default BUFF is that displayed in
-`peut-gerer-on-demand-buffer'."
+`exp-on-demand-buffer'."
   (interactive (if (use-region-p)
                    (list nil nil nil (region-beginning) (region-end))
                  (list nil nil nil nil nil)))
@@ -140,8 +140,8 @@ provided, send entire line.  Default BUFF is that displayed in
          (substr (string-trim
                   (or (and beg end (buffer-substring-no-properties beg end))
                      (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
-         (buff (or buff (if peut-gerer-on-demand-buffer
-                            peut-gerer-on-demand-buffer
+         (buff (or buff (if exp-on-demand-buffer
+                            exp-on-demand-buffer
                           (error "No target buffer")))))
     (if substr
         (with-current-buffer buff
@@ -150,4 +150,31 @@ provided, send entire line.  Default BUFF is that displayed in
           (dolist (fun postfix) (funcall fun)))
       (error "Invalid selection"))))
 
-(peut-gerer-send-line-or-region )
+(general-def
+    :keymaps 'override
+    "<f5>" '(lambda () (interactive) (progn (funcall 'exp-send-line-or-region
+
+                                                    ;; note that these
+                                                    ;; won't work as
+                                                    ;; funcall and
+                                                    ;; apply must take
+                                                    ;; a function, not
+                                                    ;; a macro.  The
+                                                    ;; send-line
+                                                    ;; function
+                                                    ;; probably needs
+                                                    ;; to be a macro,
+                                                    ;; then.  We
+                                                    ;; really want to
+                                                    ;; insert some
+                                                    ;; code before or
+                                                    ;; after the
+                                                    ;; insert.
+
+                                                     nil
+                                                     (list (funcall 'setq-local 'window-point-insertion-type 't))
+                                                     (list
+                                                       (end-of-line)
+                                                       (newline-and-indent))
+                                                     )))
+    )
