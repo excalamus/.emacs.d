@@ -462,8 +462,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-z"
       "C-x C-z")
 
-    (general-define-key
-     :keymaps 'key-translation-map
+    (general-define-key :keymaps 'key-translation-map
      ;; "M-x" "M-q"  ; dvp
      ;; "M-q" "M-x"  ; dvp
      "<next>" "<tab>"
@@ -471,23 +470,20 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
      )
 
     (if (eq xc/device 'windows)
-        (general-def
-          :keymaps 'override
+        (general-def :keymaps 'override
           :prefix "C-x i"
           "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
           "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
           "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
           "m" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/monorepo.org"))
           )
-      (general-def
-        :keymaps 'override
+      (general-def :keymaps 'override
         :prefix "C-x i"
         "n" '(lambda () (interactive) (find-file "~/Documents/notes.org"))
         )
       )
 
-    (general-def
-      :keymaps 'override
+    (general-def :keymaps 'override
       :prefix "C-x i"
       "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
@@ -496,8 +492,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "l" '(lambda () (interactive) (find-file "~/local-lisp.el"))  ; %APPDATA% on Windows
       )
 
-    (general-def
-      :keymaps 'override
+    (general-def :keymaps 'override
       "<vertical-line> <mouse-3>" 'balance-windows  ; right-click on vertical to balance-windows
       "C-x s" 'save-buffer
       "<f5>" '(lambda () (interactive) (progn (funcall 'xc/send-line-or-region)))
@@ -540,8 +535,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-=" 'iedit-mode
       )
 
-    (general-def
-      :keymaps 'override
+    (general-def :keymaps 'override
       :states '(normal insert emacs)
       (general-chord "jk") 'xc/newline-without-break-of-line
       (general-chord "hh") 'evil-emacs-state
@@ -551,22 +545,19 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "\M-Q" 'xc/unfill-paragraph
       )
 
-    (general-def
-      :keymaps 'global-map
+    (general-def :keymaps 'global-map
       "C-a" 'xc/smart-beginning-of-line
       "<home>" 'xc/smart-beginning-of-line
       )
 
-    (general-def
-      :states '(normal)
+    (general-def :states '(normal)
       ;; "C-o" 'dumb-jump-back  ; obsoleted
       ;; "C-o" 'xref-pop-marker-stack
       "C-o" 'evil-jump-backward
       "C-i" 'evil-jump-forward
       )
 
-    (general-def
-      :states '(normal insert emacs)
+    (general-def :states '(normal insert emacs)
 
       ;; ;; qwerty bindings
       ;; "C-]" 'xref-find-definitions
@@ -581,8 +572,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "M-6" 'dumb-jump-go-other-window
       )
 
-    (general-def
-      :states '(normal visual)
+    (general-def :states '(normal visual)
       :prefix "SPC"
       ";" 'comment-dwim-2
       "=" 'er/expand-region
@@ -601,22 +591,19 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "x" 'eval-expression
       )
 
-    (general-define-key
-     :keymaps 'comint-mode-map
+    (general-define-key :keymaps 'comint-mode-map
      :states '(insert emacs)
      "-" #'(lambda () (interactive) (insert "_"))
      "_" #'(lambda () (interactive) (insert "-"))
      )
-    (general-def
-      :keymaps 'comint-mode-map
+    (general-def :keymaps 'comint-mode-map
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
       "C-r" 'comint-history-isearch-backward
       "<apps>" 'xc/kill-python
       )
 
-    (general-define-key
-     :keymaps 'elpy-mode-map
+    (general-define-key :keymaps 'elpy-mode-map
      :states '(insert emacs)
      "-" #'(lambda () (interactive) (insert "_"))
      "_" #'(lambda () (interactive) (insert "-"))
@@ -626,8 +613,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;;   "<C-return>" 'nil
     ;;   "<C-S-return>" 'nil
     ;;   )
-    (general-def
-      :keymaps 'elpy-mode-map
+    (general-def :keymaps 'elpy-mode-map
       "<C-S-return>"'elpy-shell-send-statement
       "<C-return>" 'elpy-shell-send-statement-and-step
       "<M-return>" 'elpy-shell-send-group
@@ -640,8 +626,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<C-S-f10>" 'peut-gerer-set-command-to-current-file
       "<S-f10>" 'peut-gerer-buffer-file-to-shell
       )
-    (general-def
-      :keymaps 'elpy-mode-map
+    (general-def :keymaps 'elpy-mode-map
       :states 'normal
       :prefix "SPC"
       "d" 'elpy-occur-definitions
@@ -649,21 +634,19 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "u" 'xc/pyside-lookup
       )
 
-    (general-def
-      :keymaps 'emacs-lisp-mode-map
+    (general-def :keymaps 'emacs-lisp-mode-map
       :states 'normal
       :prefix "SPC"
       "e" 'eval-last-sexp
       )
 
-    (general-def
-      :keymaps 'emacs-lisp-mode-map
+    (general-def :keymaps 'emacs-lisp-mode-map
       "C-<next>" 'forward-page  ; C-PgUp goto previous linebreak
       "C-<prior>" 'backward-page ; C-PgDown goto next linebreak
       )
 
-    (general-def  ; won't work in terminal bc of how terminals work
-      :keymaps 'evil-emacs-state-map
+    ;; won't work in terminal bc of how terminals work
+    (general-def :keymaps 'evil-emacs-state-map
       "<escape>" 'evil-normal-state
       )
 
@@ -671,8 +654,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
     ;; How to generate Info docs for Python (and others)!
     ;; https://stackoverflow.com/a/65100142/5065796
-    (general-def
-      :keymaps 'Info-mode-map
+    (general-def :keymaps 'Info-mode-map
       "a" 'info-apropos
       "G" '(lambda () (interactive) (xc/Info-current-node-to-url 4))
       "P" '(lambda () (interactive) (Info-goto-node "(python)"))
@@ -680,8 +662,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "h" 'nil  ; hitting 'h' by accident kills all window arrangement
       )
 
-    (general-def
-      :keymaps 'ledger-mode-map
+    (general-def :keymaps 'ledger-mode-map
       :states 'normal
       :prefix "SPC"
       ;; "n" 'ledger-display-balance-at-point
@@ -695,8 +676,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "y" 'xc/ledger-kill-ring-save-current-transaction
       )
 
-    (general-def
-      :keymaps 'magit-status-mode-map
+    (general-def :keymaps 'magit-status-mode-map
       "S-<tab>" 'magit-section-cycle-global
       "<tab>" 'magit-section-toggle
       )
@@ -704,22 +684,19 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;; Disable mouse click on minibuffer from opening messages
     (general-def :keymaps 'minibuffer-inactive-mode-map [mouse-1] nil)
 
-    (general-def
-      :keymaps 'org-mode-map
+    (general-def :keymaps 'org-mode-map
       :states 'normal
       :prefix "SPC"
       "SPC" 'org-ctrl-c-ctrl-c
       "t" 'org-insert-structure-template
       )
 
-    (general-def
-      :keymaps 'org-mode-map
+    (general-def :keymaps 'org-mode-map
       "C-c h o" 'org-clock-out
       "C-c h i" 'org-clock-in
       "C-c h d" 'org-clock-display
       "C-c C--" 'org-ctrl-c-minus
       )
-
     )
 
   (if xc/debug (message "general.el")))
