@@ -541,7 +541,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       :states '(normal insert emacs)
       (general-chord "jk") 'xc/newline-without-break-of-line
       (general-chord "hh") 'evil-emacs-state
-      (general-chord "jj") 'evil-normal-state
+      (general-chord "HH") 'evil-insert-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
       "\M-Q" 'xc/unfill-paragraph
@@ -557,6 +557,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       ;; "C-o" 'xref-pop-marker-stack
       "C-o" 'evil-jump-backward
       "C-i" 'evil-jump-forward
+      )
+
+    (general-def :states '(insert)
+      "C-n" 'dabbrev-expand
       )
 
     (general-def :states '(normal insert emacs)
@@ -627,6 +631,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<f6>" 'xc/insert-breakpoint
       "<C-S-f10>" 'peut-gerer-set-command-to-current-file
       "<S-f10>" 'peut-gerer-buffer-file-to-shell
+      "<C-S-f7>" 'peut-gerer-set-command-to-current-file
+      "<S-f7>" 'peut-gerer-buffer-file-to-shell
       )
     (general-def :keymaps 'elpy-mode-map
       :states 'normal
