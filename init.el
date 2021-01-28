@@ -546,6 +546,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       )
 
     (general-def
+      :keymaps 'global-map
+      "C-a" 'xc/smart-beginning-of-line
+      "<home>" 'xc/smart-beginning-of-line
+      )
+
+    (general-def
       :states '(normal)
       ;; "C-o" 'dumb-jump-back  ; obsoleted
       ;; "C-o" 'xref-pop-marker-stack
@@ -1568,6 +1574,21 @@ provided, send entire line.  Default BUFF is that displayed in
           (end-of-line)
           (newline-and-indent))
       (error "Invalid selection"))))
+
+
+(defun xc/smart-beginning-of-line ()
+  "Move point to first non-whitespace character or to the beginning of the line.
+
+Move point to the first non-whitespace character on this line.
+If point was already at that position, move point to beginning of
+line.
+
+See URL `https://stackoverflow.com/a/145359'"
+  (interactive)
+  (let ((oldpos (point)))
+    (back-to-indentation)
+    (and (= oldpos (point))
+         (beginning-of-line))))
 
 
 (defun xc/switch-to-last-window ()
