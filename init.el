@@ -517,6 +517,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
                  (xc/kill-python)  ; kills aws cli commands
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
+      "C-c +" 'evil-numbers/inc-at-pt
+      "C-c -" 'evil-numbers/dec-at-pt
       "C-h j" 'describe-face  ; introspect colors
       "C-h C-f" 'find-function
       "C-h C-w" 'define-word-at-point ; masks define-no-warranty
@@ -785,6 +787,14 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (evil-lion-mode 1)
 
   (if xc/debug (message "evil-lion")))
+
+
+(use-package evil-numbers
+  :straight (:fork "excalamus/evil-numbers")
+  :after (:all evil)
+  :config
+
+  (if xc/debug (message "evil-numbers")))
 
 
 (use-package evil-surround
