@@ -511,6 +511,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
+      "<f7>" '(lambda() (interactive)
+                 (save-some-buffers t nil)
+                 (xc/kill-python)  ; kills aws cli commands
+                 (peut-gerer-send-command peut-gerer-command))
+      "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
