@@ -125,7 +125,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
          (ext-reg (concat "\\" ext "$")))
     (mapc load-it (directory-files dir nil ext-reg))))
 
-(xc/load-directory "~/.emacs.d/lisp/")
+(if (file-exists-p "~/.emacs.d/lisp/")
+    (xc/load-directory "~/.emacs.d/lisp/"))
 
 ;; load secret customizations which aren't versioned here
 (if (eq system-type 'windows-nt)
