@@ -1082,6 +1082,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "nameless")))
 
 
+(use-package nov
+  :init
+  :config
+
+  (if xc/debug (message "nov")))
+
+
 ;; This step works some magic.  Not even going to attempt building
 ;; from a fork. For details, see URL
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
