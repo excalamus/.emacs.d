@@ -426,6 +426,14 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "comment-dwim-2")))
 
 
+(use-package csound-mode
+  :after (:all org)
+  :straight (:fork "excalamus/csound-mode")
+  :config
+
+  (if xc/debug (message "csound-mode")))
+
+
 (use-package define-word
   :straight (:fork "excalamus/define-word")
   :config
