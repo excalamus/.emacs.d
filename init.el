@@ -200,7 +200,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(display-time)
+;; (display-time)
 
 (setq global-hl-line-sticky-flag t)
 (global-hl-line-mode 1)
@@ -663,7 +663,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<escape>" 'evil-normal-state
       )
 
-    (general-def :keymaps 'helm-map "<escape>"  'helm-keyboard-quit)
+    (general-def :keymaps 'helm-map
+      "<escape>"  'helm-keyboard-quit
+      ;; "<down>" 'helm-follow-action-forward
+      ;; "<up>" 'helm-follow-action-backward
+      )
 
     ;; How to generate Info docs for Python (and others)!
     ;; https://stackoverflow.com/a/65100142/5065796
@@ -1281,11 +1285,19 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (use-package sql
   :config
-  ;; load project profiles, kept here versus lisp/ for security sake
-  (if (eq system-type 'windows-nt)
-      (load "~/sql-connections.el"))
+  ;; ;; load project profiles, kept here versus lisp/ for security sake
+  ;; (if (eq system-type 'windows-nt)
+  ;;     (load "~/sql-connections.el"))
+  (setq sql-postgres-login-params nil)
 
   (if xc/debug (message "sql")))
+
+
+(use-package sql-indent
+  :straight (:fork "excalamus/emacs-sql-indent")
+  :config
+
+  (if xc/debug (message "emacs-sql-indent")))
 
 
 (use-package sx
@@ -1439,6 +1451,15 @@ Default DUP name is `#<buffer-name>#'."
          (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe" "-q")))
         (t (error "Invalid arg")))
   (set-process-query-on-exit-flag proc nil))
+
+
+(defun xc/highlight-current-line ()
+  (interactive)
+  (let ((regexp
+         (regexp-quote
+          (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+        (face (hi-lock-read-face-name)))
+    (highlight-lines-matching-regexp regexp face)))
 
 
 (defun xc/Info-current-node-to-url (&optional arg)
