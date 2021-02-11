@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: print flush
+# key: printf
+# group: Excalamus
+# --
+print(${values}, flush=True)
