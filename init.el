@@ -125,7 +125,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
          (ext-reg (concat "\\" ext "$")))
     (mapc load-it (directory-files dir nil ext-reg))))
 
-(xc/load-directory "~/.emacs.d/lisp/")
+(if (file-exists-p "~/.emacs.d/lisp/")
+    (xc/load-directory "~/.emacs.d/lisp/"))
 
 ;; load secret customizations which aren't versioned here
 (if (eq system-type 'windows-nt)
@@ -423,6 +424,14 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
 
   (if xc/debug (message "comment-dwim-2")))
+
+
+(use-package csound-mode
+  :after (:all org)
+  :straight (:fork "excalamus/csound-mode")
+  :config
+
+  (if xc/debug (message "csound-mode")))
 
 
 (use-package define-word
@@ -1075,6 +1084,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
 
   (if xc/debug (message "nameless")))
+
+
+(use-package nov
+  :init
+  :config
+
+  (if xc/debug (message "nov")))
 
 
 ;; This step works some magic.  Not even going to attempt building
