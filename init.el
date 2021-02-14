@@ -318,6 +318,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (set-face-attribute 'bm-face nil :background "light cyan" :overline 'unspecified :foreground 'unspecified)
   (set-face-attribute 'xc/hi-comint nil :background "light gray"))
 
+;; ;; If using another theme, such as with a different Emacs instance
+;; ;; (`xc/emacs-standalone' with tango-dark, set custom with:
+
+;; (set-face-attribute 'hl-line nil :background "gray36" :foreground 'unspecified)
+;; (set-face-attribute 'highlight nil :background "orange red" :foreground 'unspecified)
+
 (xc/add-theme-hook xc/theme-dark #'xc/dark-theme-hook)
 (xc/add-theme-hook xc/theme-light #'xc/light-theme-hook)
 
