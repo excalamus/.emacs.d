@@ -104,6 +104,10 @@ permanent binding.")
     "Qt3DRender" "QtPositioning" "QtLocation" "QtSensors" "QtScxml")
   "List of Qt modules for use in `xc/pyside-lookup'.")
 
+;; "→"
+(defvar xc/plover-enabled nil
+  "State of whether Plover is active.")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; settings
@@ -477,12 +481,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-z"
       "C-x C-z")
 
-    (general-define-key :keymaps 'key-translation-map
-     ;; "M-x" "M-q"  ; dvp
-     ;; "M-q" "M-x"  ; dvp
-     "<next>" "<tab>"
-     "<prior>" "<escape>"
-     )
+    ;; (general-define-key :keymaps 'key-translation-map
+    ;;  ;; "M-x" "M-q"  ; dvp
+    ;;  ;; "M-q" "M-x"  ; dvp
+    ;;  ;; "SPC" "<tab>"
+    ;;  ;; "<prior>" "<escape>"
+    ;;  )
 
     (if (eq xc/device 'windows)
         (general-def :keymaps 'override
@@ -615,6 +619,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "s" 'save-buffer
       "t" 'xc/open-terminal
       "x" 'eval-expression
+      "m" '(lambda () (interactive) (message "Hello world"))
       )
 
     (general-define-key :keymaps 'comint-mode-map
@@ -1708,6 +1713,18 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
                  "killall -9 emacs" ; probably won't kill server administered by systemd
                "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
     (shell-command cmd)))
+
+
+(defun xc/toggle-plover ()
+  "Toggle whether Plover is active."
+  (interactive)
+  (if xc/plover-enabled
+      (progn
+        (setq xc/plover-enabled nil)
+        (message "Plover disabled"))
+    (progn
+      (setq xc/plover-enabled t)
+      (message "Plover enabled"))))
 
 
 (defun xc/toggle-comment-contiguous-lines ()
