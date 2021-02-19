@@ -258,8 +258,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; Theme advice approach modified from
 ;; https://www.greghendershott.com/2017/02/emacs-themes.html
 (use-package base16-theme
+  :after (:all org)
   :straight (:fork "excalamus/base16-emacs"))
 (use-package zenburn-theme
+  :after (:all org)
   :straight (:fork "excalamus/zenburn-emacs"))
 
 (defun xc/disable-all-themes ()
@@ -370,6 +372,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package yasnippet
+  :after (:all org)
   :straight (:fork "excalamus/yasnippet")
   :config
   (yas-global-mode)
@@ -382,6 +385,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; first, throwing an error about two build recipes.  See URL
 ;; `https://github.com/raxod502/straight.el/issues/518'
 (use-package markdown-mode
+  :after (:all org)
   :straight (:fork "excalamus/markdown-mode")
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -398,6 +402,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package ace-window
+  :after (:all org)
   :straight (:fork "excalamus/ace-window")
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -407,6 +412,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package ag
+  :after (:all org)
   :straight (:fork "excalamus/ag.el")
   :config
 
@@ -414,6 +420,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package bm
+  :after (:all org)
   :straight (:fork "excalamus/bm")
   :init
   :config
@@ -423,6 +430,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package csv-mode
+  :after (:all org)
   :config
 
   (if xc/debug (message "csv-mode")))
@@ -445,6 +453,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package define-word
+  :after (:all org)
   :straight (:fork "excalamus/define-word")
   :config
 
@@ -452,8 +461,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package dap-mode
+  :after (:all markdown-mode org)
   :straight (:fork "excalamus/dap-mode")
-  :after (:all markdown-mode)
   :config
   (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
@@ -462,6 +471,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package dumb-jump
+  :after (:all org)
   :straight (:fork "excalamus/dumb-jump")
   :config
 
@@ -469,6 +479,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package general
+  :after (:all org)
   :straight (:fork "excalamus/general.el")
   :config
   (require 'ffap)
@@ -740,8 +751,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package elpy
+  :after (:all helm key-chord use-package-chords org)
   :straight (:fork "excalamus/elpy")
-  :after (:all helm key-chord use-package-chords)
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
   (add-hook 'elpy-mode-hook #'hs-minor-mode)
@@ -773,6 +784,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package ess
+  :after (:all org)
   :straight (:fork "excalamus/ess")
   :init (require 'ess-site)
   :config
@@ -781,9 +793,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package evil
+  :after (:all dumb-jump key-chord sx org)
   :straight (:fork "excalamus/evil")
   ;; :after (:all dumb-jump key-chord nov sx)
-  :after (:all dumb-jump key-chord sx)
   :config
   (evil-mode)
   (evil-set-initial-state 'help-mode 'emacs)
@@ -816,8 +828,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package evil-lion
+  :after (:all evil org)
   :straight (:fork "excalamus/evil-lion")
-  :after (:all evil)
   :config
   (evil-lion-mode 1)
 
@@ -825,16 +837,16 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package evil-numbers
+  :after (:all evil org)
   :straight (:fork "excalamus/evil-numbers")
-  :after (:all evil)
   :config
 
   (if xc/debug (message "evil-numbers")))
 
 
 (use-package evil-surround
+  :after (:all evil org)
   :straight (:fork "excalamus/evil-surround")
-  :after (:all evil)
   :config
   (global-evil-surround-mode 1)
 
@@ -842,6 +854,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package expand-region
+  :after (:all org)
   :straight (:fork "excalamus/expand-region.el")
   :config
 
@@ -849,6 +862,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package flycheck
+  :after (:all org)
   :straight (:fork "excalamus/flycheck")
   :config
 
@@ -856,6 +870,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package free-keys
+  :after (:all org)
   :straight (:fork "excalamus/free-keys")
   :config
 
@@ -863,6 +878,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package git-timemachine
+  :after (:all org)
   :straight (:host github :repo "excalamus/git-timemachine")
   :config
 
@@ -870,6 +886,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package helm
+  :after (:all org)
   :straight (:fork "excalamus/helm")
   :config
 
@@ -877,8 +894,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package helm-swoop
+  :after (:all helm org)
   :straight (:fork "excalamus/helm-swoop")
-  :after (:all helm)
   :config
 
   (defun xc/-reset-linum-hack ()
@@ -913,6 +930,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; bundled with emacs
 (use-package hi-lock
+  :after (:all org)
   :init
   (defun xc/toggle-global-hl-line-sticky-flag ()
     "Toggle whether highlighted line persists when switching windows.
@@ -949,6 +967,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package htmlize
+  :after (:all org)
   :straight (:fork "excalamus/emacs-htmlize")
   :config
 
@@ -956,6 +975,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package iedit
+  :after (:all org)
   :straight (:fork "excalamus/iedit")
   :config
 
@@ -965,6 +985,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; https://sourceforge.net/projects/ezwinports/files/
 ;; https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/EZWinPorts.html
 (use-package ispell
+  :after (:all org)
   :if (eq system-type 'windows-nt)
   :config
   (setq ispell-program-name "C:/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe")
@@ -974,6 +995,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package keycast
+  :after (:all org)
   :straight (:fork "excalamus/keycast")
   :config
 
@@ -981,6 +1003,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package language-detection
+  :after (:all org)
   :straight (:fork "excalamus/language-detection.el")
   :config
   ;; (require 'cl-lib)
@@ -1034,6 +1057,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package ledger-mode
+  :after (:all org)
   :straight (:fork "excalamus/ledger-mode")
   :defer t
   :config
@@ -1044,8 +1068,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package magit
+  :after (:all evil org)
   :straight (:fork "excalamus/magit")
-  :after (:all evil)
   :init
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide)))
@@ -1081,7 +1105,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package markdown-toc
-  :after (:all markdown-mode)
+  :after (:all markdown-mode org)
   :straight (:fork "excalamus/markdown-toc")
   :config
 
@@ -1089,6 +1113,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package nameless
+  :after (:all org)
   :straight (:fork "excalamus/nameless")
   :init
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
@@ -1098,6 +1123,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package nov
+  :after (:all org)
   :init
   :config
 
@@ -1108,7 +1134,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; from a fork. For details, see URL
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
-  :after (:all helm helm-swoop)
   :init
   (add-to-list 'load-path
                (expand-file-name
@@ -1174,6 +1199,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package peut-publier
+  :after (:all org)
   :straight (:repo "https://github.com/excalamus/peut-publier.git")
   :config
 
@@ -1181,8 +1207,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; 
 (use-package peut-gerer
+  :after (:all right-click-context org)
   :straight (:repo "https://github.com/excalamus/peut-gerer.git" :branch "main")
-  :after (:all right-click-context)
   :config
 
   ;; For privacy's sake, define `peut-gerer-project-alist' in secret-lisp.el:
@@ -1235,6 +1261,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package qml-mode
+  :after (:all org)
   :straight (:fork "excalamus/qml-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
@@ -1243,6 +1270,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package right-click-context
+  :after (:all org)
   :straight (:fork "excalamus/right-click-context")
   :config
   (right-click-context-mode 1)
@@ -1251,6 +1279,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package rg
+  :after (:all org)
   :straight (:fork "excalamus/rg.el")
   :config
 
@@ -1259,6 +1288,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; skeeto fork
 (use-package simple-httpd
+  :after (:all org)
   :straight (:fork "excalamus/emacs-web-server")
   :config
 
@@ -1266,6 +1296,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package smartparens
+  :after (:all org)
   :straight (:fork "excalamus/smartparens")
   :config
   (require 'smartparens-config)
@@ -1279,6 +1310,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package string-inflection
+  :after (:all org)
   :straight (:fork "excalamus/string-inflection")
   :config
   (defun xc/-string-inflection-style-cycle-function (str)
@@ -1311,6 +1343,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package sql
+  :after (:all org)
   :config
   ;; ;; load project profiles, kept here versus lisp/ for security sake
   ;; (if (eq system-type 'windows-nt)
@@ -1321,6 +1354,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package sql-indent
+  :after (:all org)
   :straight (:fork "excalamus/emacs-sql-indent")
   :config
 
@@ -1328,6 +1362,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package sx
+  :after (:all org)
   :straight (:fork "excalamus/sx.el")
   :config
 
@@ -1336,6 +1371,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package web-mode
+  :after (:all org)
   :straight (:fork "excalamus/web-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
@@ -1344,6 +1380,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package yaml-mode
+  :after (:all org)
   :straight (:fork "excalamus/yaml-mode")
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
