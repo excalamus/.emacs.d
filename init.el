@@ -77,10 +77,10 @@
 (defvar xc/device
   (cond ((file-directory-p "C:\\") 'windows)
         ((file-directory-p "/home/") 'gnu/linux)
-        ((file-directory-p "/data/data/com.termux/") 'terminal))
+        ((file-directory-p "/data/data/com.termux/") 'termux))
   "Current device.
 
-Either 'windows, 'gnu/linux, or 'terminal.
+Either 'windows, 'gnu/linux, or 'termux.
 
 `system-type' doesn't differentiate X from terminal.
 `window-system' gets assigned after init loads.")
@@ -298,7 +298,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (defun xc/dark-theme-hook ()
   "Run after loading dark theme."
   ;; zenburn
-  (if (eq xc/device 'terminal)
+  (if (eq xc/device 'termux)
       (set-face-attribute 'mode-line-inactive nil :background "color-236"))
   (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
   (setq evil-insert-state-cursor '("gray" bar))
@@ -534,6 +534,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-c +" 'evil-numbers/inc-at-pt
       "C-c -" 'evil-numbers/dec-at-pt
       "C-h j" 'describe-face  ; introspect colors
+      "C-h R" 'elisp-index-search ; C-h r is 'info-emacs-manual by default
       "C-h C-f" 'find-function
       "C-h C-w" 'define-word-at-point ; masks define-no-warranty
       "C-x a d" 'xc/define-abbrev
@@ -783,7 +784,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq evil-undo-system 'undo-redo)
 
   ;; Coordinate states with cursor color
-  (if (not (eq xc/device 'terminal))
+  (if (not (eq xc/device 'termux))
       (progn
         (setq evil-emacs-state-cursor '("SkyBlue2" bar))
         (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
@@ -1024,6 +1025,24 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
   (setq ledger-post-amount-alignment-column 60)
   (setq ledger-report-auto-refresh-sticky-cursor t)
+  (setq ledger-highlight-xact-under-point nil)
+
+  (defvar xc/ledger-highlight-regexp nil
+    "Regexp for matching lines in Ledger Report buffer.")
+
+  (defun xc/set-ledger-highlight-regexp (reg)
+    "Set `xc/ledger-highlight-regexp' to REG."
+    (interactive
+     (list (read-string "Regexp: ")))
+    (let ((quoted (regexp-quote reg)))
+      (setq xc/ledger-highlight-regexp quoted)
+      (message "Set `xc/ledger-highlight-regexp' to %s"
+               xc/ledger-highlight-regexp)))
+
+  (add-hook 'ledger-report-after-report-hook
+            (lambda () (highlight-lines-matching-regexp
+                        xc/ledger-highlight-regexp
+                        'hi-yellow)))
 
   (if xc/debug (message "ledger-mode")))
 
@@ -1093,6 +1112,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; from a fork. For details, see URL
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
+  ;; :disabled
   :after (:all helm helm-swoop)
   :init
   (add-to-list 'load-path
@@ -1447,14 +1467,28 @@ Default DUP name is `#<buffer-name>#'."
 
 
 (defun xc/emacs-standalone (&optional arg)
-  "Start standalone instance of Emacs."
+  "Start standalone instance of Emacs.
+
+Load Emacs without init file when called interactively.
+
+\(fn\)"
   (interactive "p")
   (cond ((eql arg 1)
-         (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe")))
+         (cond ((eq xc/device 'windows)
+                (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe")))
+               ((eq xc/device 'gnu/linux)
+                (setq proc (start-process "emacs" nil "/usr/bin/emacs")))
+               ((eq xc/device 'termux)
+                (setq (start-process "emacs" nil "/data/data/com.termux/files/usr/bin/emacs")))))
         ((eql arg 4)
-         (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe" "-q")))
-        (t (error "Invalid arg")))
-  (set-process-query-on-exit-flag proc nil))
+         (cond ((eq xc/device 'windows)
+                (setq proc (start-process "cmd" nil "cmd.exe" "/C" "start" "C:/emacs-27.1-x86_64/bin/runemacs.exe" "-q")))
+               ((eq xc/device 'gnu/linux)
+                (setq proc (start-process "emacs" nil "/usr/bin/emacs" "--no-init-file")))
+               ((eq xc/device 'termux)
+                (setq (start-process "emacs" nil "/data/data/com.termux/files/usr/bin/emacs" "--no-init-file")))))
+         (t (error "Invalid arg")))
+        (set-process-query-on-exit-flag proc nil))
 
 
 (defun xc/Info-current-node-to-url (&optional arg)
@@ -1722,7 +1756,8 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
   "Kill transaction surrounding POS."
   (interactive "d")
   (let ((bounds (ledger-navigate-find-xact-extents pos)))
-    (kill-region (car bounds) (cadr bounds))))
+    (kill-region (car bounds) (cadr bounds))
+    (message "Killed current transaction")))
 
 
 (defun xc/ledger-kill-ring-save-current-transaction (pos)
@@ -1730,7 +1765,8 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
 killing."
   (interactive "d")
   (let ((bounds (ledger-navigate-find-xact-extents pos)))
-    (kill-ring-save (car bounds) (cadr bounds))))
+    (kill-ring-save (car bounds) (cadr bounds))
+    (message "Placed on kill ring")))
 
 (defun xc/balance-at-point ()
   "Get balance of account at point"
