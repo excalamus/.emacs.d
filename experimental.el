@@ -178,3 +178,50 @@ provided, send entire line.  Default BUFF is that displayed in
                                                        (newline-and-indent))
                                                      )))
     )
+
+- [pywebchannel](https://github.com/MenloSystems/pywebchannel): qwebchannel.js implemented in Python
+
+
+(defun org-fix-markdown-links ()
+  "Fix ill-formatted internal links.
+E.g. replace [[*TODO Headline][headline]] by [[*Headline][headline]].
+Go through the buffer and ask for the replacement."
+  (interactive)
+  (visible-mode 1)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((regexp markdown-regex-link-inline))
+      (while (re-search-forward regexp nil t)
+        (when (and (save-excursion
+                     (goto-char (match-beginning 0))
+                     (looking-at-p org-link-bracket-re))
+                   (y-or-n-p "Fix link (remove TODO keyword)? "))
+          (replace-match "[[*")))))
+  (visible-mode -1))
+
+
+
+;; https://emacs.stackexchange.com/a/16513
+(defun my-indent ()
+  (let ((last-indent (if (> (line-number-at-pos) 1)
+                         (save-excursion
+                           (previous-line)
+                           (back-to-indentation)
+                           (current-column))
+                       0)))
+    (save-excursion
+      (back-to-indentation)
+      (if (and (eq last-command this-command)
+               (> (point) (line-beginning-position)))
+          (delete-region (max (line-beginning-position) (- (point) 4)) (point))
+        (while (< (current-column) (+ 4 last-indent))
+          (insert " "))))
+    (if (< (point) (save-excursion (back-to-indentation) (point)))
+        (back-to-indentation))))
+
+
+(defun my-sql-mode-hook ()
+  (setq indent-line-function 'my-indent))
+
+(add-hook 'sql-mode-hook 'my-sql-mode-hook)
+(remove-hook 'sql-mode-hook 'my-sql-mode-hook)
