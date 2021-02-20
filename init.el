@@ -1227,6 +1227,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "rg.el")))
 
 
+(use-package slime
+  :straight (:fork "excalamus/slime")
+  :config
+  (setq inferior-lisp-program "/data/data/com.termux/files/usr/bin/ecl")
+  ;; (setq inferior-lisp-program "ecl")
+
+  (if xc/debug (message "slime")))
+
+
 ;; skeeto fork
 (use-package simple-httpd
   :straight (:fork "excalamus/emacs-web-server")
