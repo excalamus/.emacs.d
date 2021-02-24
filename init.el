@@ -1153,6 +1153,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; from a fork. For details, see URL
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
+  ;; :straight (:type built-in)
   :init
   (add-to-list 'load-path
                (expand-file-name
