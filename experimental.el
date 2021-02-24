@@ -225,3 +225,19 @@ Go through the buffer and ask for the replacement."
 
 (add-hook 'sql-mode-hook 'my-sql-mode-hook)
 (remove-hook 'sql-mode-hook 'my-sql-mode-hook)
+
+;; https://stackoverflow.com/a/14490054
+(defun my-keymap-symbol (keymap)
+  "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
+  (catch 'gotit
+    (mapatoms (lambda (sym)
+                (and (boundp sym)
+                     (eq (symbol-value sym) keymap)
+                     (not (eq sym 'keymap))
+                     (throw 'gotit sym))))))
+
+;; in *scratch*:
+(defun my-get-keymap-symbol ()
+  "Get keymap of current local map."
+  (interactive)
+  (message "%s" (my-keymap-symbol (current-local-map))))
