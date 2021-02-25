@@ -195,6 +195,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
+(if (eq xc/device 'termux) (setq browse-url-browser-function 'eww-browse-url))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
@@ -1318,13 +1320,18 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "rg.el")))
 
 
-(use-package slime
-  :straight (:fork "excalamus/slime")
-  :config
-  (setq inferior-lisp-program "/data/data/com.termux/files/usr/bin/ecl")
-  ;; (setq inferior-lisp-program "ecl")
+;; (use-package slime
+;;   :straight (:fork "excalamus/slime")
+;;   :config
+;;   (setq inferior-lisp-program "ecl")
 
-  (if xc/debug (message "slime")))
+;;   (if xc/debug (message "slime")))
+(if (eq xc/device 'termux)
+  (progn
+    (load (expand-file-name "~/quicklisp/slime-helper.el"))
+    (setq inferior-lisp-program "ecl")
+    (setq common-lisp-hyperspec-root "file:///data/data/com.termux/files/home/HyperSpec/")
+    (if xc/debug (message "slime"))))
 
 
 ;; skeeto fork
