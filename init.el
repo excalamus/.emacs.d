@@ -195,8 +195,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
-(add-hook 'eww-after-render-hook 'evil-emacs-state)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
@@ -801,11 +799,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (evil-mode)
   (evil-set-initial-state 'help-mode 'emacs)
   (evil-set-initial-state 'Info-mode 'emacs)
+  (evil-set-initial-state 'elpher-mode 'emacs)
+  (evil-set-initial-state 'eww-mode 'emacs)
   ;; (evil-set-initial-state 'nov-mode 'emacs)
   (evil-set-initial-state 'magit-repolist-mode 'emacs)
+  (evil-set-initial-state 'rg-mode 'emacs)
   (evil-set-initial-state 'sx-mode 'emacs)
   (evil-set-initial-state 'sx-question-mode 'emacs)
   (evil-set-initial-state 'sx-question-list-mode 'emacs)
+  (evil-set-initial-state 'xref--xref-buffer-mode 'emacs)
 
   ;; https://github.com/emacs-evil/evil/issues/1074
   (setq evil-undo-system 'undo-redo)
