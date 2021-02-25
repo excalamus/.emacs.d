@@ -476,6 +476,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "dumb-jump")))
 
 
+(use-package gemini-mode
+  :after (:all org)
+  :straight (:repo "http://git.carcosa.net/jmcbray/gemini.el.git"))
+
+
 (use-package general
   :after (:all org)
   :straight (:fork "excalamus/general.el")
@@ -747,6 +752,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     )
 
   (if xc/debug (message "general.el")))
+
+
+(use-package elpher
+  :after (:all org)
+  :straight (:repo "git://thelambdalab.xyz/elpher.git"))
 
 
 (use-package elpy
