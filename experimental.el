@@ -303,3 +303,10 @@ compilation-error-regexp-alist-alist."
                e))))
   (set (make-local-variable 'compilation-error-regexp-alist)
        errors))
+
+(defun xc/experimental-csv ()
+  (interactive)
+  (csv-align-set-column-width 1 9) ; truncate year from date
+  (csv-align-set-column-width 2 75) ; description
+  (csv-align-set-column-width 5 0) ; hide category
+  )
