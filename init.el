@@ -720,6 +720,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       :states 'normal
       :prefix "SPC"
       ;; "n" 'ledger-display-balance-at-point
+      "d" '(lambda () (interactive) (scroll-other-window-down 1))
+      "u" '(lambda () (interactive) (scroll-other-window 1))
       "n" 'xc/balance-at-point
       "r" 'ledger-report
       "a" 'ledger-post-align-dwim
@@ -728,6 +730,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       ";" 'xc/toggle-comment-contiguous-lines
       "k" 'xc/ledger-kill-current-transaction
       "y" 'xc/ledger-kill-ring-save-current-transaction
+      "[" 'evil-numbers/dec-at-pt
+      "]" 'evil-numbers/inc-at-pt
+      "g" 'bm-common-next
       )
 
     (general-def :keymaps 'magit-status-mode-map
@@ -1080,7 +1085,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq ledger-report-auto-refresh-sticky-cursor t)
   (setq ledger-highlight-xact-under-point nil)
 
-  (defvar xc/ledger-highlight-regexp nil
+  (defvar xc/ledger-highlight-regexp ""
     "Regexp for matching lines in Ledger Report buffer.")
 
   (defun xc/set-ledger-highlight-regexp (reg)

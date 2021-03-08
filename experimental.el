@@ -241,3 +241,10 @@ Go through the buffer and ask for the replacement."
   "Get keymap of current local map."
   (interactive)
   (message "%s" (my-keymap-symbol (current-local-map))))
+
+(defun xc/experimental-csv ()
+  (interactive)
+  (csv-align-set-column-width 1 9) ; truncate year from date
+  (csv-align-set-column-width 2 75) ; description
+  (csv-align-set-column-width 5 0) ; hide category
+  )
