@@ -241,3 +241,65 @@ Go through the buffer and ask for the replacement."
   "Get keymap of current local map."
   (interactive)
   (message "%s" (my-keymap-symbol (current-local-map))))
+
+(defun xc/xref-find-definitions ()
+  "Wrap `xref-find-definitions' and add to evil jump list."
+  ;; goto definition
+  (evil--jumps-push)
+  (xref-find-definitions))
+
+(defun xc/xref-find-definitions-other-window ()
+  "Wrap `xref-find-definitions' and add to evil jump list."
+  ;; goto definition
+  (evil--jumps-push)
+  (xref-find-definitions-other-window))
+
+(defun my-find-file-at-point-goto-line (ret)
+  "Ignore RET and jump to line number given in `ffap-string-at-point'."
+  (interactive)
+  (when (and
+     (stringp ffap-string-at-point)
+     (string-match ":\\([0-9]+\\)\\'" ffap-string-at-point))
+    (goto-char (point-min))
+    (forward-line (string-to-number (match-string 1 ffap-string-at-point))))
+  (message "%s" ret)
+  ;; ret
+  )
+
+;; https://stackoverflow.com/a/2122436/5065796
+;; if compilation-shell-minor-mode is on, then these regexes
+;; will make errors linkable
+(defun matt-add-global-compilation-errors (list)
+  (dolist (x list)
+    (add-to-list 'compilation-error-regexp-alist (car x))
+    (setq compilation-error-regexp-alist-alist
+      (cons x
+            (assq-delete-all (car x)
+                             compilation-error-regexp-alist-alist)))))
+
+(matt-add-global-compilation-errors
+ `(
+   (matt-python ,(concat "^ *File \\(\"?\\)\\([^,\" \n    <>]+\\)\\1"
+                    ", lines? \\([0-9]+\\)-?\\([0-9]+\\)?")
+           2 (3 . 4) nil 2 2)
+   (matt-pdb-stack ,(concat "^>?[[:space:]]*\\(\\([-_./a-zA-Z0-9 ]+\\)"
+                       "(\\([0-9]+\\))\\)"
+                       "[_a-zA-Z0-9]+()[[:space:]]*->")
+              2 3 nil 0 1)
+   (matt-python-unittest-err "^  File \"\\([-_./a-zA-Z0-9 ]+\\)\", line \\([0-9]+\\).*" 1 2)
+   )
+ )
+
+(defun matt-set-local-compilation-errors (errors)
+  "Set the buffer local compilation errors.
+
+Ensures than any symbols given are defined in
+compilation-error-regexp-alist-alist."
+  (dolist (e errors)
+     (when (symbolp e)
+      (unless (assoc e compilation-error-regexp-alist-alist)
+        (error (concat "Error %s is not listed in "
+                       "compilation-error-regexp-alist-alist")
+               e))))
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       errors))

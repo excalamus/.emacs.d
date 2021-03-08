@@ -2,5 +2,6 @@
 # name: print flush
 # key: printf
 # group: Excalamus
+# expand-env: ((yas-after-exit-snippet-hook #'bm-toggle))
 # --
-print(${values}, flush=True)
+print('${1:HERE}', flush=True)

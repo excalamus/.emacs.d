@@ -594,10 +594,14 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       )
 
     (general-def :states '(normal)
-      ;; "C-o" 'dumb-jump-back  ; obsoleted
-      ;; "C-o" 'xref-pop-marker-stack
-      "C-o" 'evil-jump-backward
-      "C-i" 'evil-jump-forward
+      ;; ;; "C-o" 'dumb-jump-back  ; obsoleted
+      ;; ;; "C-o" 'xref-pop-marker-stack
+      ;; "C-o" 'evil-jump-backward
+      ;; "C-i" 'evil-jump-forward
+
+      "gd" 'xref-find-definitions
+      "gD" 'xref-find-definitions-other-window
+      "gF" 'xref-find-references
       )
 
     (general-def :states '(insert)
@@ -617,6 +621,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-6" 'xref-find-definitions-other-window
       "M-]" 'dumb-jump-go
       "M-6" 'dumb-jump-go-other-window
+
+      ;; Ugh, C-i is also TAB
+      ;; "M-o" 'evil-jump-backward
+      ;; "M-i" 'evil-jump-forward
+      "C-o" 'xref-pop-marker-stack
       )
 
     (general-def :states '(normal visual)
@@ -807,6 +816,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :after (:all dumb-jump key-chord sx org)
   :straight (:fork "excalamus/evil")
   ;; :after (:all dumb-jump key-chord nov sx)
+  :init
+  ;; C-i is TAB, so setting this makes TAB evil-jump-forward
+  (setq evil-want-C-i-jump nil)
   :config
   (evil-mode)
   (evil-set-initial-state 'help-mode 'emacs)
@@ -1425,6 +1437,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
   (if xc/debug (message "web-mode")))
+
+
+(use-package xref
+  :config
+  (setq xref-prompt-for-identifier
+        '(not xref-find-definitions
+              xref-find-definitions-other-window
+              xref-find-definitions-other-frame
+              xref-find-references)))
 
 
 (use-package yaml-mode
