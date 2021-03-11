@@ -1286,6 +1286,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
         '((lambda (x) (funcall 'pyvenv-deactivate))
           pyvenv-activate))
 
+  ;; disable sending to shell while in shell because it would only be
+  ;; useful for concatenating duplicates of a region; if you have
+  ;; region selected and you send that region to the current buffer,
+  ;; the region appears immediately after the region.
   (add-to-list 'right-click-context-global-menu-tree
                '("Send region to shell"
                  :call (peut-gerer-send-region)
@@ -1926,6 +1930,12 @@ killing."
   "Activate conda venv."
   (interactive)
   (insert "C:\\Users\\mtrzcinski\\Anaconda3\\condabin\\conda.bat activate "))
+
+
+(defun xc/mamba-activate ()
+  "Activate mamba venv."
+  (interactive)
+  (insert "C:\\python\\miniconda38\\condabin\\mamba.bat activate "))
 
 
 (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
