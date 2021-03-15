@@ -548,13 +548,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-<f2>" 'bm-toggle
       "<f7>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (xc/kill-python)  ; kills aws cli commands
+                 (if xc/kill-python-p
+                     (xc/kill-python))  ; kills aws cli commands
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (xc/kill-python)  ; kills aws cli commands
+                 (if xc/kill-python-p
+                     (xc/kill-python))  ; kills aws cli commands
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-c +" 'evil-numbers/inc-at-pt
@@ -1924,6 +1926,21 @@ killing."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; extension-python
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defvar xc/kill-python-p nil
+  "Will Python be killed?")
+
+
+(defun xc/toggle-kill-python ()
+  (interactive)
+  (if xc/kill-python-p
+      (progn
+        (setq xc/kill-python-p nil)
+        (message "Python will be spared"))
+    (progn
+      (setq xc/kill-python-p t)
+      (message "Python will be killed henceforth"))))
 
 
 (defun xc/conda-activate ()
