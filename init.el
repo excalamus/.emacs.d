@@ -1164,7 +1164,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq ledger-report-auto-refresh-sticky-cursor t)
   (setq ledger-highlight-xact-under-point nil)
 
-  (defvar xc/ledger-highlight-regexp ""
+  (defvar xc/ledger-highlight-regexp "dummy"
     "Regexp for matching lines in Ledger Report buffer.")
 
   (defun xc/set-ledger-highlight-regexp (reg)
