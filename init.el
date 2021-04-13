@@ -372,15 +372,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package yasnippet
-  :after (:all org)
-  :straight (:fork "excalamus/yasnippet")
-  :config
-  (yas-global-mode)
-
-  (if xc/debug (message "yasnippet")))
-
-
 ;; Way more packages use markdown-mode than you might expect.  When
 ;; put in alphabetical order, one of these other packages builds it
 ;; first, throwing an error about two build recipes.  See URL
@@ -400,6 +391,16 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   ;; (define-key minibuffer-local-must-match-map " " nil)
 
   (if xc/debug (message "markdown-mode")))
+
+
+;; ...and same with yasnippet
+(use-package yasnippet
+  :after (:all org)
+  :straight (:fork "excalamus/yasnippet")
+  :config
+  (yas-global-mode)
+
+  (if xc/debug (message "yasnippet")))
 
 
 (use-package ace-window
