@@ -1847,7 +1847,7 @@ With ARG (\\[universal-argument]) maximize frame."
   "Renames both current buffer and file it's visiting to NEW-NAME.
 
 See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
-  (interactive "sNew name: ")
+  (interactive "GNew name: ")
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
     (if (not filename)
