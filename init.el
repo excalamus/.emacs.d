@@ -20,7 +20,7 @@
 ;; `https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git'
 
   ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
-                                        ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
+    ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; debug
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
