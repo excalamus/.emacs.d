@@ -590,6 +590,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "S-<f1>" 'xc/on-demand-window-set
       "C-<f1>" 'ace-window
       "C-=" 'iedit-mode
+      "<pause>" 'xc/punch-timecard
       )
 
     (general-def :keymaps 'override
@@ -1764,6 +1765,26 @@ the cursor down."
   (let ((oldpos (point)))
     (end-of-line)
     (newline-and-indent)))
+
+
+(defun xc/punch-timecard ()
+  "Clock in or clock out"
+  (interactive)
+  (if (not (get-buffer "timecard.org"))
+      (progn
+        (find-file "c:/Users/mtrzcinski/Documents/notes/timecard.org")
+        (previous-buffer)))
+  (with-current-buffer "timecard.org"
+    (let ((buffer-save-without-query t))
+      (if (org-clocking-p)
+          (progn
+            (org-clock-out)
+            (setq result "Clocked out"))
+        (progn
+          (org-clock-in)
+          (setq result "Clocked in")))
+      (save-buffer)
+      (message "%s" result))))
 
 
 (defun xc/on-demand-window-set ()
