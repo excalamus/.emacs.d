@@ -721,6 +721,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-c o" 'elpy-occur-definitions
       "<apps>" 'xc/kill-python
       "<f6>" 'xc/insert-breakpoint
+      "S-<f6>" '(lambda () (interactive) (xc/insert-breakpoint "breakpoint()")) ; pdb
       "<C-S-f10>" 'peut-gerer-set-command-to-current-file
       "<S-f10>" 'peut-gerer-buffer-file-to-shell
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
@@ -2055,12 +2056,13 @@ killing."
 
 (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
 
-(defun xc/insert-breakpoint ()
+(defun xc/insert-breakpoint (&optional string)
   (interactive)
-  (xc/newline-without-break-of-line)
-  (insert xc/python-break-string)
-  (bm-toggle)
-  (save-buffer))
+  (let ((breakpoint (or string string xc/python-break-string)))
+    (xc/newline-without-break-of-line)
+    (insert breakpoint)
+    (bm-toggle)
+    (save-buffer)))
 
 
 ;; 16000
