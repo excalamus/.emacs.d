@@ -1689,6 +1689,17 @@ Load Emacs without init file when called interactively.
         (set-process-query-on-exit-flag proc nil))
 
 
+(defun xc/get-file-name ()
+  "Put filename of current buffer on kill ring."
+  (interactive)
+  (let ((filename (buffer-file-name (current-buffer))))
+    (if filename
+        (progn
+          (kill-new filename)
+          (message "%s" filename))
+      (message "Buffer not associated with a file"))))
+
+
 (defun xc/highlight-current-line ()
   (interactive)
   (let ((regexp
