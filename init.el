@@ -200,6 +200,28 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (if (eq xc/device 'termux) (setq browse-url-browser-function 'eww-browse-url))
 
+;; Make *Occur* window size to the contents
+(add-hook 'occur-hook
+       (lambda ()
+	 (let ((fit-window-to-buffer-horizontally t))
+	   (save-selected-window
+	     (pop-to-buffer "*Occur*")
+	     (fit-window-to-buffer)))))
+
+;; Make *Occur* window always open on the right side
+(setq
+ display-buffer-alist
+ `(("\\*Occur\\*"
+    display-buffer-in-side-window
+    (side . right)
+    (slot . 0)
+    (window-width . fit-window-to-buffer))))
+
+;; Automatically switch to *Occur* buffer
+(add-hook 'occur-hook
+	  '(lambda ()
+	     (switch-to-buffer-other-window "*Occur*")))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
@@ -413,6 +435,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
   (pyvenv-mode 1)
   (add-hook 'python-mode-hook #'lsp)
+  (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-enable-symbol-highlighting nil))
 
 
@@ -563,7 +586,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-S-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-create-shell))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-c" 'xc/copy-symbol-at-point
-      "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      ;; "M-j" 'xc/helm-imenu ; navigate the file's structure (functions or otherwise)
+      ;; "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      "M-j" 'xc/python-occur-definitions
       "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank... (use C-p for evil-paste-pop)
       "C-M-y" 'helm-show-kill-ring
       "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
@@ -573,15 +598,17 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-<f2>" 'bm-toggle
       "<f7>" '(lambda() (interactive)
 		 (save-some-buffers t nil)
-		 (if xc/kill-python-p
-		     (xc/kill-python))  ; kills aws cli commands
+		 ;; (if xc/kill-python-p
+		     ;; (xc/kill-python))  ; kills aws cli commands
+		 (quit-process (get-buffer-process peut-gerer-shell))
 		 (peut-gerer-send-command peut-gerer-command))
       "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
 		 (save-some-buffers t nil)
-		 (if xc/kill-python-p
-		     (xc/kill-python))  ; kills aws cli commands
+		 ;; (if xc/kill-python-p
+		     ;; (xc/kill-python))  ; kills aws cli commands
+		 (quit-process (get-buffer-process peut-gerer-shell))
 		 (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-c +" 'evil-numbers/inc-at-pt
@@ -694,13 +721,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
       "<S-f7>" 'peut-gerer-buffer-file-to-shell
       )
-    (general-def :keymaps 'anaconda-mode-map
-      :states 'normal
-      :prefix "SPC"
-      "d" 'anaconda-occur-definitions
-      "c" 'xc/string-inflection-style-cycle
-      "u" 'xc/pyside-lookup
-      )
 
     (general-define-key :keymaps 'comint-mode-map
      :states '(insert emacs)
@@ -806,6 +826,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;; Disable mouse click on minibuffer from opening messages
     (general-def :keymaps 'minibuffer-inactive-mode-map [mouse-1] nil)
 
+    ;; (general-def :keymaps 'occur-mode-map
+    ;;   ;; "<escape>" 'quit-window
+    ;;   "<tab>" '(lambda () (interactive) (occur-mode-mouse-goto) (xc/switch-to-last-window))
+    ;;   "RET" '(lambda () (interactive) (occur-mode-goto-occurrence) (with-current-buffer "*Occur*" (quit-window)))
+    ;;   )
+
     (general-define-key :keymaps 'org-mode-map
      :states '(insert emacs)
      "-" #'(lambda () (interactive) (insert "_"))
@@ -825,13 +851,21 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       )
 
     (general-def :keymaps 'python-mode-map
+      :states 'normal
+      :prefix "SPC"
+      "d" 'xc/python-occur-definitions
+      "c" 'xc/string-inflection-style-cycle
+      "u" 'xc/pyside-lookup
+      )
+
+    (general-def :keymaps 'python-mode-map
       "<apps>" 'xc/kill-python
       "<f6>" 'xc/insert-breakpoint
       "S-<f6>" '(lambda () (interactive) (xc/insert-breakpoint "breakpoint()")) ; pdb
       "<C-S-f10>" 'peut-gerer-set-command-to-current-file
-      "<S-f10>" 'peut-gerer-buffer-file-to-shell
+      "<S-f10>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
-      "<S-f7>" 'peut-gerer-buffer-file-to-shell
+      "<S-f7>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       )
     (general-define-key :keymaps 'python-mode-map
      :states '(insert emacs)
@@ -1021,6 +1055,46 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :after (:all org)
   :straight (:fork "excalamus/helm")
   :config
+
+  ;; https://teddit.net/r/emacs/comments/3mtus3/how_to_display_a_list_of_classes_functions_etc/cvj6p9z?utm_source=share&utm_medium=web2x&context=3
+  (require 'helm-imenu)
+
+  ;; (defun xc--helm-imenu-transformer (cands)
+  ;;   (with-helm-current-buffer
+  ;;     (save-excursion
+  ;;	(cl-loop for (func-name . mrkr) in cands
+  ;;		 collect
+  ;;		 (cons (format "Line %4d: %s"
+  ;;			       (line-number-at-pos mrkr)
+  ;;			       (progn (goto-char mrkr)
+  ;;				      (buffer-substring mrkr (line-end-position))))
+  ;;		       (cons func-name mrkr))))))
+
+  (defun xc--helm-imenu-transformer (cands)
+    (with-helm-current-buffer
+      (save-excursion
+	(cl-loop for (func-name . mrkr) in cands
+		 collect
+		 (cons (format "%s %s"
+			       (progn (goto-char mrkr)
+				      (make-string (- (marker-position mrkr) (line-beginning-position)) ?\s))
+			       (progn (goto-char mrkr)
+				      (buffer-substring mrkr (line-end-position))))
+		       (cons func-name mrkr))))))
+
+  (defvar xc/helm-imenu-source  (helm-make-source "Imenu" 'helm-imenu-source
+				  :candidate-transformer
+				  'xc--helm-imenu-transformer))
+  (defun xc/helm-imenu ()
+    (interactive)
+    (let ((imenu-auto-rescan t)
+	  (imenu-sort-function #'imenu--sort-by-position)
+	  (str (thing-at-point 'symbol))
+	  (helm-execute-action-at-once-if-one
+	   helm-imenu-execute-action-at-once-if-one))
+      (helm :sources 'xc/helm-imenu-source
+	    :preselect str
+	    :buffer "*helm imenu*")))
 
   (if xc/debug (message "helm")))
 
@@ -1220,6 +1294,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (use-package lsp-jedi
 ;; requires pip install jedi-language-server
 ;; https://github.com/pappasam/jedi-language-server
+  :disabled
   :after (:all org lsp-mode)
   :straight (:fork "excalamus/lsp-jedi")
   :config
@@ -2174,6 +2249,63 @@ documentation.
 	  ((eql arg -1)  ; "C--", it's 'negative' to have to leave Emacs
 	   (browse-url-default-browser search-url))
 	  (t (error "Invalid prefix")))))
+
+
+(defun xc/python-occur-definitions ()
+  "Display an occur buffer of all definitions in the current buffer.
+Also, switch to that buffer.
+
+See URL `https://github.com/jorgenschaefer/elpy/blob/c31cd91325595573c489b92ad58e492a839d2dec/elpy.el#L2556'
+"
+  (interactive)
+  (let ((list-matching-lines-face nil))
+    (occur "^\s*\\(\\(async\s\\|\\)def\\|class\\)\s"))
+  (let ((window (get-buffer-window "*Occur*")))
+    (if window
+	(select-window window)
+      (switch-to-buffer "*Occur*"))))
+
+
+(defun xc/statement-to-function (&optional statement func)
+  "Convert STATEMENT to FUNC.
+
+For use with statements in Python such as 'print'.  Converts
+statements like,
+
+  print \"Hello, world!\"
+
+to a function like,
+
+  print(\"Hello, world\")
+
+Also works generally so that the STATEMENT can be changed to any
+FUNC.  For instance, a 'print' statement,
+
+  print \"Hello, world!\"
+
+could be changed to a function,
+
+  banana(\"Hello, world!\")
+
+Default STATEMENT is 'print'.  Default FUNC is
+STATEMENT (e.g. 'print').  Prompt for STATEMENT and FUNC when
+called with universal prefix, `C-u'."
+  (interactive "p")
+  (let* ((arg statement)  ; statement argument overwritten, so preserve value
+     ;; only prompt on universal prefix; 1 means no universal, 4 means universal
+     (statement (cond ((eql arg 1) "print")  ; no prefix
+		      ((eql arg 4) (read-string "Statement (print): " "" nil "print")))) ; C-u
+     (func (cond ((eql arg 1) statement)  ; no prefix
+		 ((eql arg 4) (read-string (concat "Function " "(" statement "): ") "" nil statement)))) ; C-u
+     ;; [[:space:]]*  -- allow 0 or more spaces
+     ;; \\(\"\\|\'\\) -- match single or double quotes
+     ;; \\(\\)        -- define capture group for statement expression; recalled with \\2
+     (regexp (concat statement "[[:space:]]*\\(\"\\|\'\\)\\(.*?\\)\\(\"\\|'\\)"))
+     ;; replace statement with function and place statement expression within parentheses \(\)
+     (replace (concat func "\(\"\\2\"\)")))
+    (goto-char (point-min))
+  (while (re-search-forward regexp nil t)
+    (replace-match replace))))
 
 
 (defun xc/spam-filter (string)
