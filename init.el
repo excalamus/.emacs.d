@@ -640,6 +640,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       (general-chord "HH") 'evil-insert-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
+      "S-<f9>" 'xc/backup-region-or-buffer
       "\M-Q" 'xc/unfill-paragraph
       )
 
