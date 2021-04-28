@@ -776,6 +776,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     (general-def :keymaps 'evil-emacs-state-map
       "<escape>" 'evil-normal-state
       )
+    (general-def :keymaps 'evil-normal-state-map
+      "C-b" 'backward-char
+      "C-f" 'forward-char
+      )
 
     (general-def :keymaps 'helm-map
       "<escape>"  'helm-keyboard-quit
