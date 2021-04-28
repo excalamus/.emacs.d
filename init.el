@@ -2304,7 +2304,7 @@ See URL `https://github.com/jorgenschaefer/elpy/blob/c31cd91325595573c489b92ad58
       (switch-to-buffer "*Occur*"))))
 
 
-(defun xc/statement-to-function (&optional statement func)
+(defun xc/statement-to-function (&optional statement func beg end)
   "Convert STATEMENT to FUNC.
 
 For use with statements in Python such as 'print'.  Converts
@@ -2327,23 +2327,45 @@ could be changed to a function,
 
 Default STATEMENT is 'print'.  Default FUNC is
 STATEMENT (e.g. 'print').  Prompt for STATEMENT and FUNC when
-called with universal prefix, `C-u'."
+called with universal prefix, `C-u'.
+
+If region is selected interactively, only perform conversion
+within the region.  The same can be achieved programmatically
+using BEG and END of the desired region."
   (interactive "p")
   (let* ((arg statement)  ; statement argument overwritten, so preserve value
-     ;; only prompt on universal prefix; 1 means no universal, 4 means universal
-     (statement (cond ((eql arg 1) "print")  ; no prefix
-		      ((eql arg 4) (read-string "Statement (print): " "" nil "print")))) ; C-u
-     (func (cond ((eql arg 1) statement)  ; no prefix
-		 ((eql arg 4) (read-string (concat "Function " "(" statement "): ") "" nil statement)))) ; C-u
-     ;; [[:space:]]*  -- allow 0 or more spaces
-     ;; \\(\"\\|\'\\) -- match single or double quotes
-     ;; \\(\\)        -- define capture group for statement expression; recalled with \\2
-     (regexp (concat statement "[[:space:]]*\\(\"\\|\'\\)\\(.*?\\)\\(\"\\|'\\)"))
-     ;; replace statement with function and place statement expression within parentheses \(\)
-     (replace (concat func "\(\"\\2\"\)")))
-    (goto-char (point-min))
-  (while (re-search-forward regexp nil t)
-    (replace-match replace))))
+	 ;; only prompt on universal prefix; 1 means no universal, 4 means universal
+	 (statement (cond ((eql arg 1) "print")  ; no prefix
+			  ((eql arg 4) (read-string "Statement (print): " "" nil "print")))) ; C-u
+	 (func (cond ((eql arg 1) statement)  ; no prefix
+		     ((eql arg 4) (read-string (concat "Function " "(" statement "): ") "" nil statement)))) ; C-u
+	 ;; [[:space:]]*  -- allow 0 or more spaces
+	 ;; \\(\"\\|\'\\) -- match single or double quotes
+	 ;; \\(\\)        -- define capture group for statement expression; recalled with \\2
+	 (regexp (concat statement "[[:space:]]*\\(\"\\|\'\\)\\(.*?\\)\\(\"\\|'\\)"))
+	 ;; replace statement with function and place statement expression within parentheses \(\)
+	 (replace (concat func "\(\"\\2\"\)"))
+	 ;; set start of replacement region to what the user passed in
+	 ;; (if used programmatically), beginning of region (if used
+	 ;; interactively with a region selected), or the start of the
+	 ;; buffer (if no region specified)
+	 (beg (or beg (if (use-region-p) (region-beginning)) (point-min)))
+	 ;; end defines the `bound' of the regexp search. According to
+	 ;; documentation, "the match found must not end after this."
+	 ;; Extend the end of the region slightly to compensate.
+	 ;; While this may technically introduce an unwanted match, it
+	 ;; is unlikely for any but the shortest statements (probably
+	 ;; less than 2 or 3 characters).  Doing this at the end of a
+	 ;; buffer sometimes results in a "while: Invalid search bound
+	 ;; (wrong side of point)" error.  It may be an Emacs
+	 ;; bug. Regardless, it does not appear to affect the results
+	 ;; which are otherwise as expected. A value of nil means
+	 ;; search to the end of the accessible portion of the buffer.
+	 (end (or end (if (use-region-p) (+ (region-end) 3) nil))))
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward regexp end t)
+	(replace-match replace nil t)))))
 
 
 (defun xc/spam-filter (string)
