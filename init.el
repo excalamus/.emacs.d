@@ -1671,6 +1671,40 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(defun xc/backup-region-or-buffer (&optional buffer-or-name file beg end)
+  "Write copy of BUFFER-OR-NAME between BEG and END to FILE.
+
+BUFFER-OR-NAME is either a buffer object or name. Uses current
+buffer when none is passed.  Uses entire buffer for region when
+BEG and END are nil.  Prompts for filename when called
+interactively.  Will always ask before overwriting. Returns the
+name of the file written to.
+
+See URL `https://stackoverflow.com/a/18780453/5065796'."
+  (interactive)
+  (let* ((buffer-or-name (or buffer-or-name (current-buffer)))
+	 (buffo (or (get-buffer buffer-or-name) (error "Buffer does not exist")))  ; buffer object
+	 (buffn (or (buffer-file-name buffo) (buffer-name buffo)))                 ; buffer name
+	 (beg (or beg (if (use-region-p) (region-beginning) beg)))
+	 (end (or end (if (use-region-p) (region-end) end)))
+	 (prompt (if (and beg end) "region" "buffer"))
+	 (new (if (called-interactively-p 'interactive)
+		  (read-file-name
+		   (concat "Write " prompt " to file: ")
+		   nil nil nil
+		   (and buffn (file-name-nondirectory buffn)))
+		(or file (error "Filename cannot be nil"))))
+	 ;; See `write-region' for meaning of 'excl
+	 (mustbenew (if (and buffn (file-equal-p new buffn)) 'excl t)))
+    (with-current-buffer buffo
+      (if (and beg end)
+	  (write-region beg end new nil nil nil mustbenew)
+	(save-restriction
+	  (widen)
+	  (write-region (point-min) (point-max) new nil nil nil mustbenew))))
+    new))
+
+
 (defun xc/define-abbrev (name expansion &optional fixed table interp)
   "Define abbrev with NAME and EXPANSION for last word(s) before point in TABLE.
 
