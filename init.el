@@ -62,7 +62,9 @@
 
 ;; extend use-package with key-chord
 (use-package use-package-chords
-  :config (key-chord-mode 1))
+  :config
+  (key-chord-mode 1)
+  (setq key-chord-two-keys-delay 0.2))
 
 ;; Ensure recipe inheritance. Allows for simple :fork override to
 ;; clone/pull from personal fork.  M-x straight-fetch-package to
