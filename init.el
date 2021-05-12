@@ -119,6 +119,7 @@ permanent binding.")
 ;; that never gets loaded or read
 (setq custom-file "~/.emacs.d/custom-set.el")
 
+;; todo, make interactive
 (defun xc/load-directory (dir &optional ext)
   "Load all files in DIR with extension EXT.
 
@@ -427,6 +428,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "yasnippet")))
 
 
+;; ...and something similar with lsp-mode
 (use-package lsp-mode
 ;; requires pip install python-language-server
   :after (:all org pyvenv)
@@ -541,6 +543,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
     ;; Disable stupid minimize hotkeys
     (general-unbind
+      "<f3>"
+      "<f4>"
       "M-v"
       "C-z"
       "C-x C-z")
@@ -587,8 +591,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-c" 'xc/copy-symbol-at-point
       ;; "M-j" 'xc/helm-imenu ; navigate the file's structure (functions or otherwise)
-      ;; "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
-      "M-j" 'xc/python-occur-definitions
+      "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      ;; "M-j" 'xc/python-occur-definitions
       "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank... (use C-p for evil-paste-pop)
       "C-M-y" 'helm-show-kill-ring
       "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
@@ -640,6 +644,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       (general-chord "HH") 'evil-insert-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
+      "C-<f9>" 'write-file
       "S-<f9>" 'xc/backup-region-or-buffer
       "\M-Q" 'xc/unfill-paragraph
       )
@@ -991,6 +996,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       (setq evil-insert-state-tag (propertize " <I> " 'face '((:background "color-244"))))
       (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
       (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177"))))))
+
+  (add-hook 'python-mode-hook #'hs-minor-mode)
 
   (if xc/debug (message "evil")))
 
@@ -2195,6 +2202,18 @@ killing."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(defun xc/convert-slashes (&optional beg end)
+  "Convert backslashes to forward slashes.
+
+Only convert within region defined by BEG and END.  Use current
+line if no region is provided."
+  (interactive)
+  (let* ((beg (or beg (if (use-region-p) (region-beginning)) (line-beginning-position)))
+	 (end (or end (if (use-region-p) (region-end)) (line-end-position))))
+    (subst-char-in-region beg end ?\\ ?/)
+    (replace-string "//" "/" nil beg end)))
+
+
 (defvar xc/kill-python-p nil
   "Will Python be killed?")
 
@@ -2415,3 +2434,7 @@ chicken and egg problem."
   (let ((current-prefix-arg '(4))
        (python-shell-interpreter-args "-i -- qt_live_code.py live"))
     (call-interactively 'run-python )))
+
+(defun xc/toggle-build-debug ()
+  (interactive)
+  (insert "set BUILD_DEBUG="))
