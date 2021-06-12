@@ -119,6 +119,7 @@ permanent binding.")
 ;; that never gets loaded or read
 (setq custom-file "~/.emacs.d/custom-set.el")
 
+;; todo, make interactive
 (defun xc/load-directory (dir &optional ext)
   "Load all files in DIR with extension EXT.
 
@@ -226,6 +227,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Remove insanely annoying space underlines in rst and markdown modes
+;; See https://emacs.stackexchange.com/a/10546/
+(set-face-attribute 'nobreak-space nil :underline 'unspecified :inherit 'unspecified)
 
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -427,16 +432,21 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "yasnippet")))
 
 
+;; ...and something similar with lsp-mode
 (use-package lsp-mode
 ;; requires pip install python-language-server
-  :after (:all org pyvenv)
+  :after (:all org pyvenv) ; posframe)
   :straight (:fork "excalamus/lsp-mode")
   :commands lsp
   :config
   (pyvenv-mode 1)
-  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+  ;; (remove-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+  ;; Open docs in frame instead of minibuffer
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/2749
   (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-enable-symbol-highlighting nil))
+  (setq lsp-enable-symbol-highlighting nil)
+  (setq lsp-signature-function 'lsp-signature-posframe))
 
 
 (use-package ace-window
@@ -542,6 +552,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;; Disable stupid minimize hotkeys
     (general-unbind
       "C-h h"
+      "<f3>"
+      "<f4>"
       "M-v"
       "C-z"
       "C-x C-z")
@@ -641,6 +653,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       (general-chord "HH") 'evil-insert-state
       "C-;" 'comment-dwim-2
       "<f9>" 'save-buffer
+      "C-<f9>" 'write-file
       "S-<f9>" 'xc/backup-region-or-buffer
       "\M-Q" 'xc/unfill-paragraph
       )
@@ -707,7 +720,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "s" 'save-buffer
       "t" 'xc/open-terminal
       "x" 'eval-expression
-      "m" '(lambda () (interactive) (message "Hello world"))
       )
 
     (general-define-key :keymaps 'anaconda-mode-map
@@ -992,6 +1004,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       (setq evil-insert-state-tag (propertize " <I> " 'face '((:background "color-244"))))
       (setq evil-visual-state-tag (propertize " <V> " 'face '((:background "color-246"))))
       (setq evil-motion-state-tag (propertize " <M> " 'face '((:background "color-177"))))))
+
+  (add-hook 'python-mode-hook #'hs-minor-mode)
 
   (if xc/debug (message "evil")))
 
@@ -1511,6 +1525,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "peut-gerer")))
 
 
+(use-package posframe
+  :after (:all org)
+  :straight (:repo "https://github.com/excalamus/posframe"))
+
+
 (use-package pyvenv
   :after (:all org)
   :straight (:fork "excalamus/pyvenv"))
@@ -1947,15 +1966,18 @@ the cursor down."
 	(previous-buffer)))
   (with-current-buffer "timecard.org"
     (let ((buffer-save-without-query t))
-      (if (org-clocking-p)
+      (save-excursion
+	(goto-char (point-min))
+	(re-search-forward "* Timecard")
+	(if (org-clocking-p)
+	    (progn
+	      (org-clock-out)
+	      (setq result "Clocked out"))
 	  (progn
-	    (org-clock-out)
-	    (setq result "Clocked out"))
-	(progn
-	  (org-clock-in)
-	  (setq result "Clocked in")))
-      (save-buffer)
-      (message "%s" result))))
+	    (org-clock-in)
+	    (setq result "Clocked in"))))
+	(save-buffer)
+	(message "%s" result))))
 
 
 (defun xc/on-demand-window-set ()
@@ -2197,6 +2219,18 @@ killing."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(defun xc/convert-slashes (&optional beg end)
+  "Convert backslashes to forward slashes.
+
+Only convert within region defined by BEG and END.  Use current
+line if no region is provided."
+  (interactive)
+  (let* ((beg (or beg (if (use-region-p) (region-beginning)) (line-beginning-position)))
+	 (end (or end (if (use-region-p) (region-end)) (line-end-position))))
+    (subst-char-in-region beg end ?\\ ?/)
+    (replace-string "//" "/" nil beg end)))
+
+
 (defvar xc/kill-python-p nil
   "Will Python be killed?")
 
@@ -2417,3 +2451,7 @@ chicken and egg problem."
   (let ((current-prefix-arg '(4))
        (python-shell-interpreter-args "-i -- qt_live_code.py live"))
     (call-interactively 'run-python )))
+
+(defun xc/toggle-build-debug ()
+  (interactive)
+  (insert "set BUILD_DEBUG="))
