@@ -541,6 +541,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
     ;; Disable stupid minimize hotkeys
     (general-unbind
+      "C-h h"
       "M-v"
       "C-z"
       "C-x C-z")
@@ -587,8 +588,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
       "M-c" 'xc/copy-symbol-at-point
       ;; "M-j" 'xc/helm-imenu ; navigate the file's structure (functions or otherwise)
-      ;; "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
-      "M-j" 'xc/python-occur-definitions
+      "M-j" 'helm-semantic-or-imenu ; navigate the file's structure (functions or otherwise)
+      ;; "M-j" 'xc/python-occur-definitions
       "M-y" 'xc/yank-pop-forwards  ; todo but p is not yank... (use C-p for evil-paste-pop)
       "C-M-y" 'helm-show-kill-ring
       "C-M-j" 'helm-swoop  ; swoop (S)pecific thing (at point)
@@ -1275,6 +1276,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq ledger-post-amount-alignment-column 60)
   (setq ledger-report-auto-refresh-sticky-cursor t)
   (setq ledger-highlight-xact-under-point nil)
+  (setq ledger-report-resize-window nil)
 
   (defvar xc/ledger-highlight-regexp "dummy"
     "Regexp for matching lines in Ledger Report buffer.")
