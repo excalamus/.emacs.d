@@ -2029,7 +2029,7 @@ See URL `https://stackoverflow.com/a/13509208/5065796'"
 		 ;; See URL `https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd'
 		 (proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe" "/K" "cd" dir)))
 	     (set-process-query-on-exit-flag proc nil)))
-	  (t (error "Unable to open terminal")))))
+	  (t (start-process "terminal" nil "/usr/bin/xfce4-terminal" (format "--working-directory=%s" dir))))))
 
 
 (defun xc/org-babel-goto-tangle-file ()
