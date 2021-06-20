@@ -1426,6 +1426,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
+     (makefile . t)
      (python . t)
      (emacs-lisp . t)
      (ledger . t)
