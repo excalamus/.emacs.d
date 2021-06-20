@@ -228,6 +228,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Remove insanely annoying space underlines in rst and markdown modes
+;; See https://emacs.stackexchange.com/a/10546/
+(set-face-attribute 'nobreak-space nil :underline 'unspecified :inherit 'unspecified)
+
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -431,14 +435,18 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; ...and something similar with lsp-mode
 (use-package lsp-mode
 ;; requires pip install python-language-server
-  :after (:all org pyvenv)
+  :after (:all org pyvenv) ; posframe)
   :straight (:fork "excalamus/lsp-mode")
   :commands lsp
   :config
   (pyvenv-mode 1)
-  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+  ;; (remove-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+  ;; Open docs in frame instead of minibuffer
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/2749
   (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-enable-symbol-highlighting nil))
+  (setq lsp-enable-symbol-highlighting nil)
+  (setq lsp-signature-function 'lsp-signature-posframe))
 
 
 (use-package ace-window
@@ -543,6 +551,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
     ;; Disable stupid minimize hotkeys
     (general-unbind
+      "C-h h"
       "<f3>"
       "<f4>"
       "M-v"
@@ -711,7 +720,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "s" 'save-buffer
       "t" 'xc/open-terminal
       "x" 'eval-expression
-      "m" '(lambda () (interactive) (message "Hello world"))
       )
 
     (general-define-key :keymaps 'anaconda-mode-map
@@ -1282,6 +1290,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq ledger-post-amount-alignment-column 60)
   (setq ledger-report-auto-refresh-sticky-cursor t)
   (setq ledger-highlight-xact-under-point nil)
+  (setq ledger-report-resize-window nil)
 
   (defvar xc/ledger-highlight-regexp "dummy"
     "Regexp for matching lines in Ledger Report buffer.")
@@ -1515,6 +1524,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 		 :call (xc/jira-issue)))
 
   (if xc/debug (message "peut-gerer")))
+
+
+(use-package posframe
+  :after (:all org)
+  :straight (:repo "https://github.com/excalamus/posframe"))
 
 
 (use-package pyvenv
@@ -1953,15 +1967,18 @@ the cursor down."
 	(previous-buffer)))
   (with-current-buffer "timecard.org"
     (let ((buffer-save-without-query t))
-      (if (org-clocking-p)
+      (save-excursion
+	(goto-char (point-min))
+	(re-search-forward "* Timecard")
+	(if (org-clocking-p)
+	    (progn
+	      (org-clock-out)
+	      (setq result "Clocked out"))
 	  (progn
-	    (org-clock-out)
-	    (setq result "Clocked out"))
-	(progn
-	  (org-clock-in)
-	  (setq result "Clocked in")))
-      (save-buffer)
-      (message "%s" result))))
+	    (org-clock-in)
+	    (setq result "Clocked in"))))
+	(save-buffer)
+	(message "%s" result))))
 
 
 (defun xc/on-demand-window-set ()
@@ -2013,7 +2030,7 @@ See URL `https://stackoverflow.com/a/13509208/5065796'"
 		 ;; See URL `https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd'
 		 (proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe" "/K" "cd" dir)))
 	     (set-process-query-on-exit-flag proc nil)))
-	  (t (error "Unable to open terminal")))))
+	  (t (start-process "terminal" nil "/usr/bin/xfce4-terminal" (format "--working-directory=%s" dir))))))
 
 
 (defun xc/org-babel-goto-tangle-file ()
