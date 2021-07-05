@@ -1295,6 +1295,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq ledger-post-amount-alignment-column 60)
   (setq ledger-report-auto-refresh-sticky-cursor t)
   (setq ledger-highlight-xact-under-point nil)
+  (setq ledger-report-resize-window nil)
 
   (defvar xc/ledger-highlight-regexp "dummy"
     "Regexp for matching lines in Ledger Report buffer.")
@@ -1439,6 +1440,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
+     (makefile . t)
      (python . t)
      (emacs-lisp . t)
      (ledger . t)
@@ -2033,7 +2035,7 @@ See URL `https://stackoverflow.com/a/13509208/5065796'"
 		 ;; See URL `https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd'
 		 (proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe" "/K" "cd" dir)))
 	     (set-process-query-on-exit-flag proc nil)))
-	  (t (error "Unable to open terminal")))))
+	  (t (start-process "terminal" nil "/usr/bin/xfce4-terminal" (format "--working-directory=%s" dir))))))
 
 
 (defun xc/org-babel-goto-tangle-file ()
