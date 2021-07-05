@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: log.warning
+# key: logw
+# group: Excalamus
+# --
+log.warning(f'${1:}')

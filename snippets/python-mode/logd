@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: log.debug
+# key: logd
+# group: Excalamus
+# --
+log.debug(f'${1:}')

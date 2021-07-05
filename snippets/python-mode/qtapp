@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# name: app
+# name: qtapp
 # key: qtapp
-# group: Qt
+# group: Excalamus
 # expand-env: ((yas-indent-line 'fixed))
 # --
 import sys
@@ -11,20 +11,20 @@ from ${1:PySide2}${2:PyQt5} import QtCore, QtWidgets, QtGui
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super().__init__()
+	super().__init__()
 
-        self.init_widgets()
-        self.init_layout()
+	self.init_widgets()
+	self.init_layout()
 
     def init_widgets(self):
-        ${3:pass}
+	${3:pass}
 
     def init_layout(self):
-        layout = QtWidgets.QVBoxLayout()
+	layout = QtWidgets.QVBoxLayout()
 
-        centralWidget = QtWidgets.QWidget()
-        centralWidget.setLayout(layout)
-        self.setCentralWidget(centralWidget)
+	centralWidget = QtWidgets.QWidget()
+	centralWidget.setLayout(layout)
+	self.setCentralWidget(centralWidget)
 
 
 if __name__ == '__main__':

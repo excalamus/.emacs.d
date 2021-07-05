@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: log.info
+# key: logi
+# group: Excalamus
+# --
+log.info(f'${1:}')
