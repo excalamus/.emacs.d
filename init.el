@@ -435,7 +435,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; ...and something similar with lsp-mode
 (use-package lsp-mode
 ;; requires pip install python-language-server
-  :after (:all org pyvenv) ; posframe)
+  :after (:all org pyvenv posframe)
   :straight (:fork "excalamus/lsp-mode")
   :commands lsp
   :config
@@ -446,7 +446,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   ;; https://github.com/emacs-lsp/lsp-mode/issues/2749
   (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-enable-symbol-highlighting nil)
-  (setq lsp-signature-function 'lsp-signature-posframe))
+  (setq lsp-signature-render-documentation t) ;
+  (setq lsp-signature-doc-lines 5)
+  (setq lsp-restart 'auto-restart)
+  ;; (setq lsp-signature-function 'lsp-signature-posframe))
+  (setq lsp-signature-function 'lsp-lv-message))
 
 
 (use-package ace-window
@@ -569,7 +573,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 	(general-def :keymaps 'override
 	  :prefix "C-x i"
 	  "b" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/brag.org"))
-	  "g" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/glossary.org"))
+	  "g" '(lambda () (interactive) (find-file "C:/glossary/glossary.org"))
 	  "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
 	  "m" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/monorepo.org"))
 	  )
@@ -611,17 +615,17 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-<f2>" 'bm-toggle
       "<f7>" '(lambda() (interactive)
 		 (save-some-buffers t nil)
-		 ;; (if xc/kill-python-p
-		     ;; (xc/kill-python))  ; kills aws cli commands
-		 (quit-process (get-buffer-process peut-gerer-shell))
+		 (if xc/kill-python-p
+		     (xc/kill-python))  ; kills aws cli commands
+		 ;; (quit-process (get-buffer-process peut-gerer-shell))
 		 (peut-gerer-send-command peut-gerer-command))
       "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
 		 (save-some-buffers t nil)
-		 ;; (if xc/kill-python-p
-		     ;; (xc/kill-python))  ; kills aws cli commands
-		 (quit-process (get-buffer-process peut-gerer-shell))
+		 (if xc/kill-python-p
+		     (xc/kill-python))  ; kills aws cli commands
+		 ;; (quit-process (get-buffer-process peut-gerer-shell))
 		 (peut-gerer-send-command peut-gerer-command))
       "C-<f10>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       "C-c +" 'evil-numbers/inc-at-pt
@@ -766,13 +770,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<pause>" 'elpy-test-pytest-runner
       ;; "<insert>" 'elpy-test-pytest-runner
       "C-c o" 'elpy-occur-definitions
-      )
-    (general-def :keymaps 'elpy-mode-map
-      :states 'normal
-      :prefix "SPC"
-      "d" 'elpy-occur-definitions
-      "c" 'xc/string-inflection-style-cycle
-      "u" 'xc/pyside-lookup
       )
 
     (general-def :keymaps 'emacs-lisp-mode-map
@@ -1061,6 +1058,14 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
 
   (if xc/debug (message "free-keys")))
+
+
+(use-package fold-this
+  :after (:all org)
+  :straight (:fork "excalamus/fold-this.el")
+  :config
+
+  (if xc/debug (message "fold-this.el")))
 
 
 (use-package git-timemachine
@@ -1526,7 +1531,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (use-package posframe
   :after (:all org)
-  :straight (:repo "https://github.com/excalamus/posframe"))
+  :straight (:repo "excalamus/posframe"))
 
 
 (use-package pyvenv
