@@ -434,8 +434,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; ...and something similar with lsp-mode
 (use-package lsp-mode
-;; requires pip install python-language-server
-  :after (:all org pyvenv posframe)
+	     ;; requires pip install python-language-server
+  :after (:all org pyvenv); posframe)
   :straight (:fork "excalamus/lsp-mode")
   :commands lsp
   :config
@@ -639,6 +639,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-x g" 'magit-status
       "C-x R" 'magit-list-repositories ; C-x r clashes with rectangular edit
       "C-x o" 'ace-window
+      "C-x n D" 'xc/narrow-to-defun-indirect
       "<f1>" '(lambda ()
 		(interactive)
 		(if xc/on-demand-window
@@ -917,9 +918,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package elpy
-  :disabled
+  ;; :disabled
   :after (:all helm key-chord use-package-chords org)
-  :straight (:fork "excalamus/elpy")
+  ;; :straight (:fork "excalamus/elpy")
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
   (add-hook 'elpy-mode-hook #'hs-minor-mode)
@@ -1535,10 +1536,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :after (:all org)
   :straight (:repo "excalamus/posframe"))
 
-
-(use-package pyvenv
-  :after (:all org)
-  :straight (:fork "excalamus/pyvenv"))
+;; 
+;; (use-package pyvenv
+;;   :after (:all org)
+;;   :straight (:fork "excalamus/pyvenv"))
 
 
 (use-package qml-mode
@@ -1950,6 +1951,21 @@ Taken from URL
 		      table)))
 
 (add-hook 'minibuffer-inactive-mode-hook 'minibuffer-inactive-mode-hook-setup)
+
+
+(defun xc/narrow-to-defun-indirect (&optional arg)
+  "Narrow to function or class in separate window.
+
+Include preceeding comments with universal.  Enables
+`which-function-mode'."
+  (interactive "P")
+  (deactivate-mark)
+  (let* ((which-function-mode t)
+	 (name (concat (buffer-name) " <" (which-function) ">"))
+	 (buf (clone-indirect-buffer-other-window name nil)))
+    (with-current-buffer buf
+      (narrow-to-defun arg))
+    (switch-to-buffer-other-window buf)))
 
 
 (defun xc/newline-without-break-of-line ()
