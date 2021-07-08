@@ -2015,7 +2015,10 @@ FILE may also be a directory."
   (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
 	 (dir (expand-file-name (file-name-directory file))))
     (if dir
-	(browse-url-of-file dir)
+	(progn
+	  (if (eq xc/device 'windows)
+	      (browse-url-of-file dir)
+	    (shell-command (concat "thunar " file))))
       (error "No directory to open"))))
 
 
