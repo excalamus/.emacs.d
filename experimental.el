@@ -310,3 +310,6 @@ compilation-error-regexp-alist-alist."
   (csv-align-set-column-width 2 75) ; description
   (csv-align-set-column-width 5 0) ; hide category
   )
+
+(use-package geiser)
+(use-package geiser-guile)

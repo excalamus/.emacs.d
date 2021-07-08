@@ -434,8 +434,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 ;; ...and something similar with lsp-mode
 (use-package lsp-mode
-	     ;; requires pip install python-language-server
-  :after (:all org pyvenv); posframe)
+;; requires pip install python-language-server
+  :after (:all org pyvenv) ; posframe)
   :straight (:fork "excalamus/lsp-mode")
   :commands lsp
   :config
@@ -1531,10 +1531,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
   (if xc/debug (message "peut-gerer")))
 
-
-(use-package posframe
-  :after (:all org)
-  :straight (:repo "excalamus/posframe"))
+;; 
+;; (use-package posframe
+;;   :after (:all org)
+;;   :straight (:repo "excalamus/posframe"))
 
 ;; 
 ;; (use-package pyvenv
