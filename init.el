@@ -954,6 +954,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "elpy")))
 
 
+(use-package erc
+  :config
+  (setq erc-nick "excalamus")
+  (setq erc-default-server "irc.libera.chat"))
+
+
 (use-package ess
   :after (:all org)
   :straight (:fork "excalamus/ess")
