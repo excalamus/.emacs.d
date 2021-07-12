@@ -639,6 +639,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-x g" 'magit-status
       "C-x R" 'magit-list-repositories ; C-x r clashes with rectangular edit
       "C-x o" 'ace-window
+      "C-x n D" 'xc/narrow-to-defun-indirect
       "<f1>" '(lambda ()
 		(interactive)
 		(if xc/on-demand-window
@@ -917,9 +918,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package elpy
-  :disabled
+  ;; :disabled
   :after (:all helm key-chord use-package-chords org)
-  :straight (:fork "excalamus/elpy")
+  ;; :straight (:fork "excalamus/elpy")
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
   (add-hook 'elpy-mode-hook #'hs-minor-mode)
@@ -1541,10 +1542,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;;   :after (:all org)
 ;;   :straight (:repo "excalamus/posframe"))
 
-
-(use-package pyvenv
-  :after (:all org)
-  :straight (:fork "excalamus/pyvenv"))
+;; 
+;; (use-package pyvenv
+;;   :after (:all org)
+;;   :straight (:fork "excalamus/pyvenv"))
 
 
 (use-package qml-mode
@@ -1956,6 +1957,25 @@ Taken from URL
 		      table)))
 
 (add-hook 'minibuffer-inactive-mode-hook 'minibuffer-inactive-mode-hook-setup)
+
+
+(defun xc/narrow-to-defun-indirect (&optional arg)
+  "Narrow to function or class with preceeding comments.
+
+Open in other window with prefix.  Enables
+`which-function-mode'."
+  (interactive "P")
+  (deactivate-mark)
+  (which-function-mode t)
+  (let* ((name (concat (buffer-name) "<" (which-function) ">"))
+	 (clone-indirect-fun (if arg 'clone-indirect-buffer-other-window 'clone-indirect-buffer))
+	 (switch-fun (if arg 'switch-to-buffer-other-window 'switch-to-buffer))
+	 ;; quasi-quote b/c name gets passed as symbol otherwise
+	 (buf (apply clone-indirect-fun `(,name nil))))
+    (with-current-buffer buf
+      (narrow-to-defun arg))
+    ;; both switch-fun and buf are symbols
+    (funcall switch-fun buf)))
 
 
 (defun xc/newline-without-break-of-line ()
