@@ -955,6 +955,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (if xc/debug (message "elpy")))
 
 
+(use-package erc
+  :config
+  (setq erc-nick "excalamus")
+  (setq erc-default-server "irc.libera.chat"))
+
+
 (use-package ess
   :after (:all org)
   :straight (:fork "excalamus/ess")
@@ -2035,7 +2041,10 @@ FILE may also be a directory."
   (let* ((file (or (buffer-file-name (current-buffer)) default-directory))
          (dir (expand-file-name (file-name-directory file))))
     (if dir
-        (browse-url-of-file dir)
+        (progn
+          (if (eq xc/device 'windows)
+              (browse-url-of-file dir)
+            (shell-command (concat "thunar " file))))
       (error "No directory to open"))))
 
 
@@ -2055,7 +2064,7 @@ See URL `https://stackoverflow.com/a/13509208/5065796'"
                  ;; See URL `https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd'
                  (proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe" "/K" "cd" dir)))
              (set-process-query-on-exit-flag proc nil)))
-          (t (start-process "terminal" nil "/usr/bin/xfce4-terminal" (format "--working-directory=%s" dir))))))
+          (t (start-process "terminal" nil "/run/current-system/profile/bin/xfce4-terminal" (format "--working-directory=%s" dir))))))
 
 
 (defun xc/org-babel-goto-tangle-file ()
@@ -2295,6 +2304,23 @@ line if no region is provided."
     (save-buffer)))
 
 
+(defun xc/kill-proc-child (&optional proc)
+  "Kill process PROC's child."
+  (interactive)
+  (let* ((proc (or proc "*shell*"))
+         (shell-pid (process-id (get-buffer-process proc)))
+         (child-pid (car (split-string
+                          (shell-command-to-string (format "pgrep --parent %d" shell-pid)))))
+         rv)
+    (if child-pid
+        (setq rv (shell-command (format "kill -9 %s" child-pid)))
+      ;;(message "No child process to kill!")
+      )
+    (if rv
+        (if (> 0 rv) (message "Process could not be killed: %s" rv)
+          ;; (message "Process killed")
+          ))))
+
 ;; 16000
 (defun xc/kill-python ()
   "Kill Python.
@@ -2303,7 +2329,8 @@ Note: This kills indiscriminantly.  It will kill any system
 process, like the AWS CLI, that runs on the Python interpetor."
   (interactive)
   (if (eq system-type 'windows-nt)
-      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")))
+      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\""))
+  (xc/kill-proc-child peut-gerer-shell))
 
 
 (defun xc/pyside-lookup (&optional arg)

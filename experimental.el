@@ -313,3 +313,4 @@ compilation-error-regexp-alist-alist."
 
 (use-package geiser)
 (use-package geiser-guile)
+(use-package geiser-mit)
