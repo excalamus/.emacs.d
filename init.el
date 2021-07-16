@@ -918,7 +918,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 
 (use-package elpy
-  ;; :disabled
+  :disabled
   :after (:all helm key-chord use-package-chords org)
   ;; :straight (:fork "excalamus/elpy")
   :init
@@ -1536,10 +1536,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;;   :after (:all org)
 ;;   :straight (:repo "excalamus/posframe"))
 
-;; 
-;; (use-package pyvenv
-;;   :after (:all org)
-;;   :straight (:fork "excalamus/pyvenv"))
+
+(use-package pyvenv
+  :after (:all org)
+  :straight (:fork "excalamus/pyvenv"))
 
 
 (use-package qml-mode
