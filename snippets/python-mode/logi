@@ -3,4 +3,4 @@
 # key: logi
 # group: Excalamus
 # --
-log.info(f'${1:}')
+log.info(f"${1:}")

@@ -3,4 +3,4 @@
 # key: logd
 # group: Excalamus
 # --
-log.debug(f'${1:}')
+log.debug(f"${1:}")
