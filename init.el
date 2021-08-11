@@ -576,6 +576,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 	  "g" '(lambda () (interactive) (find-file "C:/glossary/glossary.org"))
 	  "n" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/notes.org"))
 	  "m" '(lambda () (interactive) (find-file "C:/Users/mtrzcinski/Documents/notes/monorepo.org"))
+	  "t" '(lambda () (interactive) (find-file "c:/Users/mtrzcinski/Documents/notes/timecard.org"))
 	  )
       (general-def :keymaps 'override
 	:prefix "C-x i"
