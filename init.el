@@ -2025,7 +2025,7 @@ the cursor down."
 	    (goto-char (point-min))
 	    (re-search-forward "* Timecard")
 	    (insert (format "\n** %s" todays-date))
-	    (xp/punch-timecard)))))))
+	    (xc/punch-timecard)))))))
 
 
 (defun xc/on-demand-window-set ()
