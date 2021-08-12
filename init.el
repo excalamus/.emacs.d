@@ -107,6 +107,7 @@ permanent binding.")
   "List of Qt modules for use in `xc/pyside-lookup'.")
 
 ;; "→"
+;; https://web.archive.org/web/20210725155836/https://github.com/noctuid/general.el/issues/460
 (defvar xc/plover-enabled nil
   "State of whether Plover is active.")
 
