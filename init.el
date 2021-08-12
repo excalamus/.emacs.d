@@ -884,6 +884,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<S-f10>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
       "<S-f7>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
+      "<S-wheel-down>" 'python-nav-forward-block
+      "<S-wheel-up>" 'python-nav-backward-block
       )
     (general-define-key :keymaps 'python-mode-map
      :states '(insert emacs)
@@ -2004,19 +2006,33 @@ the cursor down."
 	(find-file "c:/Users/mtrzcinski/Documents/notes/timecard.org")
 	(previous-buffer)))
   (with-current-buffer "timecard.org"
-    (let ((buffer-save-without-query t))
+    (let* ((buffer-save-without-query t)
+	   (time-string "%Y/%m/%d")
+	   (system-time-locale "en_US")
+	   (todays-date (format-time-string time-string))
+	   (header-regexp (format "\\*\\* %s" todays-date)))
       (save-excursion
 	(goto-char (point-min))
-	(re-search-forward "* Timecard")
-	(if (org-clocking-p)
+	(if (re-search-forward header-regexp nil t)
+	    ;; found
 	    (progn
-	      (org-clock-out)
-	      (setq result "Clocked out"))
+	      ;; clock in or out accordingly
+	      (if (org-clocking-p)
+		  (progn
+		    (org-clock-out)
+		    (setq result "Clocked out"))
+		(progn
+		  (org-clock-in)
+		  (setq result "Clocked in")))
+	      (save-buffer)
+	      (message "%s" result))
+	  ;; not found
 	  (progn
-	    (org-clock-in)
-	    (setq result "Clocked in"))))
-	(save-buffer)
-	(message "%s" result))))
+	    ;; insert subtree with today's date and try punching in
+	    (goto-char (point-min))
+	    (re-search-forward "* Timecard")
+	    (insert (format "\n** %s" todays-date))
+	    (xp/punch-timecard)))))))
 
 
 (defun xc/on-demand-window-set ()
@@ -2332,12 +2348,13 @@ line if no region is provided."
 (defun xc/kill-python ()
   "Kill Python.
 
-Note: This kills indiscriminantly.  It will kill any system
-process, like the AWS CLI, that runs on the Python interpetor."
+Note: This kills indiscriminantly on Windows systems.  It will
+kill any system process, like the AWS CLI, that runs on the
+Python interpetor."
   (interactive)
-  (if (eq system-type 'windows-nt)
-      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\""))
-  (xc/kill-proc-child peut-gerer-shell))
+  (if (eq xc/device 'windows)
+      (shell-command "taskkill /f /fi \"IMAGENAME eq python.exe\" /fi \"MEMUSAGE gt 15000\"")
+    (xc/kill-proc-child peut-gerer-shell)))
 
 
 (defun xc/pyside-lookup (&optional arg)

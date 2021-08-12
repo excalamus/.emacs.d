@@ -3,4 +3,4 @@
 # key: logw
 # group: Excalamus
 # --
-log.warning(f'${1:}')
+log.warning(f"${1:}")
