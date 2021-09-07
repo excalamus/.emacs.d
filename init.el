@@ -734,6 +734,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "s" 'save-buffer
       "t" 'xc/open-terminal
       "x" 'eval-expression
+      "p" 'xc/pop-buffer-into-frame
       )
 
     (general-define-key :keymaps 'anaconda-mode-map
