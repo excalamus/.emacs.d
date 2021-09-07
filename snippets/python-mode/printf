@@ -3,4 +3,4 @@
 # key: printf
 # group: Excalamus
 # --
-print(f'${1:HERE}', flush=True)
+print(f"${1:HERE}", flush=True)
