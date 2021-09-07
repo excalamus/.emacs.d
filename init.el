@@ -865,11 +865,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;;   "RET" '(lambda () (interactive) (occur-mode-goto-occurrence) (with-current-buffer "*Occur*" (quit-window)))
     ;;   )
 
-    (general-define-key :keymaps 'org-mode-map
-     :states '(insert emacs)
-     "-" #'(lambda () (interactive) (insert "_"))
-     "_" #'(lambda () (interactive) (insert "-"))
-     )
+    ;; (general-define-key :keymaps 'org-mode-map
+    ;;  :states '(insert emacs)
+    ;;  "-" #'(lambda () (interactive) (insert "_"))
+    ;;  "_" #'(lambda () (interactive) (insert "-"))
+    ;;  )
+
     (general-def :keymaps 'org-mode-map
       :states 'normal
       :prefix "SPC"
@@ -902,11 +903,17 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<S-wheel-down>" 'python-nav-forward-block
       "<S-wheel-up>" 'python-nav-backward-block
       )
-    (general-define-key :keymaps 'python-mode-map
-     :states '(insert emacs)
-     "-" #'(lambda () (interactive) (insert "_"))
-     "_" #'(lambda () (interactive) (insert "-"))
-     )
+    ;; (general-define-key :keymaps 'python-mode-map
+    ;;  :states '(insert emacs)
+    ;;  "-" #'(lambda () (interactive) (insert "_"))
+    ;;  "_" #'(lambda () (interactive) (insert "-"))
+    ;;  )
+
+    ;; (general-define-key :keymaps 'python-mode-map
+    ;;  :states '(insert emacs)
+    ;;  "-" #'self-insert-command
+    ;;  "_" #'self-insert-command
+    ;;  )
 
     (general-def :keymaps 'smerge-mode-map
       :states 'normal
