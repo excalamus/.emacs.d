@@ -852,6 +852,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;; Disable mouse click on minibuffer from opening messages
     (general-def :keymaps 'minibuffer-inactive-mode-map [mouse-1] nil)
 
+    ;; remap completion for minibuffer so that Plover can do Spaces After
+    (general-def :keymaps 'minibuffer-local-completion-map
+      "SPC"  'self-insert-command       ;; now inserts a space character
+      "<tab>" 'minibuffer-complete-word ;; previously was space
+      "S-<tab>" 'minibuffer-complete    ;; previously was tab
+      )
+
     ;; (general-def :keymaps 'occur-mode-map
     ;;   ;; "<escape>" 'quit-window
     ;;   "<tab>" '(lambda () (interactive) (occur-mode-mouse-goto) (xc/switch-to-last-window))
