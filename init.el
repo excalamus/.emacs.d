@@ -2014,7 +2014,40 @@ the cursor down."
 
 
 (defun xc/punch-timecard ()
-  "Clock in or clock out"
+  "Clock in or clock out.
+
+Assumes a 'timecard.org' file exists with format:
+
+    #+TITLE: Timecard
+    #+AUTHOR: Excalamus
+
+    DISPLAY CLOCK
+
+    * Report
+    #+BEGIN: clocktable :scope file :maxlevel 2 :block thisweek
+    #+CAPTION: Clock summary at [2021-08-18 Wed 12:51], for week 2021-W33.
+    | Headline       | Time    |      |
+    |----------------+---------+------|
+    | *Total time*   | *19:27* |      |
+    |----------------+---------+------|
+    | Timecard       | 19:27   |      |
+    | \_  2021/08/18 |         | 3:59 |
+    | \_  2021/08/17 |         | 8:27 |
+    | \_  2021/08/16 |         | 7:01 |
+    #+END:
+
+    * Timecard
+
+    * Local Variables
+    # Local Variables:
+    # eval: (defun xc/-button-pressed (&optional button) (interactive) (org-clock-display))
+    # eval: (define-button-type 'display-clock-button 'follow-link t 'action #'org-clock-display)
+    # eval: (make-button 45 58 :type 'display-clock-button)
+    # eval: (setq org-duration-format 'h:mm)
+    # eval: (setq org-startup-folded nil)
+    # End:
+"
+
   (interactive)
   (if (not (featurep 'org-clock))
       (require 'org-clock))
