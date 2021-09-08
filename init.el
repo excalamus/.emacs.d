@@ -107,6 +107,7 @@ permanent binding.")
   "List of Qt modules for use in `xc/pyside-lookup'.")
 
 ;; "→"
+;; https://web.archive.org/web/20210725155836/https://github.com/noctuid/general.el/issues/460
 (defvar xc/plover-enabled nil
   "State of whether Plover is active.")
 
@@ -457,6 +458,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (setq lsp-signature-render-documentation t) ;
   (setq lsp-signature-doc-lines 5)
   (setq lsp-restart 'auto-restart)
+  (setq lsp-completion-enable nil)
   ;; (setq lsp-signature-function 'lsp-signature-posframe))
   (setq lsp-signature-function 'lsp-lv-message))
 
@@ -952,8 +954,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (add-hook 'elpy-mode-hook #'hs-minor-mode)
   (add-hook 'elpy-mode-hook (lambda () (company-mode -1)))
   :config
-  (pyvenv-mode 1)
-  (elpy-enable)
+  ;; (pyvenv-mode 1)
+  ;; (elpy-enable)
   (setq elpy-rpc-timeout 2)
 
   ;; (remove-hook 'xref-backend-functions #'elpy--xref-backend t)
@@ -1263,6 +1265,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :straight (:fork "excalamus/keycast")
   :config
 
+  (setq keycast-separator-width 30)
+  (set-face-attribute 'keycast-key nil :background "gray29" :foreground "yellow3" :height 1.2)
+  (set-face-attribute 'keycast-command nil :background "gray29" :foreground "yellow3" :height 1.2 :weight 'bold :box '(:line-width -3 :style released-button))
   (if xc/debug (message "keycast")))
 
 
@@ -1524,6 +1529,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   ;;              :activate "C:\\Users\\excalamus\\Anaconda3\\condabin\\conda.bat activate"
   ;;              )))
 
+  (if (eq xc/device 'gnu/linux)
+      (setq peut-gerer-command-prefix "python3"))
 
   (setq peut-gerer-after-activate-functions '(pyvenv-activate))
 
@@ -2117,7 +2124,7 @@ FILE may also be a directory."
 	(progn
 	  (if (eq xc/device 'windows)
 	      (browse-url-of-file dir)
-	    (shell-command (concat "thunar " file))))
+	    (start-process "thunar" nil "/run/current-system/profile/bin/thunar" file)))
       (error "No directory to open"))))
 
 
