@@ -714,30 +714,30 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-o" 'xref-pop-marker-stack
       )
 
-    (general-def :states '(normal visual)
-      :prefix "SPC"
-      ";" 'comment-dwim-2
-      "=" 'er/expand-region
-      "+" 'er/contract-region
-      "b" 'helm-buffers-list
-      "f" 'find-file
-      "F" 'ffap-other-window
-      "g" 'xc/open-file-browser
-      "h" 'info
-      "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "k" 'kill-buffer
-      "o" 'ace-window
-      "q" 'sx-search
-      "r" '(lambda() (interactive)
-	     (save-some-buffers t nil)
-	     (if xc/kill-python-p
-		 (xc/kill-python))  ; kills aws cli commands
-	     (peut-gerer-send-command peut-gerer-command))
-      "s" 'save-buffer
-      "t" 'xc/open-terminal
-      "x" 'eval-expression
-      "p" 'xc/pop-buffer-into-frame
-      )
+    ;; (general-def :states '(normal visual)
+    ;;   :prefix "SPC"
+    ;;   ";" 'comment-dwim-2
+    ;;   "=" 'er/expand-region
+    ;;   "+" 'er/contract-region
+    ;;   "b" 'helm-buffers-list
+    ;;   "f" 'find-file
+    ;;   "F" 'ffap-other-window
+    ;;   "g" 'xc/open-file-browser
+    ;;   "h" 'info
+    ;;   "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+    ;;   "k" 'kill-buffer
+    ;;   "o" 'ace-window
+    ;;   "q" 'sx-search
+    ;;   "r" '(lambda() (interactive)
+    ;;	     (save-some-buffers t nil)
+    ;;	     (if xc/kill-python-p
+    ;;		 (xc/kill-python))  ; kills aws cli commands
+    ;;	     (peut-gerer-send-command peut-gerer-command))
+    ;;   "s" 'save-buffer
+    ;;   "t" 'xc/open-terminal
+    ;;   "x" 'eval-expression
+    ;;   "p" 'xc/pop-buffer-into-frame
+    ;;   )
 
     (general-define-key :keymaps 'anaconda-mode-map
      :states '(insert emacs)
@@ -753,11 +753,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<S-f7>" 'peut-gerer-buffer-file-to-shell
       )
 
-    (general-define-key :keymaps 'comint-mode-map
-     :states '(insert emacs)
-     "-" #'(lambda () (interactive) (insert "_"))
-     "_" #'(lambda () (interactive) (insert "-"))
-     )
+    ;;(general-define-key :keymaps 'comint-mode-map
+     ;;:states '(insert emacs)
+     ;;"-" #'(lambda () (interactive) (insert "_"))
+     ;;"_" #'(lambda () (interactive) (insert "-"))
+    ;;)
+
+
     (general-def :keymaps 'comint-mode-map
       "C-l" 'comint-clear-buffer
       "C-x C-l" 'recenter-top-bottom
@@ -857,8 +859,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;; remap completion for minibuffer so that Plover can do Spaces After
     (general-def :keymaps 'minibuffer-local-completion-map
       "SPC"  'self-insert-command       ;; now inserts a space character
-      "<tab>" 'minibuffer-complete-word ;; previously was space
-      "S-<tab>" 'minibuffer-complete    ;; previously was tab
+      "S-<tab>" 'minibuffer-complete-word ;; previously was space
+      "<tab>" 'minibuffer-complete    ;; previously was tab
       )
 
     ;; (general-def :keymaps 'occur-mode-map
@@ -886,13 +888,13 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-c C--" 'org-ctrl-c-minus
       )
 
-    (general-def :keymaps 'python-mode-map
-      :states 'normal
-      :prefix "SPC"
-      "d" 'xc/python-occur-definitions
-      "c" 'xc/string-inflection-style-cycle
-      "u" 'xc/pyside-lookup
-      )
+    ;; (general-def :keymaps 'python-mode-map
+    ;;   :states 'normal
+    ;;   :prefix "SPC"
+    ;;   "d" 'xc/python-occur-definitions
+    ;;   "c" 'xc/string-inflection-style-cycle
+    ;;   "u" 'xc/pyside-lookup
+    ;;   )
 
     (general-def :keymaps 'python-mode-map
       "<apps>" 'xc/kill-python
@@ -905,6 +907,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<S-wheel-down>" 'python-nav-forward-block
       "<S-wheel-up>" 'python-nav-backward-block
       )
+
     ;; (general-define-key :keymaps 'python-mode-map
     ;;  :states '(insert emacs)
     ;;  "-" #'(lambda () (interactive) (insert "_"))
