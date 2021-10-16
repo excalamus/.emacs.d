@@ -167,6 +167,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
+(setq-default indent-tabs-mode nil)
+
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
 (show-paren-mode 1)
