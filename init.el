@@ -991,6 +991,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (use-package erc
   :config
   (setq erc-nick "excalamus")
+  (setq erc-user-full-name "excalamus")
+  (setq erc-port 6697)
   (setq erc-default-server "irc.libera.chat"))
 
 
