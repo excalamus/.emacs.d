@@ -106,11 +106,6 @@ permanent binding.")
     "Qt3DRender" "QtPositioning" "QtLocation" "QtSensors" "QtScxml")
   "List of Qt modules for use in `xc/pyside-lookup'.")
 
-;; "→"
-;; https://web.archive.org/web/20210725155836/https://github.com/noctuid/general.el/issues/460
-(defvar xc/plover-enabled nil
-  "State of whether Plover is active.")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; settings
@@ -563,6 +558,78 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
   (require 'ffap)
 
+  ;; https://web.archive.org/web/20210725155836/https://github.com/noctuid/general.el/issues/460
+
+  (defvar xc/plover-enabled nil
+    "State of whether Plover is active.")
+
+  (defvar xc/steno-hook nil)
+
+  (defun general--split-on-positional-args (rest)
+    "Remove all positional arguments from the list REST.
+Return a list of containing the list of positional arguments and the and a list
+of the other arguments. The order of arguments will be preserved."
+    (let (positional-args)
+      (while (general--positional-arg-p (car rest))
+        (push (pop rest) positional-args))
+      (list positional-args rest)))
+
+  (cl-defmacro general-unbind (&rest args)
+    "A wrapper for `general-def' to unbind multiple keys simultaneously.
+Insert after all keys in ARGS before passing ARGS to `general-def.' \":with
+#'func\" can be optionally specified to use a custom function instead (e.g.
+`ignore'). :full t can be used to specify that ARGS contains key/command pairs
+instead of just keys. This can be useful to create a command that either binds
+or unbinds commands."
+    (declare (indent defun))
+    ;; Note: :with can be at an odd position, so must handle internally and not
+    ;; with &key
+    (let* (with
+           full
+           (split-args (general--remove-keyword-args args))
+           (kargs (cl-loop for (key val) on (cadr split-args) by 'cddr
+                           if (memq key '(:with :full))
+                           do (if (eq key :with)
+                                  (setq with val)
+                                (setq full val))
+                           else
+                           collect key
+                           and collect val))
+           (split-maps (general--split-on-positional-args (car split-args)))
+           (maps
+            (if full
+                (cl-loop for (key _) on (cadr split-maps) by 'cddr
+                         collect key
+                         and collect (if (eq with t)
+                                         nil
+                                       with))
+              (cl-loop for key in (cadr split-maps)
+                       collect key
+                       and collect (if (eq with t)
+                                       nil
+                                     with))))
+           (args (append (car split-maps) maps kargs)))
+      `(general-def ,@args)))
+
+  (defmacro xc/steno-define (&rest args)
+    `(progn
+       (general-def ,@args :prefix "→")
+       (general-add-hook 'xc/steno-hook
+                         (lambda ()
+                           (if xc/plover-enabled
+                               (progn
+                                 (general-unbind ,@args :prefix "SPC" :full t)
+                                 (message "Disabled keyboard leader"))
+                             (progn
+                               (general-def ,@args :prefix "SPC")
+                               (message "Enabled keyboard leader")))))))
+
+  (defun xc/toggle-general-keyboard-leader ()
+    "Toggle global keyboard leader."
+    (interactive)
+    (setq xc/plover-enabled (not xc/plover-enabled))
+    (run-hooks 'xc/steno-hook))
+
   (general-after-init
 
     ;; Disable stupid minimize hotkeys
@@ -717,29 +784,30 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       )
 
     ;; (general-def :states '(normal visual)
-    ;;   :prefix "SPC"
-    ;;   ";" 'comment-dwim-2
-    ;;   "=" 'er/expand-region
-    ;;   "+" 'er/contract-region
-    ;;   "b" 'helm-buffers-list
-    ;;   "f" 'find-file
-    ;;   "F" 'ffap-other-window
-    ;;   "g" 'xc/open-file-browser
-    ;;   "h" 'info
-    ;;   "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-    ;;   "k" 'kill-buffer
-    ;;   "o" 'ace-window
-    ;;   "q" 'sx-search
-    ;;   "r" '(lambda() (interactive)
-    ;;	     (save-some-buffers t nil)
-    ;;	     (if xc/kill-python-p
-    ;;		 (xc/kill-python))  ; kills aws cli commands
-    ;;	     (peut-gerer-send-command peut-gerer-command))
-    ;;   "s" 'save-buffer
-    ;;   "t" 'xc/open-terminal
-    ;;   "x" 'eval-expression
-    ;;   "p" 'xc/pop-buffer-into-frame
-    ;;   )
+      ;; :prefix "SPC"
+   (xc/steno-define '(normal visual)
+       ";" 'comment-dwim-2
+       "=" 'er/expand-region
+       "+" 'er/contract-region
+       "b" 'helm-buffers-list
+       "f" 'find-file
+       "F" 'ffap-other-window
+       "g" 'xc/open-file-browser
+       "h" 'info
+       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+       "k" 'kill-buffer
+       "o" 'ace-window
+       "q" 'sx-search
+       "r" '(lambda() (interactive)
+             (save-some-buffers t nil)
+             (if xc/kill-python-p
+                 (xc/kill-python))  ; kills aws cli commands
+             (peut-gerer-send-command peut-gerer-command))
+       "s" 'save-buffer
+       "t" 'xc/open-terminal
+       "x" 'eval-expression
+       "p" 'xc/pop-buffer-into-frame
+       )
 
     (general-define-key :keymaps 'anaconda-mode-map
      :states '(insert emacs)
@@ -789,9 +857,11 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-c o" 'elpy-occur-definitions
       )
 
-    (general-def :keymaps 'emacs-lisp-mode-map
-      :states 'normal
-      :prefix "SPC"
+    ;; (general-def :keymaps 'emacs-lisp-mode-map
+      ;; :states 'normal
+      ;; :prefix "SPC"
+    (xc/steno-define :keymaps 'emacs-lisp-mode-map
+                     :states 'normal
       "e" 'eval-last-sexp
       )
 
@@ -825,9 +895,12 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "h" 'nil  ; hitting 'h' by accident kills all window arrangement
       )
 
-    (general-def :keymaps 'ledger-mode-map
-      :states 'normal
-      :prefix "SPC"
+    ;;(general-def :keymaps 'ledger-mode-map
+      ;;:states 'normal
+      ;;:prefix "SPC"
+
+    (xc/steno-define :keymaps 'ledger-mode-map
+                     :states 'normal
       ;; "n" 'ledger-display-balance-at-point
       "d" '(lambda () (interactive) (scroll-other-window-down 1))
       "u" '(lambda () (interactive) (scroll-other-window 1))
@@ -877,10 +950,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     ;;  "_" #'(lambda () (interactive) (insert "-"))
     ;;  )
 
-    (general-def :keymaps 'org-mode-map
-      :states 'normal
-      :prefix "SPC"
+    ;;(general-def :keymaps 'org-mode-map
+      ;;:states 'normal
+      ;;:prefix "SPC"
+
+    (xc/steno-define :keymaps 'org-mode-map
+                     :states 'normal
+
       "SPC" 'org-ctrl-c-ctrl-c
+      "→" 'org-ctrl-c-ctrl-c
       "t" 'org-insert-structure-template
       )
     (general-def :keymaps 'org-mode-map
