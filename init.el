@@ -1490,6 +1490,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
      (emacs-lisp . t)
      (ledger . t)
      (latex . t)
+     (shell . t)
      ))
 
   (defun xc/new-clock-task ()
