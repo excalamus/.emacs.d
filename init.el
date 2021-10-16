@@ -1509,7 +1509,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
 (use-package peut-publier
   :after (:all org)
-  :straight (:repo "https://github.com/excalamus/peut-publier.git")
+  :straight (:repo "git@github.com:excalamus/peut-publier.git")
   :config
 
   (if xc/debug (message "peut-publier")))
