@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: PROBG
+# key: PROBG
+# --
+def ${1:def}():
+    $0

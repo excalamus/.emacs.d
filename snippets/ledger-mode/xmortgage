@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: xmortgage
+# key: xmortgage
+# group: Excalamus
+# --
+
+define principal = \$${1}
+define interest  = \$${2}
+2021/${3}/${4} * mortgage  ; confirm ${5}
+    expense:household:mortgage              (principal / 2)  ; :mortgage-principal:
+    expense:household:mortgage              (interest / 2)   ; :mortgage-interest:
+    expense:lending:jessica:household:mortgage        ((principal + interest) / 2)
+    asset:checking:pnc                              \$-572.41
+    ; ${6:month}

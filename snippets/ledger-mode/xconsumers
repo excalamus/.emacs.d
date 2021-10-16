@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: xconsumers
+# key: xconsumers
+# group: Excalamus
+# --
+
+define electric = \$$1
+define gas      = \$$2
+define tax      = \$$3
+2021/$4/$5 * consumers energy  ; invoice $6  ; confirm autopay
+    expense:household:electric                       ((electric / 2) + (tax / 4))
+    expense:lending:jessica:household:electric       ((electric / 2) + (tax / 4))
+    expense:household:gas                            ((gas / 2) + (tax / 4))
+    expense:lending:jessica:household:gas            ((gas / 2) + (tax / 4))
+    asset:checking:pnc                              \$-${7:full-amount}
+    ; ${8:last-month}

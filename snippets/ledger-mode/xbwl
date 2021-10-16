@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: xbwl
+# key: xbwl
+# group: Excalamus
+# --
+
+define water=\$${1}
+2021/${2}/${3} * bwl  ; confirm ${4}
+    expense:household:water                          (water / 2)
+    expense:lending:jessica:household:water          (water / 2)
+    asset:checking:pnc
