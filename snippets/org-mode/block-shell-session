@@ -5,6 +5,6 @@
 # --
 
 #+ATTR_HTML: :class pre-top
-#+begin_src sh :results output :exports both :eval never-export :session env
-${1}
+#+begin_src ${1:sh} :results output :exports both :eval never-export :session ${2:env}
+$3
 #+end_src
