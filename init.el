@@ -229,6 +229,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (add-hook 'comint-preoutput-filter-functions
           'xc/append-newline-after-comma)
 
+(setq c-default-style "k&r")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; appearance
