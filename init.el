@@ -697,8 +697,8 @@ or unbinds commands."
       "C-<f2>" 'bm-toggle
       "<f7>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 (if xc/kill-python-p
-                     (xc/kill-python))  ; kills aws cli commands
+                 ;; (if xc/kill-python-p
+                     ;; (xc/kill-python))  ; kills aws cli commands
                  ;; (quit-process (get-buffer-process peut-gerer-shell))
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
@@ -721,6 +721,7 @@ or unbinds commands."
       "C-x g" 'magit-status
       "C-x R" 'magit-list-repositories ; C-x r clashes with rectangular edit
       "C-x o" 'ace-window
+      "C-c C-w" '(lambda () (interactive) (call-interactively 'other-window))
       "C-x n D" 'xc/narrow-to-defun-indirect
       "<f1>" '(lambda ()
                 (interactive)
@@ -1532,6 +1533,8 @@ or unbinds commands."
   (require 'ox-texinfo)
   (require 'ox-md)
 
+  (if (eq xc/device 'gnu/linux)
+      (setq org-babel-python-command "python3"))
   (setq org-adapt-indentation nil)
   (setq org-edit-src-content-indentation 0)
   (setq org-src-tab-acts-natively t)
