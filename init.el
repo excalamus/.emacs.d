@@ -579,6 +579,10 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-z"
       "C-x C-z")
 
+    (general-unbind :keymaps 'shell-mode-map
+      "C-c C-w"
+      )
+
     ;; (general-define-key :keymaps 'key-translation-map
     ;;  ;; "M-x" "M-q"  ; dvp
     ;;  ;; "M-q" "M-x"  ; dvp
@@ -631,12 +635,14 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "<f2>" 'bm-common-next
       "S-<f2>" 'bm-common-previous
       "C-<f2>" 'bm-toggle
+
       "<f7>" '(lambda() (interactive)
 		 (save-some-buffers t nil)
-		 (if xc/kill-python-p
-		     (xc/kill-python))  ; kills aws cli commands
+		 ;; (if xc/kill-python-p
+		     ;; (xc/kill-python))  ; kills aws cli commands
 		 ;; (quit-process (get-buffer-process peut-gerer-shell))
 		 (peut-gerer-send-command peut-gerer-command))
+
       "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
       ;; can use to create new *shell* after load
       "<f10>" '(lambda() (interactive)
@@ -657,6 +663,8 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
       "C-x g" 'magit-status
       "C-x R" 'magit-list-repositories ; C-x r clashes with rectangular edit
       "C-x o" 'ace-window
+      "C-c C-w" 'other-window
+      "C-c C-p" 'xc/switch-to-last-window
       "C-x n D" 'xc/narrow-to-defun-indirect
       "<f1>" '(lambda ()
 		(interactive)
@@ -2356,7 +2364,7 @@ line if no region is provided."
     (replace-string "//" "/" nil beg end)))
 
 
-(defvar xc/kill-python-p nil
+(defvar xc/kill-python-p t
   "Will Python be killed?")
 
 
@@ -2584,7 +2592,6 @@ chicken and egg problem."
   (interactive)
   (insert "\"C:\\python\\python37\\python.exe\" -m venv venv"))
 
-
 (defun xc/qt-live-code ()
   "Call ipython interactively with live-code toggle."
   (interactive)
@@ -2599,3 +2606,21 @@ chicken and egg problem."
 (defun xc/toggle-build-debug ()
   (interactive)
   (insert "set BUILD_DEBUG="))
+
+(defun xc/kill-qgis ()
+  (interactive)
+  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-bin.exe\""))
+
+(defun xc/run-qgis ()
+  (interactive)
+  (save-some-buffers t nil)
+  (xc/kill-qgis)
+  (shell-command "taskkill /f /t /fi \"WINDOWTITLE eq \\qgis\\ \"")
+  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.20.3\\bin\\qgis.bat")))
+    (set-process-query-on-exit-flag proc nil))
+  ;; assume qgis loads in X seconds
+  (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
+
+;; (general-def :keymaps 'override "<f7>" 'xc/run-qgis)
+;; (kill-new "C:/Users/mtrzcinski/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/pri_tool")
+(put 'downcase-region 'disabled nil)
