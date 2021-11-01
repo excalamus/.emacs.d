@@ -224,13 +224,20 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 	  '(lambda ()
 	     (switch-to-buffer-other-window "*Occur*")))
 
-;; prevent long lines from bogging down the shell. define as function
-;; so that you can easily add/remove hook
-(defun xc/append-newline-after-comma (x)
+(defun xc/-append-newline-after-comma (x)
   (replace-regexp-in-string "," ",\n" x))
 
-(add-hook 'comint-preoutput-filter-functions
-	  'xc/append-newline-after-comma)
+(defun xc/toggle-long-line-filter ()
+  "Prevent long lines from bogging down the shell."
+  (interactive)
+  (if (member 'xc/-append-newline-after-comma comint-preoutput-filter-functions)
+      (progn
+	(remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma t)
+	(message "Removed local long line filter"))
+    (progn
+      (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90 t)
+      (message "Added local long line filter"))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
