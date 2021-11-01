@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: xsewer
+# key: xsewer
+# group: Excalamus
+# --
+
+; basic service charge
+; actual usage
+define service = \$$1
+define usage   = \$$2
+define fee     = \$2.00
+2021/$5/$6 * delhi township  ; confirm $4
+    expense:household:sewer                          ((service + usage + fee) / 2)
+    expense:lending:jessica:household:sewer          ((service + usage + fee) / 2)
+    asset:checking:pnc                               \$-${3:full-amount}
+    ; ${7:month}
