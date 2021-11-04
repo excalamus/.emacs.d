@@ -314,3 +314,25 @@ compilation-error-regexp-alist-alist."
 (use-package geiser)
 (use-package geiser-guile)
 (use-package geiser-mit)
+
+(defun xc/search (&optional prefix engine beg end)
+  "Search the web for something.
+
+If a region is selected, lookup using region defined by BEG and
+END.  When no region or issue given, try using the thing at
+point.  If there is nothing at point, ask for the search query."
+  (interactive)
+  (let* ((engine-list '(("sdl" . "https://wiki.libsdl.org/wiki/search/?q=%s")))
+         (beg (or beg (if (use-region-p) (region-beginning)) nil))
+         (end (or end (if (use-region-p) (region-end)) nil))
+         (lookup-term  (read-string "Search for: "
+                                    (cond ((and beg end) (buffer-substring-no-properties beg end))
+                                          (t (thing-at-point 'symbol t)))))
+         (engine (or engine (completing-read "Select search engine: " engine-list nil t (caar engine-list))))
+         (query (if prefix (format "%s %s" prefix lookup-term) lookup-term))
+         (search-string (url-encode-url (format (cdr (assoc engine engine-list)) query))))
+    (browse-url-default-browser search-string)))
+
+(defun xc/search-sdl (&optional prefix engine beg end)
+  (interactive)
+  (xc/search prefix "sdl" beg end))
