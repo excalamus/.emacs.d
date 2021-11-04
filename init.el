@@ -95,7 +95,7 @@ current Emacs session but whose importance doesn't warrant a
 permanent binding.")
 
 (defvar xc/atlassian ""
-  "Atlassian url for use with `xc/jira-issue'.")
+  "Atlassian url.")
 
 (defvar xc/pyside-modules
   '("QtCore" "Qt3DAnimation" "QtGui" "QtHelp" "QtNetwork" "QtOpenGL" "QtPrintSupport" "QtQml"
@@ -1340,10 +1340,10 @@ or unbinds commands."
   :straight (:fork "excalamus/hl-todo")
   :config
   (setq hl-todo-keyword-faces
-	'(("TODO"   . "#f84547")
-	  ("FIXME"  . "#f84547")
-	  ("DEBUG"  . "#8485ce")
-	  ("NOTE"   . "#95c76f")))
+        '(("TODO"   . "#f84547")
+          ("FIXME"  . "#f84547")
+          ("DEBUG"  . "#8485ce")
+          ("NOTE"   . "#95c76f")))
   (global-hl-todo-mode)
 
   (if xc/debug (message "hl-todo")))
@@ -1704,8 +1704,12 @@ or unbinds commands."
                  :call (xc/send-line-or-region nil nil peut-gerer-shell)))
 
   (add-to-list 'right-click-context-global-menu-tree
-               '("Open Jira ticket"
-                 :call (xc/jira-issue)))
+               '("Search"
+                 ("General" :call (xc/search))
+                 ("QGIS" :call (xc/search-qgis))
+                 ("Open Jira ticket" :call (xc/search-jira))))
+
+  ;; (pop right-click-context-global-menu-tree)
 
   (if xc/debug (message "peut-gerer")))
 
@@ -2095,23 +2099,38 @@ put url into the kill ring."
     (message "%s" url)))
 
 
-(defun xc/jira-issue (&optional issue beg end)
-  "Open Jira ISSUE.
+(defun xc/search (&optional prefix engine beg end)
+  "Search the web for something.
 
-Use ISSUE when given.  Otherwise, if a region is selected, lookup
-using region defined by BEG and END.  When no region or issue
-given, check for issue numebr at point."
+If a region is selected, lookup using region defined by BEG and
+END.  When no region or issue given, try using the thing at
+point.  If there is nothing at point, ask for the search query."
   (interactive)
-  (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
+  (let* ((engine-list `(("ddg" . "https://duckduckgo.com/?q=%s")
+                        ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
+                        ("sdl" . "https://wiki.libsdl.org/wiki/search/?q=%s")
+                        ("jira" . ,(concat xc/atlassian "%s"))))
+         (beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
-         (thing (or issue (thing-at-point 'symbol t)))
-         (issue (or issue (if (use-region-p)
-                              (and beg end (buffer-substring-no-properties beg end))
-                            thing)))
-         (url (concat xc/atlassian issue)))
-    (if issue
-        (browse-url-default-windows-browser url)
-      (error "No directory to open"))))
+         (lookup-term  (read-string "Search for: "
+                                    (cond ((and beg end) (buffer-substring-no-properties beg end))
+                                          (t (thing-at-point 'symbol t)))))
+         (engine (or engine (completing-read "Select search engine: " engine-list nil t (caar engine-list))))
+         (query (if prefix (format "%s %s" prefix lookup-term) lookup-term))
+         (search-string (url-encode-url (format (cdr (assoc engine engine-list)) query))))
+    (browse-url-default-browser search-string)))
+
+(defun xc/search-jira (&optional beg end)
+  (interactive)
+  (xc/search nil "jira" beg end))
+
+(defun xc/search-sdl (&optional beg end)
+  (interactive)
+  (xc/search prefix "sdl" beg end))
+
+(defun xc/search-qgis (&optional beg end)
+  (interactive)
+  (xc/search nil "qgis" beg end))
 
 
 (defun minibuffer-inactive-mode-hook-setup ()
