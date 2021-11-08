@@ -229,14 +229,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   (interactive)
   (if (member 'xc/-append-newline-after-comma comint-preoutput-filter-functions)
       (progn
-        (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma t)
+        ;; (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma t)
+        (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
         (message "Removed local long line filter"))
     (progn
-      (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90 t)
+      ;; (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90 t)
+      (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90)
       (message "Added local long line filter"))))
 
-(add-hook 'comint-preoutput-filter-functions
-          'xc/-append-newline-after-comma)
+(remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
 
 (setq c-default-style "k&r")
 
