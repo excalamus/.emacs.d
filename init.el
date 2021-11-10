@@ -172,7 +172,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (setq confirm-kill-emacs 'y-or-n-p)
 (setq inhibit-startup-message t)
 (setq initial-major-mode 'emacs-lisp-mode)
-;; (setq help-window-select t)
+(setq help-window-select t)
 (setq ring-bell-function 'ignore)
 (setq initial-scratch-message "")
 (setq show-help-function nil)
@@ -712,8 +712,8 @@ or unbinds commands."
 
       "<f7>" '(lambda() (interactive)
                  (save-some-buffers t nil)
-                 ;; (if xc/kill-python-p
-                     ;; (xc/kill-python))  ; kills aws cli commands
+                 (if xc/kill-python-p
+                     (xc/kill-python))  ; kills aws cli commands
                  ;; (quit-process (get-buffer-process peut-gerer-shell))
                  (peut-gerer-send-command peut-gerer-command))
       "C-<f7>" '(lambda () (interactive) (call-interactively 'peut-gerer-send-command))
@@ -856,11 +856,12 @@ or unbinds commands."
       "<apps>" 'xc/kill-python
       )
 
-    (general-define-key :keymaps 'elpy-mode-map
-     :states '(insert emacs)
-     "-" #'(lambda () (interactive) (insert "_"))
-     "_" #'(lambda () (interactive) (insert "-"))
-     )
+    ;; (general-define-key :keymaps 'elpy-mode-map
+    ;;  :states '(insert emacs)
+    ;;  "-" #'(lambda () (interactive) (insert "_"))
+    ;;  "_" #'(lambda () (interactive) (insert "-"))
+    ;;  )
+
     ;; (general-def
     ;;   :keymaps 'elpy-mode-map
     ;;   "<C-return>" 'nil
@@ -950,12 +951,12 @@ or unbinds commands."
     ;; Disable mouse click on minibuffer from opening messages
     (general-def :keymaps 'minibuffer-inactive-mode-map [mouse-1] nil)
 
-    ;; remap completion for minibuffer so that Plover can do Spaces After
-    (general-def :keymaps 'minibuffer-local-completion-map
-      "SPC"  'self-insert-command       ;; now inserts a space character
-      "S-<tab>" 'minibuffer-complete-word ;; previously was space
-      "<tab>" 'minibuffer-complete    ;; previously was tab
-      )
+    ;; ;; remap completion for minibuffer so that Plover can do Spaces After
+    ;; (general-def :keymaps 'minibuffer-local-completion-map
+    ;;   "SPC"  'self-insert-command       ;; now inserts a space character
+    ;;   "S-<tab>" 'minibuffer-complete-word ;; previously was space
+    ;;   "<tab>" 'minibuffer-complete    ;; previously was tab
+    ;;   )
 
     ;; (general-def :keymaps 'occur-mode-map
     ;;   ;; "<escape>" 'quit-window
@@ -1048,16 +1049,16 @@ or unbinds commands."
 
 
 (use-package elpy
-  :disabled
-  :after (:all helm key-chord use-package-chords org)
-  ;; :straight (:fork "excalamus/elpy")
+  ;; :disabled
+  :after (:all pyvenv helm key-chord use-package-chords org)
+  :straight (:fork "excalamus/elpy")
   :init
   (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
   (add-hook 'elpy-mode-hook #'hs-minor-mode)
   (add-hook 'elpy-mode-hook (lambda () (company-mode -1)))
   :config
-  ;; (pyvenv-mode 1)
-  ;; (elpy-enable)
+  (pyvenv-mode 1)
+  (elpy-enable)
   (setq elpy-rpc-timeout 2)
 
   ;; (remove-hook 'xref-backend-functions #'elpy--xref-backend t)
@@ -1707,7 +1708,7 @@ or unbinds commands."
   (add-to-list 'right-click-context-global-menu-tree
                '("Search"
                  ("General" :call (xc/search))
-                 ("QGIS" :call (xc/search-qgis))
+                 ;; ("QGIS" :call (xc/search-qgis))
                  ("Open Jira ticket" :call (xc/search-jira))))
 
   ;; (pop right-click-context-global-menu-tree)
@@ -1719,10 +1720,10 @@ or unbinds commands."
 ;;   :after (:all org)
 ;;   :straight (:repo "excalamus/posframe"))
 
-
-(use-package pyvenv
-  :after (:all org)
-  :straight (:fork "excalamus/pyvenv"))
+;; 
+;; (use-package pyvenv
+;;   :after (:all org)
+;;   :straight (:repo "excalamus/pyvenv"))
 
 
 (use-package qml-mode
@@ -2108,7 +2109,8 @@ END.  When no region or issue given, try using the thing at
 point.  If there is nothing at point, ask for the search query."
   (interactive)
   (let* ((engine-list `(("ddg" . "https://duckduckgo.com/?q=%s")
-                        ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
+                        ("Qt" . "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q=%s")
+                        ;; ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
                         ("sdl" . "https://wiki.libsdl.org/wiki/search/?q=%s")
                         ("jira" . ,(concat xc/atlassian "%s"))))
          (beg (or beg (if (use-region-p) (region-beginning)) nil))
