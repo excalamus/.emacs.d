@@ -172,7 +172,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (setq confirm-kill-emacs 'y-or-n-p)
 (setq inhibit-startup-message t)
 (setq initial-major-mode 'emacs-lisp-mode)
-;; (setq help-window-select t)
+(setq help-window-select t)
 (setq ring-bell-function 'ignore)
 (setq initial-scratch-message "")
 (setq show-help-function nil)
