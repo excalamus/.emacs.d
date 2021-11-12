@@ -2423,7 +2423,7 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
   "Kill all Emacs processes."
   (interactive)
   (let ((cmd (if (eq system-type 'gnu/linux)
-                 "killall -9 emacs" ; probably won't kill server administered by systemd
+                 "killall -9 -r emacs" ; probably won't kill server administered by systemd
                "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
     (shell-command cmd)))
 
