@@ -1640,6 +1640,7 @@ or unbinds commands."
      (latex . t)
      (shell . t)
      ;; (shstream . t)
+     (scheme . t)
      ))
 
   (defun xc/new-clock-task ()
