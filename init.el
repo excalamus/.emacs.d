@@ -344,21 +344,39 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (defvar xc/theme-light nil
   "My light theme.")
 
-(setq xc/theme-dark 'zenburn)
+;; (setq xc/theme-dark 'zenburn)
+(setq xc/theme-dark 'base16-eighties)
 (setq xc/theme-light 'base16-tomorrow)
 
 ;; Add to hook to reload these automatically
 (defun xc/dark-theme-hook ()
   "Run after loading dark theme."
-  ;; zenburn
-  (if (eq xc/device 'termux)
-      (set-face-attribute 'mode-line-inactive nil :background "color-236"))
-  (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
-  (setq evil-insert-state-cursor '("gray" bar))
-  (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
-  (set-face-attribute 'mode-line nil :background "gray40")
-  (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
-  (set-face-attribute 'xc/hi-comint nil :background "dim gray"))
+  (cond
+   ((eq xc/theme-dark 'zenburn)
+         (progn
+           (if (eq xc/device 'termux)
+               (set-face-attribute 'mode-line-inactive nil :background "color-236"))
+           (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
+           (setq evil-insert-state-cursor '("gray" bar))
+           (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
+           (set-face-attribute 'mode-line nil :background "gray40")
+           (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
+           (set-face-attribute 'xc/hi-comint nil :background "dim gray")))
+
+   ((eq xc/theme-dark 'base16-eighties)
+        (progn
+          (set-face-attribute 'hl-line nil :background "gray20" :foreground 'unspecified)
+
+          (set-face-attribute 'mode-line-inactive nil
+                              :box '(:line-width 1 :color "gray1" :style released-button)
+                              ;; :background "#393939"
+                              :background "#2d2d2d")
+
+          (set-face-attribute 'mode-line nil
+                              :foreground 'unspecified
+                              :background "gray9"
+                              :box '(:line-width 1 :color "gray1" :style released-button))))
+          ))
 
 (defun xc/light-theme-hook ()
   "Run after loading light theme."
