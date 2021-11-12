@@ -1587,16 +1587,16 @@ or unbinds commands."
 ;; from a fork. For details, see URL
 ;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
-  :straight (:type built-in)
-  :init
-  (add-to-list 'load-path
-               (expand-file-name
-                (concat
-                 straight-base-dir
-                 "straight/repos/org/contrib/lisp/")))
+  ;; :straight (:type built-in)
+  ;; :init
+  ;; (add-to-list 'load-path
+  ;;              (expand-file-name
+  ;;               (concat
+  ;;                straight-base-dir
+  ;;                "straight/repos/org/contrib/lisp/")))
   :config
-  (require 'ox-texinfo)
-  (require 'ox-md)
+  ;; (require 'ox-texinfo)
+  ;; (require 'ox-md)
 
   (if (eq xc/device 'gnu/linux)
       (setq org-babel-python-command "python3"))
