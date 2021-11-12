@@ -1658,7 +1658,8 @@ or unbinds commands."
 
 (use-package peut-publier
   :after (:all org)
-  :straight (:repo "git@github.com:excalamus/peut-publier.git")
+  ;; :straight (:repo "git@github.com:excalamus/peut-publier.git")
+  :straight (:repo "https://github.com/excalamus/peut-publier.git")
   :config
 
   (if xc/debug (message "peut-publier")))
