@@ -47,7 +47,7 @@
     ("minimumsizehint" "minimumSizeHint" nil :count 0 :case-fixed t)
     ("movetothread" "moveToThread" nil :count 0 :case-fixed t)
     ("paintevent" "paintEvent" nil :count 0 :case-fixed t)
-    ("pg" "peut-gerer" nil :count 47 :case-fixed t)
+    ("pg" "peut-gerer" nil :count 53 :case-fixed t)
     ("pointinghandcursor" "PointingHandCursor" nil :count 1 :case-fixed t)
     ("pp" "peut-publier" nil :count 4 :case-fixed t)
     ("precisetimer" "PreciseTimer" nil :count 0 :case-fixed t)
@@ -214,7 +214,7 @@
     ("setwindowtitle" "setWindowTitle" nil :count 4 :case-fixed t)
     ("sizehint" "sizeHint" nil :count 0 :case-fixed t)
     ("statechanged" "stateChanged" nil :count 1 :case-fixed t)
-    ("statusbar" "statusBar" nil :count 0 :case-fixed t)
+    ("statusbar" "statusBar" nil :count 1 :case-fixed t)
     ("textchanged" "textChanged" nil :count 3 :case-fixed t)
     ("textedited" "textEdited" nil :count 21 :case-fixed t)
     ("textinteractionflags" "textInteractionFlags" nil :count 0 :case-fixed t)
@@ -223,4 +223,3 @@
     ("wascanceled" "wasCanceled" nil :count 0 :case-fixed t)
     ("windowmodal" "WindowModal" nil :count 0 :case-fixed t)
    ))
-
