@@ -1607,12 +1607,13 @@ or unbinds commands."
 ;;   (if xc/debug (message "ob-shstream")))
 
 
-;; This step works some magic.  Not even going to attempt building
-;; from a fork. For details, see URL
-;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
+  ;; in case org rebuilds on every launch
+  ;; https://github.com/raxod502/straight.el/issues/624
+  :straight org
   ;; :straight (:type built-in)
   ;; :init
+  ;; ;; in order to use ox-md et cetera
   ;; (add-to-list 'load-path
   ;;              (expand-file-name
   ;;               (concat
