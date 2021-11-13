@@ -162,7 +162,23 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)  ; don't ever insert tabs
+;; otherwise use (dtrt-indent-global-mode)  ; insert tabs based on file
+
+(defun xc/before-save-hook ()
+  "Conditionally run whitespace-cleanup before save.
+
+Run whitespace-cleanup on save unless
+`xc/disable-whitespace-cleanup' is non-nil.  Set
+`xc/disable-whitespace-cleanup' using a directory local variable:
+
+  ;; .dir-locals-2.el
+  ((nil . ((xc/disable-whitespace-cleanup . t))))"
+  (unless (and (boundp 'xc/disable-whitespace-cleanup)
+               xc/disable-whitespace-cleanup)
+    (whitespace-cleanup)))
+
+(add-hook 'before-save-hook 'xc/before-save-hook)
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
@@ -194,8 +210,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; split ediff vertically
 (setq ediff-split-window-function 'split-window-right)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-(add-hook 'before-save-hook 'whitespace-cleanup)
 
 (if (eq xc/device 'termux) (setq browse-url-browser-function 'eww-browse-url))
 
@@ -556,6 +570,16 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
 
   (if xc/debug (message "define-word")))
+
+;; 
+;; (use-package dtrt-indent
+;;   :after (:all org)
+;;   :straight (:fork "excalamus/dtrt-indent")
+;;   :config
+
+;;   (dtrt-indent-global-mode)
+
+;;   (if xc/debug (message "dtrt-indent")))
 
 ;; 
 ;; (use-package dap-mode
