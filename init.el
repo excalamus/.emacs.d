@@ -520,15 +520,15 @@ Run whitespace-cleanup on save unless
 
   (if xc/debug (message "ag.el")))
 
-
-(use-package anaconda-mode
-  :disabled
-  :after (:all org)
-  :straight (:fork "excalamus/anaconda-mode")
-  :config
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-  (if xc/debug (message "anaconda-mode")))
+;; 
+;; (use-package anaconda-mode
+;;   :disabled
+;;   :after (:all org)
+;;   :straight (:fork "excalamus/anaconda-mode")
+;;   :config
+;;   (add-hook 'python-mode-hook 'anaconda-mode)
+;;   (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+;;   (if xc/debug (message "anaconda-mode")))
 
 
 (use-package bm
