@@ -685,12 +685,12 @@ or unbinds commands."
 
   (general-after-init
 
-    ;; Disable stupid minimize hotkeys
     (general-unbind
       "C-h h"
       "<f3>"
       "<f4>"
       "M-v"
+      ;; Disable stupid minimize hotkeys
       "C-z"
       "C-x C-z")
 
