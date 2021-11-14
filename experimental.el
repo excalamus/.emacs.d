@@ -314,3 +314,17 @@ compilation-error-regexp-alist-alist."
 (use-package geiser)
 (use-package geiser-guile)
 (use-package geiser-mit)
+
+(defun xc/calculate-tip ()
+  (interactive)
+  (let* ((arg (prefix-numeric-value current-prefix-arg))
+        (total (string-to-number (read-string "Enter total: $")))
+        (percentage (/ (string-to-number (read-string "Tip percentage: %" "20")) 100.0))
+        (amount (/ total (+ 1.0 percentage)))
+        (tip (* amount percentage)))
+    ;; (message "%s = %s + %s" total amount tip)
+    (if (= arg 1) (insert (format "%.02f" tip))
+      (insert (format "%.02f" amount)))))
+
+
+
