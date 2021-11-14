@@ -179,6 +179,7 @@ Run whitespace-cleanup on save unless
     (whitespace-cleanup)))
 
 (add-hook 'before-save-hook 'xc/before-save-hook)
+(setq whitespace-style '(face tabs))
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
