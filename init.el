@@ -360,8 +360,10 @@ Run whitespace-cleanup on save unless
 (defvar xc/theme-light nil
   "My light theme.")
 
-;; (setq xc/theme-dark 'zenburn)
-(setq xc/theme-dark 'base16-eighties)
+(if (eq xc/device 'windows)
+    (setq xc/theme-dark 'zenburn)
+  (setq xc/theme-dark 'base16-eighties))
+
 (setq xc/theme-light 'base16-tomorrow)
 
 ;; Add to hook to reload these automatically
