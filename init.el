@@ -2394,6 +2394,8 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (set-buffer-modified-p nil))))))
 
 
+;; maybe check if buff has process and then submit with
+;; (comint-send-input nil t)
 (defun xc/send-line-or-region (&optional beg end buff)
   "Send region defined by BEG and END to BUFF.
 
