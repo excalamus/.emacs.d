@@ -1706,10 +1706,15 @@ or unbinds commands."
                  :call (xc/send-line-or-region nil nil peut-gerer-shell)))
 
   (add-to-list 'right-click-context-global-menu-tree
-               '("Search"
-                 ("General" :call (xc/search))
+               '("Search..."
+                 ;; ("pyside" :call (xc/search-Qt))
+                 ("sdl" :call (xc/search-sdl))
                  ;; ("QGIS" :call (xc/search-qgis))
-                 ("Open Jira ticket" :call (xc/search-jira))))
+                 ("Open Jira ticket" :call (xc/search-jira))
+                 ("ddg" :call (xc/search-ddg))))
+
+  (add-to-list 'right-click-context-global-menu-tree
+               '("Search for in PySide" :call (xc/search-Qt)))
 
   ;; (pop right-click-context-global-menu-tree)
 
@@ -2115,25 +2120,34 @@ point.  If there is nothing at point, ask for the search query."
                         ("jira" . ,(concat xc/atlassian "%s"))))
          (beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
-         (lookup-term  (read-string "Search for: "
-                                    (cond ((and beg end) (buffer-substring-no-properties beg end))
-                                          (t (thing-at-point 'symbol t)))))
+         (thing (thing-at-point 'symbol t))
+         (lookup-term (cond ((and beg end) (buffer-substring-no-properties beg end))
+                            (thing thing)
+                            (t (read-string "Search for: "))))
          (engine (or engine (completing-read "Select search engine: " engine-list nil t (caar engine-list))))
          (query (if prefix (format "%s %s" prefix lookup-term) lookup-term))
          (search-string (url-encode-url (format (cdr (assoc engine engine-list)) query))))
     (browse-url-default-browser search-string)))
 
+(defun xc/search-ddg (&optional beg end)
+  (interactive)
+  (xc/search nil "ddg" beg end))
+
 (defun xc/search-jira (&optional beg end)
   (interactive)
   (xc/search nil "jira" beg end))
 
-(defun xc/search-sdl (&optional beg end)
-  (interactive)
-  (xc/search prefix "sdl" beg end))
-
 (defun xc/search-qgis (&optional beg end)
   (interactive)
   (xc/search nil "qgis" beg end))
+
+(defun xc/search-Qt (&optional beg end)
+  (interactive)
+  (xc/search nil "Qt" beg end))
+
+(defun xc/search-sdl (&optional beg end)
+  (interactive)
+  (xc/search nil "sdl" beg end))
 
 
 (defun minibuffer-inactive-mode-hook-setup ()
