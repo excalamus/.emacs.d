@@ -162,7 +162,24 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)  ; don't ever insert tabs
+;; otherwise use (dtrt-indent-global-mode)  ; insert tabs based on file
+
+(defun xc/before-save-hook ()
+  "Conditionally run whitespace-cleanup before save.
+
+Run whitespace-cleanup on save unless
+`xc/disable-whitespace-cleanup' is non-nil.  Set
+`xc/disable-whitespace-cleanup' using a directory local variable:
+
+  ;; .dir-locals-2.el
+  ((nil . ((xc/disable-whitespace-cleanup . t))))"
+  (unless (and (boundp 'xc/disable-whitespace-cleanup)
+               xc/disable-whitespace-cleanup)
+    (whitespace-cleanup)))
+
+(add-hook 'before-save-hook 'xc/before-save-hook)
+(setq whitespace-style '(face tabs))
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
@@ -194,8 +211,6 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 ;; split ediff vertically
 (setq ediff-split-window-function 'split-window-right)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-(add-hook 'before-save-hook 'whitespace-cleanup)
 
 (if (eq xc/device 'termux) (setq browse-url-browser-function 'eww-browse-url))
 
@@ -345,21 +360,39 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (defvar xc/theme-light nil
   "My light theme.")
 
-(setq xc/theme-dark 'zenburn)
+;; (setq xc/theme-dark 'zenburn)
+(setq xc/theme-dark 'base16-eighties)
 (setq xc/theme-light 'base16-tomorrow)
 
 ;; Add to hook to reload these automatically
 (defun xc/dark-theme-hook ()
   "Run after loading dark theme."
-  ;; zenburn
-  (if (eq xc/device 'termux)
-      (set-face-attribute 'mode-line-inactive nil :background "color-236"))
-  (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
-  (setq evil-insert-state-cursor '("gray" bar))
-  (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
-  (set-face-attribute 'mode-line nil :background "gray40")
-  (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
-  (set-face-attribute 'xc/hi-comint nil :background "dim gray"))
+  (cond
+   ((eq xc/theme-dark 'zenburn)
+         (progn
+           (if (eq xc/device 'termux)
+               (set-face-attribute 'mode-line-inactive nil :background "color-236"))
+           (set-face-attribute 'aw-leading-char-face nil :background 'unspecified :foreground "#CC9393" :height 3.0)
+           (setq evil-insert-state-cursor '("gray" bar))
+           (set-face-attribute 'hl-line nil :background "gray29" :foreground 'unspecified)
+           (set-face-attribute 'mode-line nil :background "gray40")
+           (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
+           (set-face-attribute 'xc/hi-comint nil :background "dim gray")))
+
+   ((eq xc/theme-dark 'base16-eighties)
+        (progn
+          (set-face-attribute 'hl-line nil :background "gray20" :foreground 'unspecified)
+
+          (set-face-attribute 'mode-line-inactive nil
+                              :box '(:line-width 1 :color "gray1" :style released-button)
+                              ;; :background "#393939"
+                              :background "#2d2d2d")
+
+          (set-face-attribute 'mode-line nil
+                              :foreground 'unspecified
+                              :background "gray9"
+                              :box '(:line-width 1 :color "gray1" :style released-button))))
+          ))
 
 (defun xc/light-theme-hook ()
   "Run after loading light theme."
@@ -489,15 +522,15 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 
   (if xc/debug (message "ag.el")))
 
-
-(use-package anaconda-mode
-  :disabled
-  :after (:all org)
-  :straight (:fork "excalamus/anaconda-mode")
-  :config
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-  (if xc/debug (message "anaconda-mode")))
+;; 
+;; (use-package anaconda-mode
+;;   :disabled
+;;   :after (:all org)
+;;   :straight (:fork "excalamus/anaconda-mode")
+;;   :config
+;;   (add-hook 'python-mode-hook 'anaconda-mode)
+;;   (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+;;   (if xc/debug (message "anaconda-mode")))
 
 
 (use-package bm
@@ -539,6 +572,16 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
   :config
 
   (if xc/debug (message "define-word")))
+
+
+(use-package dtrt-indent
+  :after (:all org)
+  :straight (:fork "excalamus/dtrt-indent")
+  :config
+
+  ;; (dtrt-indent-global-mode)
+
+  (if xc/debug (message "dtrt-indent")))
 
 ;; 
 ;; (use-package dap-mode
@@ -644,12 +687,12 @@ or unbinds commands."
 
   (general-after-init
 
-    ;; Disable stupid minimize hotkeys
     (general-unbind
       "C-h h"
       "<f3>"
       "<f4>"
       "M-v"
+      ;; Disable stupid minimize hotkeys
       "C-z"
       "C-x C-z")
 
@@ -1567,20 +1610,21 @@ or unbinds commands."
 ;;   (if xc/debug (message "ob-shstream")))
 
 
-;; This step works some magic.  Not even going to attempt building
-;; from a fork. For details, see URL
-;; `https://github.com/raxod502/straight.el#integration-with-org'
 (use-package org
-  :straight (:type built-in)
-  :init
-  (add-to-list 'load-path
-               (expand-file-name
-                (concat
-                 straight-base-dir
-                 "straight/repos/org/contrib/lisp/")))
+  ;; in case org rebuilds on every launch
+  ;; https://github.com/raxod502/straight.el/issues/624
+  :straight org
+  ;; :straight (:type built-in)
+  ;; :init
+  ;; ;; in order to use ox-md et cetera
+  ;; (add-to-list 'load-path
+  ;;              (expand-file-name
+  ;;               (concat
+  ;;                straight-base-dir
+  ;;                "straight/repos/org/contrib/lisp/")))
   :config
-  (require 'ox-texinfo)
-  (require 'ox-md)
+  ;; (require 'ox-texinfo)
+  ;; (require 'ox-md)
 
   (if (eq xc/device 'gnu/linux)
       (setq org-babel-python-command "python3"))
@@ -1624,6 +1668,7 @@ or unbinds commands."
      (latex . t)
      (shell . t)
      ;; (shstream . t)
+     (scheme . t)
      ))
 
   (defun xc/new-clock-task ()
@@ -1642,7 +1687,8 @@ or unbinds commands."
 
 (use-package peut-publier
   :after (:all org)
-  :straight (:repo "git@github.com:excalamus/peut-publier.git")
+  ;; :straight (:repo "git@github.com:excalamus/peut-publier.git")
+  :straight (:repo "https://github.com/excalamus/peut-publier.git")
   :config
 
   (if xc/debug (message "peut-publier")))
@@ -2365,6 +2411,8 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (set-buffer-modified-p nil))))))
 
 
+;; maybe check if buff has process and then submit with
+;; (comint-send-input nil t)
 (defun xc/send-line-or-region (&optional beg end buff)
   "Send region defined by BEG and END to BUFF.
 
@@ -2422,7 +2470,7 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
   "Kill all Emacs processes."
   (interactive)
   (let ((cmd (if (eq system-type 'gnu/linux)
-                 "killall -9 emacs" ; probably won't kill server administered by systemd
+                 "killall -9 -r emacs" ; probably won't kill server administered by systemd
                "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
     (shell-command cmd)))
 

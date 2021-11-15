@@ -249,7 +249,7 @@
     ("setwindowtitle" "setWindowTitle" nil :count 4 :case-fixed t)
     ("sizehint" "sizeHint" nil :count 0 :case-fixed t)
     ("statechanged" "stateChanged" nil :count 1 :case-fixed t)
-    ("statusbar" "statusBar" nil :count 0 :case-fixed t)
+    ("statusbar" "statusBar" nil :count 1 :case-fixed t)
     ("textchanged" "textChanged" nil :count 3 :case-fixed t)
     ("textedited" "textEdited" nil :count 21 :case-fixed t)
     ("textinteractionflags" "textInteractionFlags" nil :count 0 :case-fixed t)
@@ -258,4 +258,3 @@
     ("wascanceled" "wasCanceled" nil :count 0 :case-fixed t)
     ("windowmodal" "WindowModal" nil :count 0 :case-fixed t)
    ))
-
