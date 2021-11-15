@@ -162,7 +162,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
-(setq-default indent-tabs-mode nil)  ; don't ever insert tabs
+;; (setq-default indent-tabs-mode nil)  ; don't ever insert tabs
 ;; otherwise use (dtrt-indent-global-mode)  ; insert tabs based on file
 
 (defun xc/before-save-hook ()
@@ -572,15 +572,15 @@ Run whitespace-cleanup on save unless
 
   (if xc/debug (message "define-word")))
 
-;; 
-;; (use-package dtrt-indent
-;;   :after (:all org)
-;;   :straight (:fork "excalamus/dtrt-indent")
-;;   :config
+
+(use-package dtrt-indent
+  :after (:all org)
+  :straight (:fork "excalamus/dtrt-indent")
+  :config
 
-;;   (dtrt-indent-global-mode)
+  (dtrt-indent-global-mode)
 
-;;   (if xc/debug (message "dtrt-indent")))
+  (if xc/debug (message "dtrt-indent")))
 
 ;; 
 ;; (use-package dap-mode
@@ -618,7 +618,7 @@ Run whitespace-cleanup on save unless
     "State of whether Plover is active.")
 
   (defvar xc/steno-hook nil)
-
+  
   (defun general--split-on-positional-args (rest)
     "Remove all positional arguments from the list REST.
 Return a list of containing the list of positional arguments and the and a list
