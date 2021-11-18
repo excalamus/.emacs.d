@@ -1669,7 +1669,6 @@ or unbinds commands."
      (ledger . t)
      (latex . t)
      (shell . t)
-     ;; (shstream . t)
      (scheme . t)
      ))
 
@@ -2609,17 +2608,18 @@ line if no region is provided."
     (save-buffer)))
 
 
-(defun xc/kill-proc-child (&optional proc)
-  "Kill process PROC's child."
+(defun xc/kill-proc-child (&optional buffer-name)
+  "Kill any child process associated with BUFFER-NAME."
   (interactive)
-  (let* ((proc (or proc "*shell*"))
-         (shell-pid (process-id (get-buffer-process proc)))
-         (child-pid (car (split-string
-                          (shell-command-to-string (format "pgrep --parent %d" shell-pid)))))
+  (let* ((proc-buffer (or proc-buffer "*shell*"))
+         (proc (get-buffer-process proc-buffer))
+         (shell-pid (if proc (process-id proc)))
+         (child-pid (if shell-pid (car (split-string
+                                        (shell-command-to-string (format "pgrep --parent %d" shell-pid))))))
          rv)
     (if child-pid
         (setq rv (shell-command (format "kill -9 %s" child-pid)))
-      ;;(message "No child process to kill!")
+      ;; (message "No child process to kill!")
       )
     (if rv
         (if (> 0 rv) (message "Process could not be killed: %s" rv)
