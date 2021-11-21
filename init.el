@@ -1,6 +1,6 @@
 ;;; init.el -- Principium de Excalamus
 
-;; Author: Matt Trzcinski <excalamus@tutanota.com>
+;; Author: Matt Trzcinski <matt@excalamus.com>
 ;; URL: https://github.com/excalamus/.emacs.d.git
 ;; Requires: ((emacs "27.1"))
 
