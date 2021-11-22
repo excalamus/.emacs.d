@@ -138,7 +138,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
        (progn
          (add-hook 'after-init-hook (lambda () (load "/home/ahab/.emacs.d/mine/my-lisp.el")))
          (with-eval-after-load "yasnippet"
-           (add-to-list 'yas/root-directory "/home/ahab/.emacs.d/mine/ledger-mode")))))
+           (add-to-list 'yas-snippet-dirs "/home/ahab/.emacs.d/mine/" t)))))
+
+;; (setq yas-snippet-dirs (list yas-snippet-dirs))
 
 ;; InnoSetup .iss files are basically ini files
 (add-to-list 'auto-mode-alist '("\\.iss\\'" . conf-mode))
