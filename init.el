@@ -1596,24 +1596,6 @@ or unbinds commands."
 
   (if xc/debug (message "nov")))
 
-;; 
-;; (use-package ob-async
-;;   :straight (:fork "excalamus/ob-async")
-;;   :init
-;;   :config
-;;   ;; (setq ob-async-no-async-languages-alist '("ipython"))
-
-;;   (if xc/debug (message "ob-async")))
-
-;; 
-;; (use-package ob-shstream
-;;   ;; :straight (:fork "excalamus/ob-shstream")
-;;   :straight (:repo "git@github.com:excalamus/ob-shstream.git")
-;;   :init
-;;   :config
-
-;;   (if xc/debug (message "ob-shstream")))
-
 
 (use-package org
   ;; in case org rebuilds on every launch
