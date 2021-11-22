@@ -179,7 +179,9 @@ Run whitespace-cleanup on save unless
     (whitespace-cleanup)))
 
 (add-hook 'before-save-hook 'xc/before-save-hook)
-(setq whitespace-style '(face tabs))
+
+(if (eq xc/device 'gnu/linux)
+    (setq whitespace-style '(face tabs)))
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
@@ -308,7 +310,7 @@ Run whitespace-cleanup on save unless
 ;; (setq auto-revert-check-vc-info t)
 
 ;; Automatically reload files that have changed on disk
-(global-auto-revert-mode 1)
+(global-auto-revert-mode)
 
 ;; Remove Git prefix from vc since only using git
 (setcdr (assq 'vc-mode mode-line-format)
@@ -1049,6 +1051,7 @@ or unbinds commands."
       "<S-f10>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
       "<S-f7>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
+      "<f3>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<S-wheel-down>" 'python-nav-forward-block
       "<S-wheel-up>" 'python-nav-backward-block
       )
