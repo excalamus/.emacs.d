@@ -186,7 +186,9 @@ Run whitespace-cleanup on save unless
     (whitespace-cleanup)))
 
 (add-hook 'before-save-hook 'xc/before-save-hook)
-(setq whitespace-style '(face tabs))
+
+(if (eq xc/device 'gnu/linux)
+    (setq whitespace-style '(face tabs)))
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
@@ -315,7 +317,7 @@ Run whitespace-cleanup on save unless
 ;; (setq auto-revert-check-vc-info t)
 
 ;; Automatically reload files that have changed on disk
-(global-auto-revert-mode 1)
+(global-auto-revert-mode)
 
 ;; Remove Git prefix from vc since only using git
 (setcdr (assq 'vc-mode mode-line-format)
@@ -1056,6 +1058,7 @@ or unbinds commands."
       "<S-f10>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
       "<S-f7>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
+      "<f3>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<S-wheel-down>" 'python-nav-forward-block
       "<S-wheel-up>" 'python-nav-backward-block
       )
@@ -1600,38 +1603,8 @@ or unbinds commands."
 
   (if xc/debug (message "nov")))
 
-;; 
-;; (use-package ob-async
-;;   :straight (:fork "excalamus/ob-async")
-;;   :init
-;;   :config
-;;   ;; (setq ob-async-no-async-languages-alist '("ipython"))
-
-;;   (if xc/debug (message "ob-async")))
-
-;; 
-;; (use-package ob-shstream
-;;   ;; :straight (:fork "excalamus/ob-shstream")
-;;   :straight (:repo "git@github.com:excalamus/ob-shstream.git")
-;;   :init
-;;   :config
-
-;;   (if xc/debug (message "ob-shstream")))
-
 
-(use-package org
-  ;; in case org rebuilds on every launch
-  ;; https://github.com/raxod502/straight.el/issues/624
-  :straight org
-  ;; :straight (:type built-in)
-  ;; :init
-  ;; ;; in order to use ox-md et cetera
-  ;; (add-to-list 'load-path
-  ;;              (expand-file-name
-  ;;               (concat
-  ;;                straight-base-dir
-  ;;                "straight/repos/org/contrib/lisp/")))
-  :config
+(defun xc/-org-mode-config ()
   ;; (require 'ox-texinfo)
   ;; (require 'ox-md)
 
@@ -1666,7 +1639,7 @@ or unbinds commands."
           ("ON-HOLD" . "plum")
           ("CANCELED" . "gray")
           ))
-  ;;
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
@@ -1688,9 +1661,25 @@ or unbinds commands."
   ;; org-mode doesn't automatically save archive files for some
   ;; reason.  This is a ruthless hack which saves /all/ org buffers in
   ;; archive.  https://emacs.stackexchange.com/a/51112/15177
-  (advice-add 'org-archive-subtree :after #'org-save-all-org-buffers)
+  (advice-add 'org-archive-subtree :after #'org-save-all-org-buffers))
 
-  (if xc/debug (message "org")))
+;; https://github.com/raxod502/straight.el/issues/624
+(if (eq xc/device 'gnu/linux)
+    ;; use latest org
+    (use-package org
+      :straight org
+      :config
+      (xc/-org-mode-config)
+
+      (if xc/debug (message "org")))
+
+  ;; use built-in
+  (use-package org
+    :straight (:type built-in)
+    :config
+    (xc/-org-mode-config)
+
+    (if xc/debug (message "org"))))
 
 
 (use-package peut-publier
