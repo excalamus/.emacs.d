@@ -328,3 +328,11 @@ compilation-error-regexp-alist-alist."
 
 
 
+
+
+(use-package writeroom-mode
+  :after (:all org)
+  :config
+  (setq writeroom-restore-window-config t)
+  
+  (if xc/debug (message "writeroom-mode")))
