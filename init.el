@@ -745,8 +745,8 @@ or unbinds commands."
       "C-x s" 'save-buffer
       "<f5>" '(lambda () (interactive) (progn (funcall 'xc/send-line-or-region)))
       "<f8>" 'xc/switch-to-last-window
-      "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :main t 0))
-      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :shell t 0))
+      "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to 'main t 0))
+      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to 'shell t 0))
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
       "C-S-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-create-shell))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
