@@ -2829,4 +2829,3 @@ chicken and egg problem."
 
 ;; (general-def :keymaps 'override "<f7>" 'xc/run-qgis)
 ;; (kill-new "C:/Users/mtrzcinski/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/pri_tool")
-(put 'downcase-region 'disabled nil)
