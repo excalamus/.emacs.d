@@ -2434,10 +2434,10 @@ provided, send entire line.  Default BUFF is that displayed in
     (if substr
         ;; (with-selected-window xc/on-demand-window
         (with-selected-window (get-buffer-window buff t)
-          (setq-local window-point-insertion-type t)
+          (setq-local window-point-insertion-type t) ;advance marker
+          (goto-char (process-mark (get-buffer-process buff)))
           (insert substr)
-          (end-of-line)
-          (newline-and-indent))
+          (comint-send-input))
       (error "Invalid selection"))))
 
 
