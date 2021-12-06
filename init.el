@@ -819,6 +819,7 @@ or unbinds commands."
     (general-def :keymaps 'global-map
       "C-a" 'xc/smart-beginning-of-line
       "<home>" 'xc/smart-beginning-of-line
+      "C-M-S-t" 'transpose-regions
       )
 
     (general-def :states '(normal)
