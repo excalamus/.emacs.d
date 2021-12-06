@@ -204,6 +204,9 @@ Run whitespace-cleanup on save unless
 (setq show-help-function nil)
 (set-default 'truncate-lines t)
 
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
 ;; Change yes-no prompts to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
