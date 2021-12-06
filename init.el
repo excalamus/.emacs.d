@@ -204,6 +204,9 @@ Run whitespace-cleanup on save unless
 (setq show-help-function nil)
 (set-default 'truncate-lines t)
 
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
 ;; Change yes-no prompts to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -792,6 +795,9 @@ or unbinds commands."
       "C-x o" 'ace-window
       "C-c C-w" 'other-window
       "C-c C-p" 'xc/switch-to-last-window
+      "M-v" 'other-window
+      "M-V" '(lambda () (interactive) (other-window -1))
+      "C-S-v" 'xc/switch-to-last-window
       "C-x n D" 'xc/narrow-to-defun-indirect
       "<f1>" '(lambda ()
                 (interactive)
@@ -2826,4 +2832,3 @@ chicken and egg problem."
 
 ;; (general-def :keymaps 'override "<f7>" 'xc/run-qgis)
 ;; (kill-new "C:/Users/mtrzcinski/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/pri_tool")
-(put 'downcase-region 'disabled nil)
