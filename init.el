@@ -795,6 +795,9 @@ or unbinds commands."
       "C-x o" 'ace-window
       "C-c C-w" 'other-window
       "C-c C-p" 'xc/switch-to-last-window
+      "M-v" 'other-window
+      "M-V" '(lambda () (interactive) (other-window -1))
+      "C-S-v" 'xc/switch-to-last-window
       "C-x n D" 'xc/narrow-to-defun-indirect
       "<f1>" '(lambda ()
                 (interactive)
