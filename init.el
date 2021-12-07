@@ -2583,6 +2583,9 @@ line if no region is provided."
 (defvar xc/kill-python-p t
   "Will Python be killed?")
 
+(if (eq xc/device 'gnu/linux)
+    (setq xc/kill-python-p nil))
+
 
 (defun xc/toggle-kill-python ()
   (interactive)
