@@ -169,8 +169,9 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
+;; tab insertion. See `xc/before-save-hook'.
 (setq-default indent-tabs-mode nil)  ; don't ever insert tabs
-;; otherwise use (dtrt-indent-global-mode)  ; insert tabs based on file
+;; (dtrt-indent-global-mode)  ; insert tabs based on file
 
 (defun xc/before-save-hook ()
   "Conditionally run whitespace-cleanup before save.
