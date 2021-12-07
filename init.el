@@ -1671,6 +1671,7 @@ or unbinds commands."
 
 ;; https://github.com/raxod502/straight.el/issues/624
 (if (eq xc/device 'gnu/linux)
+
     ;; use latest org
     (use-package org
       :straight org
@@ -1748,11 +1749,11 @@ or unbinds commands."
   ;; that to the script.
   (add-to-list 'right-click-context-global-menu-tree
                '("Send region to on-demand-window"
-                 :call (xc/send-line-or-region)))
+                 :call (xc/send-line-or-region nil nil t)))
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Send to shell"
-                 :call (xc/send-line-or-region nil nil peut-gerer-shell)))
+                 :call (xc/send-line-or-region nil nil nil peut-gerer-shell)))
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Search..."
@@ -2414,30 +2415,37 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (set-buffer-modified-p nil))))))
 
 
-;; maybe check if buff has process and then submit with
-;; (comint-send-input nil t)
-(defun xc/send-line-or-region (&optional beg end buff)
+(defun xc/send-line-or-region (&optional beg end advance buff)
   "Send region defined by BEG and END to BUFF.
 
 Use current region if BEG and END not provided.  If no region
-provided, send entire line.  Default BUFF is that displayed in
-`xc/on-demand-window'."
+provided, send entire line.  Create a new line when ADVANCE is
+non-nil.  Default BUFF is the buffer associated with
+`xc/on-demand-window'.  If BUFF has an associated process, send
+region as input, otherwise just insert the region."
   (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end) nil)
-                 (list nil nil nil)))
+                   (list (region-beginning) (region-end) nil nil)
+                 (list nil nil nil nil)))
   (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
          (substr (string-trim
                   (or (and beg end (buffer-substring-no-properties beg end))
                       (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
-         (buff (or buff (window-buffer xc/on-demand-window))))
+         (buff (or buff (window-buffer xc/on-demand-window)))
+         (proc (get-buffer-process buff)))
     (if substr
-        ;; (with-selected-window xc/on-demand-window
         (with-selected-window (get-buffer-window buff t)
-          (setq-local window-point-insertion-type t) ;advance marker
-          (goto-char (process-mark (get-buffer-process buff)))
-          (insert substr)
-          (comint-send-input))
+          (let ((window-point-insertion-type t))  ; advance marker on insert
+            (cond (proc
+                   (goto-char (process-mark proc))
+                   (insert substr)
+                   (comint-send-input nil t))
+                  (t
+                   (insert substr)
+                   (if advance
+                       (progn
+                         (end-of-line)
+                         (newline-and-indent)))))))
       (error "Invalid selection"))))
 
 
@@ -2574,6 +2582,9 @@ line if no region is provided."
 
 (defvar xc/kill-python-p t
   "Will Python be killed?")
+
+(if (eq xc/device 'gnu/linux)
+    (setq xc/kill-python-p nil))
 
 
 (defun xc/toggle-kill-python ()
