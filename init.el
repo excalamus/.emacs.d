@@ -8,16 +8,6 @@
 ;; straight.el with use-package.el.  Fork packages and point
 ;; straight.el to personal repos.  The forks help with submitting pull
 ;; requests and provides another point of consistency.
-;;
-;; SSH (e.g. ssh-agent) is hard to get working with Emacs.  To get
-;; authorization during first run, call one of:
-;;
-;;     git config --global credential.helper cache
-;;     git config --global credential.helper wincred
-;;
-;; Use 'cache' for GNU/Linux, 'wincred' for Windows.  This will
-;; temporarily cache credentials for https connections.  See URL:
-;; `https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git'
 
   ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
     ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
