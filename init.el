@@ -8,16 +8,6 @@
 ;; straight.el with use-package.el.  Fork packages and point
 ;; straight.el to personal repos.  The forks help with submitting pull
 ;; requests and provides another point of consistency.
-;;
-;; SSH (e.g. ssh-agent) is hard to get working with Emacs.  To get
-;; authorization during first run, call one of:
-;;
-;;     git config --global credential.helper cache
-;;     git config --global credential.helper wincred
-;;
-;; Use 'cache' for GNU/Linux, 'wincred' for Windows.  This will
-;; temporarily cache credentials for https connections.  See URL:
-;; `https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git'
 
   ; <-- insert linebreak with 'C-q C-l' (quoted-insert)
     ;     navigate with 'C-x ]' (forward-page) and 'C-x [' (backward-page)
@@ -751,8 +741,8 @@ or unbinds commands."
       "C-x s" 'save-buffer
       "<f5>" '(lambda () (interactive) (progn (funcall 'xc/send-line-or-region)))
       "<f8>" 'xc/switch-to-last-window
-      "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :main t 0))
-      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to :shell t 0))
+      "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to 'main t 0))
+      "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to 'shell t 0))
       "M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-select-project))
       "C-S-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-create-shell))
       "C-M-<f8>" '(lambda () (interactive) (call-interactively 'peut-gerer-activate-project))
@@ -826,6 +816,7 @@ or unbinds commands."
     (general-def :keymaps 'global-map
       "C-a" 'xc/smart-beginning-of-line
       "<home>" 'xc/smart-beginning-of-line
+      "C-M-S-t" 'transpose-regions
       )
 
     (general-def :states '(normal)
