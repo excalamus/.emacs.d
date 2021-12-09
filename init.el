@@ -2268,7 +2268,6 @@ Assumes a 'timecard.org' file exists with format:
     # eval: (define-button-type 'display-clock-button 'follow-link t 'action #'org-clock-display)
     # eval: (make-button 45 58 :type 'display-clock-button)
     # eval: (setq org-duration-format 'h:mm)
-    # eval: (setq org-startup-folded nil)
     # End:
 "
 
@@ -2294,10 +2293,14 @@ Assumes a 'timecard.org' file exists with format:
               (if (org-clocking-p)
                   (progn
                     (org-clock-out)
-                    (setq result "Clocked out"))
+                    (setq result (format "Clocked out at [%s]"
+                                         (org-duration-from-minutes (org-clock-get-clocked-time))
+                                  org-clock-heading)))
                 (progn
                   (org-clock-in)
-                  (setq result "Clocked in")))
+                  (setq result (format "Clocked in at [%s]"
+                                         (org-duration-from-minutes (org-clock-get-clocked-time))
+                                  org-clock-heading))))
               (save-buffer)
               (message "%s" result))
           ;; not found
