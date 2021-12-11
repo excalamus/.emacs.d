@@ -334,5 +334,52 @@ compilation-error-regexp-alist-alist."
   :after (:all org)
   :config
   (setq writeroom-restore-window-config t)
-  
+
   (if xc/debug (message "writeroom-mode")))
+
+
+
+(defun my-minimize-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (window-resize
+   window
+   (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
+   nil nil window-resize-pixelwise))
+
+(defun my-maximize-window (&optional window)
+  (interactive)
+  (setq window (window-normalize-window window))
+  (window-resize
+   window (window-max-delta window nil nil nil nil nil window-resize-pixelwise)
+   nil nil window-resize-pixelwise))
+
+(defun my-center-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (my-maximize-window)
+  (window-resize
+   window
+    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 2)
+   nil nil window-resize-pixelwise))
+
+(setq my-last-window-op 'middle)
+
+(defun my-recenter-window-top-bottom (&optional arg)
+  (interactive "P")
+
+  (cond ((eq my-last-window-op 'middle)
+         (my-maximize-window)
+         (setq my-last-window-op 'top))
+        ((eq my-last-window-op 'top)
+         (my-minimize-window)
+         (setq my-last-window-op 'bottom))
+        ((eq my-last-window-op 'bottom)
+         (my-center-window)
+         (setq my-last-window-op 'middle))))
+
+(define-key global-map [?\M-l] 'my-recenter-window-top-bottom)
