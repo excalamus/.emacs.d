@@ -1759,14 +1759,17 @@ or unbinds commands."
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Search..."
-                 ;; ("pyside" :call (xc/search-Qt))
-                 ("sdl" :call (xc/search-sdl))
+                 ("pyside" :call (xc/search-Qt))
+                 ("sdl-wiki" :call (xc/search-sdl-wiki))
                  ;; ("QGIS" :call (xc/search-qgis))
                  ("Open Jira ticket" :call (xc/search-jira))
                  ("ddg" :call (xc/search-ddg))))
 
-  (add-to-list 'right-click-context-global-menu-tree
-               '("Search for in PySide" :call (xc/search-Qt)))
+  (if (eq xc/device 'gnu/linux)
+      (add-to-list 'right-click-context-global-menu-tree
+                   '("Search for in SDL" :call (xc/search-sdl)))
+    (add-to-list 'right-click-context-global-menu-tree
+                 '("Search for in PySide" :call (xc/search-Qt))))
 
   ;; (pop right-click-context-global-menu-tree)
 
@@ -2168,7 +2171,8 @@ point.  If there is nothing at point, ask for the search query."
   (let* ((engine-list `(("ddg" . "https://duckduckgo.com/?q=%s")
                         ("Qt" . "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q=%s")
                         ;; ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
-                        ("sdl" . "https://wiki.libsdl.org/wiki/search/?q=%s")
+                        ("sdl-wiki" . "https://wiki.libsdl.org/wiki/search/?q=%s")
+                        ("sdl" . "https://wiki.libsdl.org/%s")
                         ("jira" . ,(concat xc/atlassian "%s"))))
          (beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
@@ -2200,6 +2204,10 @@ point.  If there is nothing at point, ask for the search query."
 (defun xc/search-sdl (&optional beg end)
   (interactive)
   (xc/search nil "sdl" beg end))
+
+(defun xc/search-sdl-wiki (&optional beg end)
+  (interactive)
+  (xc/search nil "sdl-wiki" beg end))
 
 
 (defun minibuffer-inactive-mode-hook-setup ()
