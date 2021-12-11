@@ -2303,14 +2303,14 @@ Assumes a 'timecard.org' file exists with format:
               (if (org-clocking-p)
                   (progn
                     (org-clock-out)
-                    (setq result (format "Clocked out at [%s]"
-                                         (org-duration-from-minutes (org-clock-get-clocked-time))
-                                  org-clock-heading)))
+                    (setq result (format "Clocked out at %s [%s]"
+                                         (format-time-string "%-I:%M %p" (current-time))
+                                         (org-duration-from-minutes (org-clock-get-clocked-time)))))
                 (progn
                   (org-clock-in)
-                  (setq result (format "Clocked in at [%s]"
-                                         (org-duration-from-minutes (org-clock-get-clocked-time))
-                                  org-clock-heading))))
+                    (setq result (format "Clocked in at %s [%s]"
+                                         (format-time-string "%-I:%M %p" (current-time))
+                                         (org-duration-from-minutes (org-clock-get-clocked-time))))))
               (save-buffer)
               (message "%s" result))
           ;; not found
