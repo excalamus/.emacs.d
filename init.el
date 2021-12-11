@@ -198,6 +198,9 @@ Run whitespace-cleanup on save unless
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
+;; don't prompt when calling dired-find-alternate-file
+(put 'dired-find-alternate-file 'disabled nil)
+
 ;; Change yes-no prompts to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -906,6 +909,13 @@ or unbinds commands."
       "C-x C-l" 'recenter-top-bottom
       "C-r" 'comint-history-isearch-backward
       "<apps>" 'xc/kill-python
+      )
+
+    (general-def :keymaps 'dired-mode-map
+      "RET" 'dired-find-alternate-file  ; kill dired buffer on select
+      ;; "<down-mouse-1>" 'dired-find-alternate-file
+      ;; "<mouse-1>" 'dired-find-alternate-file
+      "<mouse-2>" 'dired-mouse-find-file
       )
 
     ;; (general-define-key :keymaps 'elpy-mode-map
