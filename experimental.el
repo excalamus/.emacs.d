@@ -413,3 +413,55 @@ compilation-error-regexp-alist-alist."
 
 (define-key global-map [?\M-l] 'my-recenter-window-top-bottom)
 
+
+(defun my-make-into-org-link (&optional search)
+  (interactive)
+  (let* ((thing (thing-at-point 'symbol t))
+         (bounds (if (use-region-p)
+                     (cons (region-beginning) (region-end))
+                   (bounds-of-thing-at-point 'symbol)))
+         (beg (car bounds))
+         (end (cdr bounds))
+         (query-term (if (and beg end)
+                         (buffer-substring-no-properties beg end)
+                       (thing thing)))
+         (path (if search "https://wiki.libsdl.org/wiki/search/?q="
+                   "https://wiki.libsdl.org/"))
+         (link (format "[[%s%s][=%s=]]" path query-term query-term)))
+    (when bounds
+      (delete-region (car bounds) (cdr bounds))
+      (insert link))))
+
+(defun my-in-src-block-p ()
+  (interactive)
+  (if (memq (org-element-type (org-element-context)) '(inline-src-block src-block))
+      t))
+
+(defun my-replace-with-links ()
+  (interactive)
+  (let ((case-fold-search nil))         ; don't ignore case
+    (while (re-search-forward "SDL_" (point-max) t)
+      (let ((last-thing (thing-at-point 'symbol t)))
+        (when (not (my-in-src-block-p))
+          (if (equal (upcase last-thing) last-thing) ; is an enum
+              (my-make-into-org-link t)
+            (my-make-into-org-link)))))))
+
+(defun my-replace-link-by-link-description ()
+    "Replace an org link by its description or if empty its address"
+  (interactive)
+  (if (org-in-regexp org-link-bracket-re 1)
+      (save-excursion
+        (let ((remove (list (match-beginning 0) (match-end 0)))
+              (description
+               (if (match-end 2)
+                   (org-match-string-no-properties 2)
+                 (org-match-string-no-properties 1))))
+          (apply 'delete-region remove)
+          (insert description)))))
+
+(defun my-undo-links ()
+  (interactive)
+  (let ((case-fold-search nil))         ; don't ignore case
+    (while (re-search-forward "SDL_" (point-max) t)
+        (my-replace-link-by-link-description))))
