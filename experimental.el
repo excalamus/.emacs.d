@@ -349,12 +349,17 @@ compilation-error-regexp-alist-alist."
    (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
    nil nil window-resize-pixelwise))
 
-(defun my-maximize-window (&optional window)
+(defun my-1/4-window (&optional window)
   (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
   (setq window (window-normalize-window window))
+  (my-maximize-window)
   (window-resize
-   window (window-max-delta window nil nil nil nil nil window-resize-pixelwise)
-   nil nil window-resize-pixelwise))
+   window
+   (- (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
+    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 4))
+    nil nil window-resize-pixelwise))
 
 (defun my-center-window (&optional window)
   (interactive)
@@ -365,21 +370,46 @@ compilation-error-regexp-alist-alist."
   (window-resize
    window
     (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 2)
+    nil nil window-resize-pixelwise))
+
+(defun my-3/4-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (my-maximize-window)
+  (window-resize
+   window
+    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 4)
+    nil nil window-resize-pixelwise))
+
+(defun my-maximize-window (&optional window)
+  (interactive)
+  (setq window (window-normalize-window window))
+  (window-resize
+   window (window-max-delta window nil nil nil nil nil window-resize-pixelwise)
    nil nil window-resize-pixelwise))
 
-(setq my-last-window-op 'middle)
+(setq my-last-window-op 'center)
 
 (defun my-recenter-window-top-bottom (&optional arg)
   (interactive "P")
 
-  (cond ((eq my-last-window-op 'middle)
+  (cond ((eq my-last-window-op 'center)
          (my-maximize-window)
-         (setq my-last-window-op 'top))
-        ((eq my-last-window-op 'top)
+         (setq my-last-window-op 'max))
+        ((eq my-last-window-op 'max)
+         (my-3/4-window)
+         (setq my-last-window-op 'three-quarter))
+        ((eq my-last-window-op 'three-quarter)
+         (my-1/4-window)
+         (setq my-last-window-op 'one-quarter))
+        ((eq my-last-window-op 'one-quarter)
          (my-minimize-window)
-         (setq my-last-window-op 'bottom))
-        ((eq my-last-window-op 'bottom)
+         (setq my-last-window-op 'min))
+        ((eq my-last-window-op 'min)
          (my-center-window)
-         (setq my-last-window-op 'middle))))
+         (setq my-last-window-op 'center))))
 
 (define-key global-map [?\M-l] 'my-recenter-window-top-bottom)
+
