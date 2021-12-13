@@ -399,8 +399,18 @@ Run whitespace-cleanup on save unless
           (set-face-attribute 'mode-line nil
                               :foreground 'unspecified
                               :background "gray9"
-                              :box '(:line-width 1 :color "gray1" :style released-button))))
-          ))
+                              :box '(:line-width 1 :color "gray1" :style released-button))
+
+          ;; odd should be darker
+          (with-eval-after-load "ediff-init"
+            (set-face-attribute 'ediff-odd-diff-A nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
+            (set-face-attribute 'ediff-even-diff-A nil :background "gray12" :foreground 'unspecified :inverse-video 'unspecified)
+
+            (set-face-attribute 'ediff-odd-diff-B nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
+            (set-face-attribute 'ediff-even-diff-B nil :background "gray12" :foreground 'unspecified :inverse-video 'unspecified)
+            )
+
+          ))))
 
 (defun xc/light-theme-hook ()
   "Run after loading light theme."
