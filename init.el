@@ -178,8 +178,8 @@ Run whitespace-cleanup on save unless
 
 (add-hook 'before-save-hook 'xc/before-save-hook)
 
-(if (eq xc/device 'gnu/linux)
-    (setq whitespace-style '(face tabs)))
+;; (if (eq xc/device 'gnu/linux)
+;;     (setq whitespace-style '(face tabs)))
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
