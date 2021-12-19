@@ -273,7 +273,7 @@ Run whitespace-cleanup on save unless
 
 (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
 
-(setq c-default-style "k&r")
+(setq c-default-style "gnu")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
