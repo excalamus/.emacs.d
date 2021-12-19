@@ -414,6 +414,9 @@ Run whitespace-cleanup on save unless
                               :background "gray9"
                               :box '(:line-width 1 :color "gray1" :style released-button))
 
+          (with-eval-after-load "iedit-lib"
+            (set-face-attribute 'iedit-occurrence nil :background "gray30"))
+
           ;; odd should be darker
           (with-eval-after-load "ediff-init"
             (set-face-attribute 'ediff-odd-diff-A nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
