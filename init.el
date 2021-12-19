@@ -218,6 +218,19 @@ Run whitespace-cleanup on save unless
 (setq ediff-split-window-function 'split-window-right)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
+;; restore window configuration on ediff close
+;; https://emacs.stackexchange.com/a/17089
+(defvar xc/ediff-last-windows nil)
+
+(defun xc/store-pre-ediff-winconfig ()
+  (setq xc/ediff-last-windows (current-window-configuration)))
+
+(defun xc/restore-pre-ediff-winconfig ()
+  (set-window-configuration xc/ediff-last-windows))
+
+(add-hook 'ediff-before-setup-hook #'xc/store-pre-ediff-winconfig)
+(add-hook 'ediff-quit-hook #'xc/restore-pre-ediff-winconfig)
+
 (if (eq xc/device 'termux) (setq browse-url-browser-function 'eww-browse-url))
 
 ;; Make *Occur* window size to the contents
