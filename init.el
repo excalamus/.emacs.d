@@ -178,8 +178,8 @@ Run whitespace-cleanup on save unless
 
 (add-hook 'before-save-hook 'xc/before-save-hook)
 
-(if (eq xc/device 'gnu/linux)
-    (setq whitespace-style '(face tabs)))
+;; (if (eq xc/device 'gnu/linux)
+;;     (setq whitespace-style '(face tabs)))
 
 (setq-default abbrev-mode t)
 (delete-selection-mode 1)
@@ -217,6 +217,19 @@ Run whitespace-cleanup on save unless
 ;; split ediff vertically
 (setq ediff-split-window-function 'split-window-right)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; restore window configuration on ediff close
+;; https://emacs.stackexchange.com/a/17089
+(defvar xc/ediff-last-windows nil)
+
+(defun xc/store-pre-ediff-winconfig ()
+  (setq xc/ediff-last-windows (current-window-configuration)))
+
+(defun xc/restore-pre-ediff-winconfig ()
+  (set-window-configuration xc/ediff-last-windows))
+
+(add-hook 'ediff-before-setup-hook #'xc/store-pre-ediff-winconfig)
+(add-hook 'ediff-quit-hook #'xc/restore-pre-ediff-winconfig)
 
 (if (eq xc/device 'termux) (setq browse-url-browser-function 'eww-browse-url))
 
@@ -260,7 +273,7 @@ Run whitespace-cleanup on save unless
 
 (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
 
-(setq c-default-style "k&r")
+(setq c-default-style "gnu")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -400,6 +413,9 @@ Run whitespace-cleanup on save unless
                               :foreground 'unspecified
                               :background "gray9"
                               :box '(:line-width 1 :color "gray1" :style released-button))
+
+          (with-eval-after-load "iedit-lib"
+            (set-face-attribute 'iedit-occurrence nil :background "gray30"))
 
           ;; odd should be darker
           (with-eval-after-load "ediff-init"
