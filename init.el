@@ -419,11 +419,13 @@ Run whitespace-cleanup on save unless
 
           ;; odd should be darker
           (with-eval-after-load "ediff-init"
-            (set-face-attribute 'ediff-odd-diff-A nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
             (set-face-attribute 'ediff-even-diff-A nil :background "gray12" :foreground 'unspecified :inverse-video 'unspecified)
-
-            (set-face-attribute 'ediff-odd-diff-B nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
             (set-face-attribute 'ediff-even-diff-B nil :background "gray12" :foreground 'unspecified :inverse-video 'unspecified)
+            (set-face-attribute 'ediff-even-diff-C nil :background "gray12" :foreground 'unspecified :inverse-video 'unspecified)
+
+            (set-face-attribute 'ediff-odd-diff-A nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
+            (set-face-attribute 'ediff-odd-diff-B nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
+            (set-face-attribute 'ediff-odd-diff-C nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
             )
 
           ))))
