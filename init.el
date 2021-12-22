@@ -830,6 +830,7 @@ or unbinds commands."
       "C-<f1>" 'ace-window
       "C-=" 'iedit-mode
       "<pause>" 'xc/punch-timecard
+      "M-l" 'xc/recenter-window-top-bottom
       )
 
     (general-def :keymaps 'override
@@ -2567,6 +2568,98 @@ REGION unfills the region.  See URL
 See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/emacs/KillingAndYanking'"
   (interactive "p")
   (yank-pop (- arg)))
+
+
+(defun xc/minimize-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (window-resize
+   window
+   (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
+   nil nil window-resize-pixelwise))
+
+(defun xc/1/4-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (xc/maximize-window)
+  (window-resize
+   window
+   (- (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
+    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 4))
+    nil nil window-resize-pixelwise))
+
+(defun xc/center-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (xc/maximize-window)
+  (window-resize
+   window
+    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 2)
+    nil nil window-resize-pixelwise))
+
+(defun xc/3/4-window (&optional window)
+  (interactive)
+  (when switch-to-buffer-preserve-window-point
+    (window--before-delete-windows window))
+  (setq window (window-normalize-window window))
+  (xc/maximize-window)
+  (window-resize
+   window
+    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 4)
+    nil nil window-resize-pixelwise))
+
+(defun xc/maximize-window (&optional window)
+  (interactive)
+  (setq window (window-normalize-window window))
+  (window-resize
+   window (window-max-delta window nil nil nil nil nil window-resize-pixelwise)
+   nil nil window-resize-pixelwise))
+
+(setq xc/last-window-op 'center)
+
+(defun xc/recenter-window-top-bottom (&optional arg)
+  (interactive "P")
+
+  ;; ;; center-max-3/4-1/4-min
+  ;; (cond ((eq xc/last-window-op 'center)
+  ;;        (xc/maximize-window)
+  ;;        (setq xc/last-window-op 'max))
+  ;;       ((eq xc/last-window-op 'max)
+  ;;        (xc/3/4-window)
+  ;;        (setq xc/last-window-op 'three-quarter))
+  ;;       ((eq xc/last-window-op 'three-quarter)
+  ;;        (xc/1/4-window)
+  ;;        (setq xc/last-window-op 'one-quarter))
+  ;;       ((eq xc/last-window-op 'one-quarter)
+  ;;        (xc/minimize-window)
+  ;;        (setq xc/last-window-op 'min))
+  ;;       ((eq xc/last-window-op 'min)
+  ;;        (xc/center-window)
+  ;;        (setq xc/last-window-op 'center))))
+
+  ;; min-1/4-center-3/4-max
+  (cond ((eq xc/last-window-op 'min)
+          (xc/1/4-window)
+          (setq xc/last-window-op 'one-quarter))
+         ((eq xc/last-window-op 'one-quarter)
+          (xc/center-window)
+          (setq xc/last-window-op 'center))
+         ((eq xc/last-window-op 'center)
+          (xc/3/4-window)
+          (setq xc/last-window-op 'three-quarter))
+         ((eq xc/last-window-op 'three-quarter)
+          (xc/maximize-window)
+          (setq xc/last-window-op 'max))
+         ((eq xc/last-window-op 'max)
+          (xc/minimize-window)
+          (setq xc/last-window-op 'min))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
