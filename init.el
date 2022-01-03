@@ -586,6 +586,11 @@ Run whitespace-cleanup on save unless
   :after (:all org)
   :config
 
+  (add-hook 'csv-mode-hook
+            (lambda ()
+              (hl-line-mode)
+              (face-remap-add-relative 'hl-line :box '(:color "gray" :line-width 1))))
+
   (if xc/debug (message "csv-mode")))
 
 
