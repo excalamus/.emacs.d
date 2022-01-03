@@ -428,6 +428,9 @@ Run whitespace-cleanup on save unless
             (set-face-attribute 'ediff-odd-diff-C nil :background "gray10" :foreground 'unspecified :inverse-video 'unspecified)
             )
 
+          (with-eval-after-load "bm"
+            (set-face-attribute 'bm-face nil :background "RosyBrown2"))
+
           ))))
 
 (defun xc/light-theme-hook ()
