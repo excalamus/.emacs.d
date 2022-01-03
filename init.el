@@ -2129,6 +2129,21 @@ Default DUP name is `#<buffer-name>#'."
       (error "Duplicate buffer already exists"))))
 
 
+(defun xc/kill-all-buffers-in-frame ()
+  "Kill all buffers visible in selected frame."
+  (interactive)
+  (let ((buffer-save-without-query t))
+    (walk-windows '(lambda (win) (kill-buffer (window-buffer win)))
+                  nil (selected-frame))
+    (delete-other-windows)))
+
+(defun xc/kill-frame-and-buffers ()
+  "Kill current frame along with its visible buffers."
+  (interactive)
+  (xc/kill-all-buffers-in-frame)
+  (delete-frame nil t))
+
+
 (defun xc/emacs-standalone (&optional arg)
   "Start standalone instance of Emacs.
 
