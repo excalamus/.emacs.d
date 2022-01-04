@@ -322,10 +322,6 @@ Run whitespace-cleanup on save unless
                 " "
                 mode-line-end-spaces))
 
-;; setting true causes rev in vc-git.el:362 to be nil, causing error in substring
-;; (setq debug-on-error t)
-;; (setq auto-revert-check-vc-info t)
-
 ;; Automatically reload files that have changed on disk
 (global-auto-revert-mode)
 
@@ -554,24 +550,6 @@ Run whitespace-cleanup on save unless
   (if xc/debug (message "ace-window")))
 
 
-(use-package ag
-  :after (:all org)
-  :straight (:fork "excalamus/ag.el")
-  :config
-
-  (if xc/debug (message "ag.el")))
-
-;; 
-;; (use-package anaconda-mode
-;;   :disabled
-;;   :after (:all org)
-;;   :straight (:fork "excalamus/anaconda-mode")
-;;   :config
-;;   (add-hook 'python-mode-hook 'anaconda-mode)
-;;   (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-;;   (if xc/debug (message "anaconda-mode")))
-
-
 (use-package bm
   :after (:all org)
   :straight (:fork "excalamus/bm")
@@ -630,16 +608,6 @@ Run whitespace-cleanup on save unless
   ;; (dtrt-indent-global-mode)
 
   (if xc/debug (message "dtrt-indent")))
-
-;; 
-;; (use-package dap-mode
-;;   :after (:all markdown-mode org lsp-mode)
-;;   :straight (:fork "excalamus/dap-mode")
-;;   :config
-;;   (require 'dap-python)
-;;   (setq dap-python-debugger 'debugpy)
-
-;;   (if xc/debug (message "dap-mode")))
 
 
 (use-package dumb-jump
@@ -1817,16 +1785,6 @@ or unbinds commands."
 
   (if xc/debug (message "peut-gerer")))
 
-;; 
-;; (use-package posframe
-;;   :after (:all org)
-;;   :straight (:repo "excalamus/posframe"))
-
-;; 
-;; (use-package pyvenv
-;;   :after (:all org)
-;;   :straight (:repo "excalamus/pyvenv"))
-
 
 (use-package qml-mode
   :after (:all org)
@@ -1852,20 +1810,6 @@ or unbinds commands."
   :config
 
   (if xc/debug (message "rg.el")))
-
-
-;; (use-package slime
-;;   :straight (:fork "excalamus/slime")
-;;   :config
-;;   (setq inferior-lisp-program "ecl")
-
-;;   (if xc/debug (message "slime")))
-(if (eq xc/device 'termux)
-  (progn
-    (load (expand-file-name "~/quicklisp/slime-helper.el"))
-    (setq inferior-lisp-program "ecl")
-    (setq common-lisp-hyperspec-root "file:///data/data/com.termux/files/home/HyperSpec/")
-    (if xc/debug (message "slime"))))
 
 
 ;; skeeto fork
@@ -1941,15 +1885,6 @@ or unbinds commands."
   :config
 
   (if xc/debug (message "emacs-sql-indent")))
-
-
-(use-package sx
-  :after (:all org)
-  :straight (:fork "excalamus/sx.el")
-  :config
-
-  (setq sx-default-site 'stackoverflow)
-  (if xc/debug (message "sx.el")))
 
 
 (use-package web-mode
@@ -3002,6 +2937,3 @@ chicken and egg problem."
     (set-process-query-on-exit-flag proc nil))
   ;; assume qgis loads in X seconds
   (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
-
-;; (general-def :keymaps 'override "<f7>" 'xc/run-qgis)
-;; (kill-new "C:/Users/mtrzcinski/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/pri_tool")
