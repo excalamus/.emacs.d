@@ -881,7 +881,6 @@ or unbinds commands."
        "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
        "k" 'kill-buffer
        "o" 'ace-window
-       "q" 'sx-search
        "r" '(lambda() (interactive)
              (save-some-buffers t nil)
              (if xc/kill-python-p
@@ -1177,9 +1176,9 @@ or unbinds commands."
 
 
 (use-package evil
-  :after (:all dumb-jump key-chord sx org)
+  :after (:all dumb-jump key-chord org)
   :straight (:fork "excalamus/evil")
-  ;; :after (:all dumb-jump key-chord nov sx)
+
   :init
   ;; C-i is TAB, so setting this makes TAB evil-jump-forward
   (setq evil-want-C-i-jump nil)
@@ -1192,9 +1191,6 @@ or unbinds commands."
   ;; (evil-set-initial-state 'nov-mode 'emacs)
   (evil-set-initial-state 'magit-repolist-mode 'emacs)
   (evil-set-initial-state 'rg-mode 'emacs)
-  (evil-set-initial-state 'sx-mode 'emacs)
-  (evil-set-initial-state 'sx-question-mode 'emacs)
-  (evil-set-initial-state 'sx-question-list-mode 'emacs)
   (evil-set-initial-state 'xref--xref-buffer-mode 'emacs)
 
   ;; https://github.com/emacs-evil/evil/issues/1074
