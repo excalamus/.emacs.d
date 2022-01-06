@@ -2102,8 +2102,9 @@ See `https://emacs.stackexchange.com/a/24464/'"
       (when (and file (file-readable-p file))
         (with-current-buffer buf
           (with-demoted-errors "Error: %S"
-            (revert-buffer t noconfirm)
-            (message "Reverted buffer from file: %s" file)))))))
+             (if (revert-buffer t noconfirm)
+                 (message "Reverted buffer from file: %s" file)
+               (message "User canceled revert for buffer: %s" buf))))))))
 
 
 (defun xc/emacs-standalone (&optional arg)
