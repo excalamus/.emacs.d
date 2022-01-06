@@ -465,3 +465,7 @@ compilation-error-regexp-alist-alist."
   (let ((case-fold-search nil))         ; don't ignore case
     (while (re-search-forward "SDL_" (point-max) t)
         (my-replace-link-by-link-description))))
+
+(defun my-clear-directory ()
+  (interactive)
+  (shell-command "del C:\\Users\\mtrzcinski\\AppData\\Roaming\\.unwrapper\\data\\*.jpg /S"))
