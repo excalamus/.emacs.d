@@ -2079,6 +2079,33 @@ Default DUP name is `#<buffer-name>#'."
   (delete-frame nil t))
 
 
+;; magit doesn't seem to revert buffers when creating a local copy of
+;; a branch that exists on the remote. This happens when the branch is
+;; made in BitBucket/GitHub or that someone has pushed up. The default
+;; behavior of magit is supposed to auto revert all tracked files. You
+;; would think that creating a local version of a remote branch would
+;; do that, but it seems not. Maybe I'm getting myself mixed up?
+(defun xc/revert-all-buffers (&optional arg)
+  "Revert all file buffers.
+
+Buffers visiting files that no longer exist are ignored.  Files
+not readable (including do not exist) are ignored.  Other errors
+are reported only as messages. Don't ask for confirmation when
+called with a prefix.
+
+See `https://emacs.stackexchange.com/a/24464/'"
+  (interactive "p")
+  (let ((noconfirm (if (= arg 1) nil t))
+        (file))
+    (dolist (buf (buffer-list))
+      (setq file (buffer-file-name buf))
+      (when (and file (file-readable-p file))
+        (with-current-buffer buf
+          (with-demoted-errors "Error: %S"
+            (revert-buffer t noconfirm)
+            (message "Reverted buffer from file: %s" file)))))))
+
+
 (defun xc/emacs-standalone (&optional arg)
   "Start standalone instance of Emacs.
 
