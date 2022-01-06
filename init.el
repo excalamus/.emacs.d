@@ -2833,6 +2833,25 @@ See URL `https://github.com/jorgenschaefer/elpy/blob/c31cd91325595573c489b92ad58
       (switch-to-buffer "*Occur*"))))
 
 
+(defun xc/jump-to-file-from-python-error ()
+  "Jump to line in file specified by a Python traceback."
+  (interactive)
+  (let* ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+         file
+         number)
+
+    (string-match "^ *File \\(\"?\\)\\([^,\" \n    <>]+\\)\\1, lines? \\([0-9]+\\)-?\\([0-9]+\\)?" line)
+
+    (setq file (match-string 2 line))
+    (setq number (match-string 3 line)) ; match is string, not numeric
+
+    (cond ((and file number)
+           (find-file-other-window file)
+           (with-current-buffer (get-buffer (file-name-nondirectory file))
+             (goto-char (point-min))
+             (forward-line (1- (string-to-number number))))))))
+
+
 (defun xc/statement-to-function (&optional statement func beg end)
   "Convert STATEMENT to FUNC.
 

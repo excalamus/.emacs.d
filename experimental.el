@@ -266,6 +266,31 @@ Go through the buffer and ask for the replacement."
   ;; ret
   )
 
+
+(defun xc/jump-to-file-from-python-error ()
+  "Jump to line in file specified by a Python traceback."
+  (interactive)
+  (let* ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+         file
+         number)
+    (string-match "^ *File \\(\"?\\)\\([^,\" \n    <>]+\\)\\1, lines? \\([0-9]+\\)-?\\([0-9]+\\)?" line)
+
+    (condition-case nil
+        (progn
+          (setq file (match-string 2 line))
+          ;; if line not valid, then line number is nil
+          (setq number (string-to-number (match-string 3 line))))
+     (error nil))
+
+    (cond ((and file number)
+           (find-file-other-window file)
+           (with-current-buffer (get-buffer (file-name-nondirectory file))
+             (goto-char (point-min))
+             (forward-line (1- number)))))))
+
+
+"^ *File \\(\"?\\)\\([^,\" \n    <>]+\\)\\1, lines? \\([0-9]+\\)-?\\([0-9]+\\)?"
+
 ;; https://stackoverflow.com/a/2122436/5065796
 ;; if compilation-shell-minor-mode is on, then these regexes
 ;; will make errors linkable
@@ -336,82 +361,6 @@ compilation-error-regexp-alist-alist."
   (setq writeroom-restore-window-config t)
 
   (if xc/debug (message "writeroom-mode")))
-
-
-
-(defun my-minimize-window (&optional window)
-  (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
-  (setq window (window-normalize-window window))
-  (window-resize
-   window
-   (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
-   nil nil window-resize-pixelwise))
-
-(defun my-1/4-window (&optional window)
-  (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
-  (setq window (window-normalize-window window))
-  (my-maximize-window)
-  (window-resize
-   window
-   (- (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise))
-    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 4))
-    nil nil window-resize-pixelwise))
-
-(defun my-center-window (&optional window)
-  (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
-  (setq window (window-normalize-window window))
-  (my-maximize-window)
-  (window-resize
-   window
-    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 2)
-    nil nil window-resize-pixelwise))
-
-(defun my-3/4-window (&optional window)
-  (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
-  (setq window (window-normalize-window window))
-  (my-maximize-window)
-  (window-resize
-   window
-    (/ (- (window-min-delta window nil nil nil nil nil window-resize-pixelwise)) 4)
-    nil nil window-resize-pixelwise))
-
-(defun my-maximize-window (&optional window)
-  (interactive)
-  (setq window (window-normalize-window window))
-  (window-resize
-   window (window-max-delta window nil nil nil nil nil window-resize-pixelwise)
-   nil nil window-resize-pixelwise))
-
-(setq my-last-window-op 'center)
-
-(defun my-recenter-window-top-bottom (&optional arg)
-  (interactive "P")
-
-  (cond ((eq my-last-window-op 'center)
-         (my-maximize-window)
-         (setq my-last-window-op 'max))
-        ((eq my-last-window-op 'max)
-         (my-3/4-window)
-         (setq my-last-window-op 'three-quarter))
-        ((eq my-last-window-op 'three-quarter)
-         (my-1/4-window)
-         (setq my-last-window-op 'one-quarter))
-        ((eq my-last-window-op 'one-quarter)
-         (my-minimize-window)
-         (setq my-last-window-op 'min))
-        ((eq my-last-window-op 'min)
-         (my-center-window)
-         (setq my-last-window-op 'center))))
-
-(define-key global-map [?\M-l] 'my-recenter-window-top-bottom)
 
 
 (defun my-make-into-org-link (&optional search)
