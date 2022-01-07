@@ -2444,16 +2444,16 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (set-buffer-modified-p nil))))))
 
 
-(defun xc/send-line-or-region (&optional beg end advance buff)
-  "Send region defined by BEG and END to BUFF.
+(defun xc/send-line-or-region (&optional advance buff beg end)
+  "Send region or line to BUFF.
 
-Use current region if BEG and END not provided.  If no region
-provided, send entire line.  Create a new line when ADVANCE is
-non-nil.  Default BUFF is the buffer associated with
-`xc/on-demand-window'.  If BUFF has an associated process, send
-region as input, otherwise just insert the region."
+If buffer has a process, insert and send line to the process. If
+no process, then simply insert text at point.  Create a new line
+when ADVANCE is non-nil.  Use current region if BEG and END not
+provided.  If no region provided, send entire line.  Default BUFF
+is the buffer associated with `xc/on-demand-window'."
   (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end) nil nil)
+                   (list nil nil (region-beginning) (region-end))
                  (list nil nil nil nil)))
   (let* ((beg (or beg (if (use-region-p) (region-beginning)) nil))
          (end (or end (if (use-region-p) (region-end)) nil))
@@ -2476,6 +2476,37 @@ region as input, otherwise just insert the region."
                          (end-of-line)
                          (newline-and-indent)))))))
       (error "Invalid selection"))))
+
+
+(defvar xc--send-string-history nil
+  "History of strings sent via `xc/send-string'")
+
+(defun xc/send-string (string &optional advance buff)
+  "Send STRING to BUFF'.
+
+Default BUFF is the buffer associated with
+`xc/on-demand-window' (or current window if not set).  If BUFF
+has an associated process, send region as input, otherwise just
+insert the region.  Create a new line when ADVANCE is non-nil."
+  (interactive
+   (let* ((prompt (format "Send string to % s: " (window-buffer xc/on-demand-window)))
+          (cmd (read-string prompt "" 'xc--on-demand-send-string-history)))
+   (list cmd nil nil)))
+
+  (let* ((buff (or buff (window-buffer xc/on-demand-window)))
+         (proc (get-buffer-process buff)))
+    (with-selected-window (get-buffer-window buff t)
+      (let ((window-point-insertion-type t))  ; advance marker on insert
+        (cond (proc
+               (goto-char (process-mark proc))
+               (insert string)
+               (comint-send-input nil t))
+              (t
+               (insert string)
+               (if advance
+                   (progn
+                     (end-of-line)
+                     (newline-and-indent)))))))))
 
 
 (defun xc/smart-beginning-of-line ()
