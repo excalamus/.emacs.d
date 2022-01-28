@@ -1758,17 +1758,18 @@ or unbinds commands."
   ;; that to the script.
   (add-to-list 'right-click-context-global-menu-tree
                '("Send region to on-demand-window"
-                 :call (xc/send-line-or-region nil nil t)))
+                 :call (xc/send-line-or-region)))
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Send to shell"
-                 :call (xc/send-line-or-region nil nil nil peut-gerer-shell)))
+                 ;; :call (xc/send-line-or-region nil nil nil peut-gerer-shell)))
+                 :call (xc/send-line-or-region nil peut-gerer-shell nil nil)))
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Search..."
-                 ("pyside" :call (xc/search-Qt))
+                 ;; ("pyside" :call (xc/search-Qt))
+                 ("QGIS" :call (xc/search-qgis))
                  ("sdl-wiki" :call (xc/search-sdl-wiki))
-                 ;; ("QGIS" :call (xc/search-qgis))
                  ("Open Jira ticket" :call (xc/search-jira))
                  ("ddg" :call (xc/search-ddg))))
 
