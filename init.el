@@ -1411,10 +1411,11 @@ or unbinds commands."
   :straight (:fork "excalamus/hl-todo")
   :config
   (setq hl-todo-keyword-faces
-        '(("TODO"   . "#f84547")
-          ("FIXME"  . "#f84547")
-          ("DEBUG"  . "#8485ce")
-          ("NOTE"   . "#95c76f")))
+        '(("TODO"    . "#f84547")
+          ("FIXME"   . "#f84547")
+          ("WARNING" . "#FFFF00")
+          ("DEBUG"   . "#8485ce")
+          ("NOTE"    . "#95c76f")))
   (global-hl-todo-mode)
 
   (if xc/debug (message "hl-todo")))
