@@ -1411,10 +1411,11 @@ or unbinds commands."
   :straight (:fork "excalamus/hl-todo")
   :config
   (setq hl-todo-keyword-faces
-        '(("TODO"   . "#f84547")
-          ("FIXME"  . "#f84547")
-          ("DEBUG"  . "#8485ce")
-          ("NOTE"   . "#95c76f")))
+        '(("TODO"    . "#f84547")
+          ("FIXME"   . "#f84547")
+          ("WARNING" . "#FFFF00")
+          ("DEBUG"   . "#8485ce")
+          ("NOTE"    . "#95c76f")))
   (global-hl-todo-mode)
 
   (if xc/debug (message "hl-todo")))
@@ -1757,17 +1758,18 @@ or unbinds commands."
   ;; that to the script.
   (add-to-list 'right-click-context-global-menu-tree
                '("Send region to on-demand-window"
-                 :call (xc/send-line-or-region nil nil t)))
+                 :call (xc/send-line-or-region)))
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Send to shell"
-                 :call (xc/send-line-or-region nil nil nil peut-gerer-shell)))
+                 ;; :call (xc/send-line-or-region nil nil nil peut-gerer-shell)))
+                 :call (xc/send-line-or-region nil peut-gerer-shell nil nil)))
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Search..."
-                 ("pyside" :call (xc/search-Qt))
+                 ;; ("pyside" :call (xc/search-Qt))
+                 ("QGIS" :call (xc/search-qgis))
                  ("sdl-wiki" :call (xc/search-sdl-wiki))
-                 ;; ("QGIS" :call (xc/search-qgis))
                  ("Open Jira ticket" :call (xc/search-jira))
                  ("ddg" :call (xc/search-ddg))))
 
@@ -2132,6 +2134,19 @@ Load Emacs without init file when called interactively.
         (set-process-query-on-exit-flag proc nil))
 
 
+(defun xc/reselect-last-region ()
+  "Reselect the last region.
+
+Taken from URL
+`https://web.archive.org/web/20170118020642/http://grapevine.net.au/~striggs/elisp/emacs-homebrew.el'"
+  (interactive)
+  (let ((start (mark t))
+        (end (point)))
+    (goto-char start)
+    (call-interactively 'set-mark-command)
+    (goto-char end)))
+
+
 (defun xc/get-file-name ()
   "Put filename of current buffer on kill ring."
   (interactive)
@@ -2186,7 +2201,7 @@ point.  If there is nothing at point, ask for the search query."
   (interactive)
   (let* ((engine-list `(("ddg" . "https://duckduckgo.com/?q=%s")
                         ("Qt" . "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q=%s")
-                        ;; ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
+                        ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
                         ("sdl-wiki" . "https://wiki.libsdl.org/wiki/search/?q=%s")
                         ("sdl" . "https://wiki.libsdl.org/%s")
                         ("jira" . ,(concat xc/atlassian "%s"))))
@@ -2779,7 +2794,10 @@ line if no region is provided."
   (insert "C:\\python\\miniconda38\\condabin\\mamba.bat activate "))
 
 
-(setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
+;; (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
+;; (setq xc/python-break-string "import mydebugger; mydebugger.breakpoint()")
+;; (setq xc/python-break-string "import my_other_debugger; my_other_debugger.breakpoint()")
+(setq xc/python-break-string "import pydevd_pycharm; pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)")
 
 (defun xc/insert-breakpoint (&optional string)
   (interactive)
@@ -3017,14 +3035,14 @@ chicken and egg problem."
 
 (defun xc/kill-qgis ()
   (interactive)
-  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-bin.exe\""))
+  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-ltr-bin.exe\""))
 
 (defun xc/run-qgis ()
   (interactive)
   (save-some-buffers t nil)
   (xc/kill-qgis)
   (shell-command "taskkill /f /t /fi \"WINDOWTITLE eq \\qgis\\ \"")
-  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.20.3\\bin\\qgis.bat")))
+  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.10\\bin\\qgis-ltr.bat")))
     (set-process-query-on-exit-flag proc nil))
   ;; assume qgis loads in X seconds
   (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
