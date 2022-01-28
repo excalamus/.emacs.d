@@ -2444,6 +2444,23 @@ See URL `http://steve.yegge.googlepages.com/my-dot-emacs-file'"
           (set-buffer-modified-p nil))))))
 
 
+(defun xc/delete-file-visiting ()
+  "Trash the file currently being visited.
+
+Prompt to kill active buffer."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (progn
+        (delete-file filename t)
+        (cond ((not (file-exists-p filename))
+               (message "Deleted %s" filename)
+               (call-interactively 'kill-buffer))
+              (message "Error deleting %s" filename))))))
+
+
 (defun xc/send-line-or-region (&optional advance buff beg end)
   "Send region or line to BUFF.
 
