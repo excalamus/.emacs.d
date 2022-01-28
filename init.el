@@ -2134,6 +2134,19 @@ Load Emacs without init file when called interactively.
         (set-process-query-on-exit-flag proc nil))
 
 
+(defun xc/reselect-last-region ()
+  "Reselect the last region.
+
+Taken from URL
+`https://web.archive.org/web/20170118020642/http://grapevine.net.au/~striggs/elisp/emacs-homebrew.el'"
+  (interactive)
+  (let ((start (mark t))
+        (end (point)))
+    (goto-char start)
+    (call-interactively 'set-mark-command)
+    (goto-char end)))
+
+
 (defun xc/get-file-name ()
   "Put filename of current buffer on kill ring."
   (interactive)
