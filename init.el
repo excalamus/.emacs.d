@@ -2201,7 +2201,7 @@ point.  If there is nothing at point, ask for the search query."
   (interactive)
   (let* ((engine-list `(("ddg" . "https://duckduckgo.com/?q=%s")
                         ("Qt" . "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q=%s")
-                        ;; ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
+                        ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
                         ("sdl-wiki" . "https://wiki.libsdl.org/wiki/search/?q=%s")
                         ("sdl" . "https://wiki.libsdl.org/%s")
                         ("jira" . ,(concat xc/atlassian "%s"))))
@@ -2777,7 +2777,10 @@ line if no region is provided."
   (insert "C:\\python\\miniconda38\\condabin\\mamba.bat activate "))
 
 
-(setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
+;; (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
+;; (setq xc/python-break-string "import mydebugger; mydebugger.breakpoint()")
+;; (setq xc/python-break-string "import my_other_debugger; my_other_debugger.breakpoint()")
+(setq xc/python-break-string "import pydevd_pycharm; pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)")
 
 (defun xc/insert-breakpoint (&optional string)
   (interactive)
@@ -3015,14 +3018,14 @@ chicken and egg problem."
 
 (defun xc/kill-qgis ()
   (interactive)
-  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-bin.exe\""))
+  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-ltr-bin.exe\""))
 
 (defun xc/run-qgis ()
   (interactive)
   (save-some-buffers t nil)
   (xc/kill-qgis)
   (shell-command "taskkill /f /t /fi \"WINDOWTITLE eq \\qgis\\ \"")
-  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.20.3\\bin\\qgis.bat")))
+  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.10\\bin\\qgis-ltr.bat")))
     (set-process-query-on-exit-flag proc nil))
   ;; assume qgis loads in X seconds
   (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
