@@ -4,16 +4,7 @@
 ;; separate package
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; - yank to mark, set mark, move to other location (other window or
-;; within buffer), kill something, yank to the marked location
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; quick bind
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (defvar xc/quick-bind nil
-;;   "Quick binding for F5 key.
-
-;; Must be a function that takes no arguments.")
+;; - yank to mark, set mark, move to other location (uments.")
 
 ;; (defun xc/set-quick-bind ()
 ;;   "Set function to `xc/quick-bind'."
@@ -418,3 +409,102 @@ compilation-error-regexp-alist-alist."
 (defun my-clear-directory ()
   (interactive)
   (shell-command "del C:\\Users\\mtrzcinski\\AppData\\Roaming\\.unwrapper\\data\\*.jpg /S"))
+
+;; (setq helm-display-buffer-default-height 'nil)
+
+;; https://github.com/emacs-helm/helm/issues/1902
+;; (setq helm-split-window-preferred-function 'helm-split-window-default-fn)
+
+(setq helm-swoop-split-with-multiple-windows nil)
+
+(defun helm-split-window-combined-fn (window)
+  "Helm window splitting that combined most standard features.
+
+- With C-u, split inside. With C-u C-u, use same window.
+- Else use biggest other window when available.
+- Else split horizontally if width>height, vertically otherwise."
+  (cond
+   ((or (minibufferp helm-current-buffer)
+        (and
+         (not (one-window-p t))
+         (not (equal current-prefix-arg '(4)))
+         (not (equal current-prefix-arg '(16)))))
+    ;; Find biggest window.
+    (let (biggest (maxarea 0))
+      (dolist (w (window-list))
+        (unless (eq w (selected-window))
+          (let ((area (* (window-pixel-width w) (window-pixel-height w))))
+            (when (> area maxarea)
+              (setq maxarea area
+                    biggest w)))))
+      biggest))
+   ((equal current-prefix-arg '(16))
+    ;; Same window.
+    (selected-window))
+   (t
+    ;; If split inside or if unique window.
+    (split-window (selected-window) nil
+                  (if (> (window-pixel-width) (window-pixel-height))
+                      'right
+                    'below)))))
+
+;; https://stackoverflow.com/a/6200347/5065796
+(defvar my-debugger-client-port 4444
+  "port of the server")
+
+;; (setq my-debugger-client-port 4444)
+;; (setq my-debugger-client-port 53100)
+
+(defvar my-debugger-client-host "127.0.0.1"
+  "host of the server")
+
+;; (setq my-debugger-client-host "127.0.0.1")
+
+(defun my-debugger-client-start nil
+  "starts an emacs tcp client my-debugger-clienter"
+  (interactive)
+  (make-network-process
+   :name "my-debugger-client"
+   :buffer "*my-debugger-client*"
+   :family 'ipv4
+   :host my-debugger-client-host
+   :service my-debugger-client-port
+   :sentinel 'my-debugger-client-sentinel
+   :filter 'my-debugger-client-filter)
+
+  (switch-to-buffer "*my-debugger-client*")
+
+  (with-current-buffer "*my-debugger-client*"
+    (comint-mode)
+    (setq-local comint-prompt-regexp "\\((MyDebugger) \\|>>> \\|In \\[[[:digit:]]\\]: \\)")
+    (setq-local comint-use-prompt-regexp t)
+
+    ))
+
+
+(defun my-debugger-client-stop nil
+  (interactive)
+  (delete-process "my-debugger-client")
+  )
+
+;; (defun my-debugger-client-filter (proc string)
+;;   (message string))
+
+;; (defun my-debugger-client-sentinel (proc msg)
+;;   (when (string= msg "connection broken by remote peer\n")
+;;       (message (format "client %s has quit" proc))))
+
+(defun my-debugger-client-filter (proc string)
+  ;; (with-current-buffer "*my-debugger-client*"
+  ;; (insert string)))
+  (comint-output-filter proc string))
+
+(defun my-debugger-client-sentinel (proc msg)
+  (when (string= msg "connection broken by remote peer\n")
+    (with-current-buffer "*my-debugger-client*"
+      (insert (format "client %s has quit" proc))
+      (bury-buffer))))
+
+
+
+(continue-process (get-process "my-debugger-client"))
