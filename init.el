@@ -594,8 +594,7 @@ Run whitespace-cleanup on save unless
   :config
 
   ;; https://github.com/abo-abo/define-word/issues/31
-  (if (eq xc/device 'windows)
-      (setq url-user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0"))
+  (setq url-user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0")
 
   (if xc/debug (message "define-word")))
 
