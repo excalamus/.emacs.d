@@ -3045,3 +3045,16 @@ chicken and egg problem."
     (set-process-query-on-exit-flag proc nil))
   ;; assume qgis loads in X seconds
   (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
+
+(defun xc/hex-quiz ()
+  "Practice your hex addition."
+  (interactive)
+  (while t
+  (let* ((number1 (random 16))
+         (number2 (random 16))
+         (answer (+ number1 number2))
+         (reply  (string-to-number (read-string (format "x%02X + x%02X = x" number1 number2)) 16)))
+    (if (= reply answer)
+        (message (format "Correct! x%02X + x%02X = x%02X" number1 number2 answer))
+      (message (format "Wrong, x%02X + x%02X = x%02X" number1 number2 answer)))
+    (sleep-for 1))))
