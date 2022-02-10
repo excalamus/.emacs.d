@@ -3049,12 +3049,20 @@ chicken and egg problem."
 (defun xc/hex-quiz ()
   "Practice your hex addition."
   (interactive)
-  (while t
-  (let* ((number1 (random 16))
-         (number2 (random 16))
-         (answer (+ number1 number2))
-         (reply  (string-to-number (read-string (format "x%02X + x%02X = x" number1 number2)) 16)))
-    (if (= reply answer)
-        (message (format "Correct! x%02X + x%02X = x%02X" number1 number2 answer))
-      (message (format "Wrong, x%02X + x%02X = x%02X" number1 number2 answer)))
-    (sleep-for 1))))
+  (let ((total 0.0)
+        (correct 0))
+  (condition-case err
+    (while t
+      (let* ((number1 (random 16))
+             (number2 (random 16))
+             (answer (+ number1 number2))
+             (reply  (string-to-number (read-string (format "x%02X + x%02X = x" number1 number2)) 16)))
+        (setq total (1+ total))
+        (if (= reply answer)
+            (progn
+              (setq correct (1+ correct))
+              (message (format "x%02X + x%02X = x%02X Correct!" number1 number2 answer)))
+          (message (format "x%02X + x%02X = x%02X Not x%02X!" number1 number2 answer reply)))
+        (sleep-for 0 650)))
+    (quit
+     (message "You got %%%d correct (%d of %d)." (* (/ correct total) 100) correct total)))))
