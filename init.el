@@ -122,13 +122,16 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     (xc/load-directory "~/.emacs.d/lisp/"))
 
 ;; load customizations which aren't versioned here
-(cond ((eq system-type 'windows-nt)
+(cond ((eq xc/device 'windows-nt)
        (add-hook 'after-init-hook (lambda () (load "~/secret-lisp.el"))))
-      ((eq system-type 'gnu/linux)
+      ((eq xc/device 'gnu/linux)
        (progn
          (add-hook 'after-init-hook (lambda () (load "/home/ahab/.emacs.d/mine/my-lisp.el")))
          (with-eval-after-load "yasnippet"
            (add-to-list 'yas-snippet-dirs "/home/ahab/.emacs.d/mine/" t)))))
+
+(cond ((eq xc/device 'gnu/linux)
+       (add-to-list 'Info-directory-list "/home/ahab/Documents/info_manuals-main")))
 
 ;; (setq yas-snippet-dirs (list yas-snippet-dirs))
 
