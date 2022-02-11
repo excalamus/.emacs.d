@@ -2160,6 +2160,18 @@ Taken from URL
       (message "Buffer not associated with a file"))))
 
 
+(defun xc/indent-current-file ()
+  (interactive)
+  (let ((filename (buffer-file-name (current-buffer))))
+    (cond (filename
+           (cond ((member major-mode '(c-mode c++-mode))
+                  (save-buffer)
+                  (call-process "indent" nil 0 nil filename)
+                  (message "Ran indent on: %s" filename))
+                 (t
+                  (message "Not visiting a C-style file")))))))
+
+
 (defun xc/highlight-current-line ()
   (interactive)
   (let ((regexp
