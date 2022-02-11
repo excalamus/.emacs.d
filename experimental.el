@@ -504,7 +504,3 @@ compilation-error-regexp-alist-alist."
     (with-current-buffer "*my-debugger-client*"
       (insert (format "client %s has quit" proc))
       (bury-buffer))))
-
-
-
-(continue-process (get-process "my-debugger-client"))
