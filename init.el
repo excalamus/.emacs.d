@@ -3083,7 +3083,7 @@ chicken and egg problem."
      (message "You got %%%d correct (%d of %d)." (* (/ correct total) 100) correct total)))))
 
 (defun xc/-int-to-binary-string (i)
-  "Convert int I into it's binary representation in string format
+  "Convert int I into its binary representation in string format
 
 Convert back using
 
