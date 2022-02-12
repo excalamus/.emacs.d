@@ -3081,3 +3081,51 @@ chicken and egg problem."
         (sleep-for 0 650)))
     (quit
      (message "You got %%%d correct (%d of %d)." (* (/ correct total) 100) correct total)))))
+
+(defun xc/-int-to-binary-string (i)
+  "Convert int I into it's binary representation in string format
+
+Convert back using
+
+  (string-to-number (xc/-int-to-binary-string 10) 2)
+
+See URL `https://stackoverflow.com/a/20577329'"
+  (let ((res ""))
+    ;; peel off powers of 2
+    ;; if even, record a 1 and shift right (i.e. divide by 2)
+    (while (not (= i 0))
+      (setq res (concat (if (= 1 (logand i 1)) "1" "0") res))
+      (setq i (ash i -1)))
+    (if (string= res "")
+        (setq res "0000"))
+    ;; this next part cheats. Convert to decimal so that it can be
+    ;; padded left with zeroes.  It's all strings, so who cares if it
+    ;; gets converted temporarily to decimal?  :)
+    (format "%04d" (string-to-number res))))
+
+(defun xc/binary-quiz ()
+  "Practice your hex to binary conversion.
+
+Hint: Convert numbers x0-x9 immediately. For xA-xF, convert to
+decimal first by putting a 1 in the ten's place and then taking
+the alphabet number less 1 for the one's place.  Convert the
+resulting decimal.  For example, xE is the fifth letter of the
+alphabet. 5-1=4 so that xE is 14.  14 is then 1110."
+  (interactive)
+  (let ((total 0.0)
+        (correct 0))
+  (condition-case err
+    (while t
+      (let* ((answer (random 16))
+             (answer-in-binary (xc/-int-to-binary-string answer))
+             (raw-reply (read-string (format "x%02X = b" answer)))
+             (reply (string-to-number raw-reply 2)))
+        (setq total (1+ total))
+        (if (= reply answer)
+            (progn
+              (setq correct (1+ correct))
+              (message (format "x%02X = b%s Correct!" answer answer-in-binary)))
+          (message (format "x%02X = b%s Not b%s!" answer answer-in-binary (xc/-int-to-binary-string reply))))
+        (sleep-for 1)))
+    (quit
+     (message "You got %%%d correct (%d of %d)." (* (/ correct total) 100) correct total)))))
