@@ -3082,26 +3082,28 @@ chicken and egg problem."
     (quit
      (message "You got %%%d correct (%d of %d)." (* (/ correct total) 100) correct total)))))
 
-(defun xc/-int-to-binary-string (i)
-  "Convert int I into its binary representation in string format
+(defun xc/-int-to-binary-string (int &optional precision)
+  "Convert INT into a binary string with PRECISION.
 
-Convert back using
+Convert to decimal using:
 
   (string-to-number (xc/-int-to-binary-string 10) 2)
 
 See URL `https://stackoverflow.com/a/20577329'"
-  (let ((res ""))
+  (let* ((precision (or precision 4))
+         (fstring (concat "%0" (number-to-string precision) "d"))
+        (res ""))
     ;; peel off powers of 2
     ;; if even, record a 1 and shift right (i.e. divide by 2)
-    (while (not (= i 0))
-      (setq res (concat (if (= 1 (logand i 1)) "1" "0") res))
-      (setq i (ash i -1)))
+    (while (not (= int 0))
+      (setq res (concat (if (= 1 (logand int 1)) "1" "0") res))
+      (setq int (ash int -1)))
     (if (string= res "")
         (setq res "0000"))
     ;; this next part cheats. Convert to decimal so that it can be
     ;; padded left with zeroes.  It's all strings, so who cares if it
     ;; gets converted temporarily to decimal?  :)
-    (format "%04d" (string-to-number res))))
+    (format fstring (string-to-number res))))
 
 (defun xc/binary-quiz ()
   "Practice your hex to binary conversion.
