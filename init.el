@@ -1664,7 +1664,13 @@ or unbinds commands."
      (latex . t)
      (shell . t)
      (scheme . t)
+     (sql . t)
      ))
+
+  ;; (setenv "PGPASSWORD" "mypassword")
+  ;; (set-local my-host) etc.
+  (add-to-list 'org-structure-template-alist
+             '("p" . "src sql :engine postgresql :dbhost (identity my-host) :dbuser (identity my-user) :database (identity my-database) :dbport (identity my-port)"))
 
   (defun xc/new-clock-task ()
     "Switch to new task by clocking in after clocking out."
