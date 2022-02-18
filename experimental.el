@@ -448,6 +448,28 @@ compilation-error-regexp-alist-alist."
                       'right
                     'below)))))
 
+(defun xc/insert-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the same
+directory as the org-buffer and insert
+a link to this file.
+
+https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01292.html"
+  (interactive)
+  (setq tilde-buffer-filename
+        (replace-regexp-in-string "/" "\\" (buffer-file-name) t t))
+  (setq filename
+        (concat
+         (make-temp-name
+          (concat tilde-buffer-filename
+                  "_"
+                  (format-time-string "%Y%m%d_%H%M%S_")) ) ".jpg"))
+  ;; Linux: ImageMagick: (call-process "import" nil nil nil filename)
+  ;; Windows: Irfanview
+  (call-process "C:/Program Files/IrfanView/i_view64.exe"
+                nil nil nil (concat "/clippaste /convert=" filename))
+  (insert (concat "[[file:" filename "]]"))
+  (org-display-inline-images))
+
 ;; https://stackoverflow.com/a/6200347/5065796
 (defvar my-debugger-client-port 4444
   "port of the server")
