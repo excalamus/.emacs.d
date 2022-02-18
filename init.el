@@ -828,7 +828,8 @@ or unbinds commands."
     (general-def :keymaps 'global-map
       "C-a" 'xc/smart-beginning-of-line
       "<home>" 'xc/smart-beginning-of-line
-      "C-M-S-t" 'transpose-regions
+      ;; "C-M-S-t" 'transpose-regions
+      "C-M-S-t" 'swap-regions
       )
 
     (general-def :states '(normal)
@@ -1888,6 +1889,14 @@ or unbinds commands."
   :config
 
   (if xc/debug (message "emacs-sql-indent")))
+
+
+(use-package swap-regions
+  :after (:all org)
+  :straight (:fork "excalamus/swap-regions.el")
+  :config
+
+  (if xc/debug (message "swap-regions.el")))
 
 
 (use-package web-mode
