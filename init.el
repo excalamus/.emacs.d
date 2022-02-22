@@ -3047,6 +3047,41 @@ chicken and egg problem."
   (interactive)
   (insert "\"C:\\python\\python37\\python.exe\" -m venv venv"))
 
+;; https://stackoverflow.com/a/6200347/5065796
+(setq xc/debugger-client-port 4444)
+(setq xc/debugger-client-host "127.0.0.1")
+
+(defun xc/start-debugger-client nil
+  (interactive)
+  (make-network-process
+   :name "xc/debugger-client"
+   :buffer "*xc/debugger-client*"
+   :family 'ipv4
+   :host xc/debugger-client-host
+   :service xc/debugger-client-port
+   :sentinel 'xc--debugger-client-sentinel
+   :filter 'xc--debugger-client-filter)
+
+  (switch-to-buffer "*xc/debugger-client*")
+
+  (with-current-buffer "*xc/debugger-client*"
+    (comint-mode)
+    (setq-local comint-prompt-regexp "\\((MyDebugger) \\|>>> \\|In \\[[[:digit:]]\\]: \\)")
+    (setq-local comint-use-prompt-regexp t)))
+
+(defun xc/stop-debugger-client nil
+  (interactive)
+  (delete-process "xc/debugger-client"))
+
+(defun xc--debugger-client-filter (proc string)
+  (comint-output-filter proc string))
+
+(defun xc--debugger-client-sentinel (proc msg)
+  (when (string= msg "connection broken by remote peer\n")
+    (with-current-buffer "*xc/debugger-client*"
+      (insert (format "client %s has quit" proc))
+      (bury-buffer))))
+
 (defun xc/qt-live-code ()
   "Call ipython interactively with live-code toggle."
   (interactive)
@@ -3064,14 +3099,16 @@ chicken and egg problem."
 
 (defun xc/kill-qgis ()
   (interactive)
-  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-ltr-bin.exe\""))
+  ;; (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-ltr-bin.exe\""))
+  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-bin.exe\""))
 
 (defun xc/run-qgis ()
   (interactive)
   (save-some-buffers t nil)
   (xc/kill-qgis)
   (shell-command "taskkill /f /t /fi \"WINDOWTITLE eq \\qgis\\ \"")
-  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.10\\bin\\qgis-ltr.bat")))
+  ;; (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.10\\bin\\qgis-ltr.bat")))
+  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.22.3\\bin\\qgis.bat")))
     (set-process-query-on-exit-flag proc nil))
   ;; assume qgis loads in X seconds
   (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
