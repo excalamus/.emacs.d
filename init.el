@@ -2550,7 +2550,7 @@ Default BUFF is the buffer associated with
 has an associated process, send region as input, otherwise just
 insert the region.  Create a new line when ADVANCE is non-nil."
   (interactive
-   (let* ((prompt (format "Send string to % s: " (window-buffer xc/on-demand-window)))
+   (let* ((prompt (format "Send string to %s: " (window-buffer xc/on-demand-window)))
           (cmd (read-string prompt "" 'xc--on-demand-send-string-history)))
    (list cmd nil nil)))
 
