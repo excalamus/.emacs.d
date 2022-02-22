@@ -3084,14 +3084,16 @@ chicken and egg problem."
 
 (defun xc/kill-qgis ()
   (interactive)
-  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-ltr-bin.exe\""))
+  ;; (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-ltr-bin.exe\""))
+  (shell-command "taskkill /f /fi \"IMAGENAME eq qgis-bin.exe\""))
 
 (defun xc/run-qgis ()
   (interactive)
   (save-some-buffers t nil)
   (xc/kill-qgis)
   (shell-command "taskkill /f /t /fi \"WINDOWTITLE eq \\qgis\\ \"")
-  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.10\\bin\\qgis-ltr.bat")))
+  ;; (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.10\\bin\\qgis-ltr.bat")))
+  (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "\"qgis\"" "cmd.exe" "/K" "C:\\Program Files\\QGIS 3.22.3\\bin\\qgis.bat")))
     (set-process-query-on-exit-flag proc nil))
   ;; assume qgis loads in X seconds
   (run-at-time "3 sec" nil #'(lambda () (progn (shell-command "taskkill /f /fi \"WINDOWTITLE eq \\qgis\\ \"")))))
