@@ -122,7 +122,7 @@ See URL `https://www.emacswiki.org/emacs/LoadingLispFiles'"
     (xc/load-directory "~/.emacs.d/lisp/"))
 
 ;; load customizations which aren't versioned here
-(cond ((eq xc/device 'windows-nt)
+(cond ((eq xc/device 'windows)
        (add-hook 'after-init-hook (lambda () (load "~/secret-lisp.el"))))
       ((eq xc/device 'gnu/linux)
        (progn
@@ -298,7 +298,7 @@ Run whitespace-cleanup on save unless
 ;; https://dejavu-fonts.github.io/
 ;; https://stackoverflow.com/a/296316
 ;; Values in 1/10pt, so 100 will give you 10pt, etc.
-(if (eq system-type 'windows-nt)
+(if (eq xc/device 'windows)
     (set-face-attribute 'default nil
                         :family "DejaVu Sans Mono"
                         :height 100
@@ -1143,13 +1143,13 @@ or unbinds commands."
 
   (setq elpy-rpc-virtualenv-path 'current)
 
-  (when (eq system-type 'gnu/linux)
+  (when (eq xc/device 'gnu/linux)
     (setq-default indent-tabs-mode nil)
     (setq python-shell-interpreter "ipython"
           python-shell-interpreter-args "--simple-prompt")
     (setq elpy-rpc-python-command "python3"))
 
-  (when (eq system-type 'windows-nt)
+  (when (eq xc/device 'windows)
     (setq-default indent-tabs-mode nil)
     ;; https://emacs.stackexchange.com/questions/24750/emacs-freezes-with-ipython-5-0-0
     (setq python-shell-interpreter "ipython"
@@ -1442,7 +1442,7 @@ or unbinds commands."
 ;; https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/EZWinPorts.html
 (use-package ispell
   :after (:all org)
-  :if (eq system-type 'windows-nt)
+  :if (eq xc/device 'windows)
   :config
   (setq ispell-program-name "C:/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe")
   (setq ispell-local-dictionary "en_US")
@@ -1877,7 +1877,7 @@ or unbinds commands."
   :after (:all org)
   :config
   ;; ;; load project profiles, kept here versus lisp/ for security sake
-  ;; (if (eq system-type 'windows-nt)
+  ;; (if (eq xc/device 'windows)
   ;;     (load "~/sql-connections.el"))
   (setq sql-postgres-login-params nil)
 
@@ -2599,7 +2599,7 @@ See URL `https://emacs.stackexchange.com/a/7411/15177'"
 (defun xc/suicide ()
   "Kill all Emacs processes."
   (interactive)
-  (let ((cmd (if (eq system-type 'gnu/linux)
+  (let ((cmd (if (eq xc/device 'gnu/linux)
                  "killall -9 -r emacs" ; probably won't kill server administered by systemd
                "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\"")))
     (shell-command cmd)))
