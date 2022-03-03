@@ -742,9 +742,7 @@ or unbinds commands."
 
     (general-def :keymaps 'override
       :prefix "C-x i"
-      "a" '(lambda () (interactive) (find-file "~/.emacs.d/archive/andr-init.el"))
       "i" '(lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-      "c" '(lambda () (interactive) (find-file "~/.emacs.d/archive/classic-init.el"))
       "e" '(lambda () (interactive) (find-file "~/.emacs.d/experimental.el"))
       "s" '(lambda () (interactive) (find-file "~/secret-lisp.el"))  ; %APPDATA% on Windows
       )
