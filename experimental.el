@@ -469,3 +469,30 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01292.html"
                 nil nil nil (concat "/clippaste /convert=" filename))
   (insert (concat "[[file:" filename "]]"))
   (org-display-inline-images))
+
+(use-package auto-overlays)
+
+(use-package ov)
+
+(setq ov1 (ov-regexp "package"))
+
+(ov-set ov1 'face 'comint-highlight-prompt 'intangible t)
+
+(ov-set (ov-regexp "package") 'display "pkg" 'face 'bold 'intangible t)
+(ov-clear)
+
+;; https://dev.to/erickgnavar/avoid-losing-window-layout-when-editing-org-code-blocks-58e7
+(defconst xc/org-edit-block-register ?o)
+
+(defun xc/org-edit-special (&optional arg)
+  "Save current window configuration before a org-edit buffer is open."
+  (set-register xc/org-edit-block-register (current-window-configuration)))
+
+(defun xc/org-edit-src-exit ()
+  "Restore the window configuration that was saved before org-edit-special was called."
+  (set-window-configuration (get-register xc/org-edit-block-register)))
+
+(eval-after-load "org"
+  `(progn
+     (advice-add 'org-edit-special :before 'xc/org-edit-special)
+     (advice-add 'org-edit-src-exit :after 'xc/org-edit-src-exit)))
