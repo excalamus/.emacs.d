@@ -810,6 +810,7 @@ or unbinds commands."
       "S-<f1>" 'xc/on-demand-window-set
       "C-<f1>" 'ace-window
       "C-=" 'iedit-mode
+      "C-M-=" 'er/expand-region
       "<pause>" 'xc/punch-timecard
       "M-l" 'xc/recenter-window-top-bottom
       )
@@ -2032,7 +2033,7 @@ Abbrevs are overwritten without prompt when called from Lisp.
     (message "\"%s\"" sym)))
 
 
-;; todo, when universal, prompt for mode
+;; TODO, when universal, prompt for mode
 ;; https://stackoverflow.com/a/21058075/5065796
 (defun xc/create-scratch-buffer ()
   "Create a new numbered scratch buffer."
