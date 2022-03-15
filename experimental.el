@@ -496,3 +496,19 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01292.html"
   `(progn
      (advice-add 'org-edit-special :before 'xc/org-edit-special)
      (advice-add 'org-edit-src-exit :after 'xc/org-edit-src-exit)))
+
+(use-package annotate
+  :after (:all org)
+  :straight (:repo "bastibe/annotate.el")
+  :config
+
+  (setq annotate-use-echo-area nil)
+
+  (if xc/debug (message "annotate.el")))
+
+(use-package virtual-comment
+  :after (:all org)
+  :straight (:repo "thanhvg/emacs-virtual-comment")
+  :config
+
+  (if xc/debug (message "emacs-virtual-comment")))
