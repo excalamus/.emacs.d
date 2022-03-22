@@ -820,7 +820,9 @@ or unbinds commands."
       (general-chord "jk") 'xc/newline-without-break-of-line
       (general-chord "hh") 'evil-emacs-state
       (general-chord "HH") 'evil-insert-state
-      "C-;" 'comment-dwim-2
+      "C-;" '(lambda () (interactive) (if (org-in-src-block-p t)
+                                          (call-interactively 'org-comment-dwim-2)
+                                        (call-interactively 'comment-dwim-2)))
       "<f9>" 'save-buffer
       "C-<f9>" 'write-file
       "S-<f9>" 'xc/backup-region-or-buffer
