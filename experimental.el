@@ -512,3 +512,14 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01292.html"
   :config
 
   (if xc/debug (message "emacs-virtual-comment")))
+
+;; https://teddit.net/r/emacs/comments/6ztnj9/what_are_the_things_that_you_do_not_like_in_emacs/
+(defun my-stick-buffer ()
+  "Make the current window always display this buffer."
+  (interactive)
+  (let* ((window (get-buffer-window (current-buffer)))
+         (dedicated (window-dedicated-p window)))
+    (if (not dedicated)
+        (face-remap-add-relative 'mode-line-buffer-id '(:background "blue"))
+      (face-remap-add-relative 'mode-line-buffer-id '(:background "dim gray")))
+    (set-window-dedicated-p window (not dedicated))))
