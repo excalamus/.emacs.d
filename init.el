@@ -1670,6 +1670,8 @@ or unbinds commands."
      (shell . t)
      (scheme . t)
      (sql . t)
+     (C . t)
+
      ))
 
   ;; (setenv "PGPASSWORD" "mypassword")
