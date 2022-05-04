@@ -820,7 +820,7 @@ or unbinds commands."
       (general-chord "jk") 'xc/newline-without-break-of-line
       (general-chord "hh") 'evil-emacs-state
       (general-chord "HH") 'evil-insert-state
-      "C-;" '(lambda () (interactive) (if (org-in-src-block-p t)
+      "C-;" '(lambda () (interactive) (if (and (eq major-mode 'org-mode) (eq (org-in-src-block-p) t))
                                           (call-interactively 'org-comment-dwim-2)
                                         (call-interactively 'comment-dwim-2)))
       "<f9>" 'save-buffer
@@ -1675,6 +1675,8 @@ or unbinds commands."
      (shell . t)
      (scheme . t)
      (sql . t)
+     (C . t)
+
      ))
 
   ;; (setenv "PGPASSWORD" "mypassword")
