@@ -1096,6 +1096,11 @@ or unbinds commands."
     ;;  "_" #'self-insert-command
     ;;  )
 
+    (general-def :keymaps 'rg-mode-map
+      :states '(normal insert emacs)
+      "?" 'rg-menu  ; make the transient menu be like magit
+      )
+
     (general-def :keymaps 'smerge-mode-map
       :states 'normal
       "RET" 'smerge-keep-current
