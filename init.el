@@ -274,7 +274,7 @@ Run whitespace-cleanup on save unless
       (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90)
       (message "Added local long line filter"))))
 
-(remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
+;; (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
 
 (setq c-default-style "gnu")
 
