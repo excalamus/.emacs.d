@@ -523,3 +523,13 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01292.html"
         (face-remap-add-relative 'mode-line-buffer-id '(:background "blue"))
       (face-remap-add-relative 'mode-line-buffer-id '(:background "dim gray")))
     (set-window-dedicated-p window (not dedicated))))
+
+(use-package nasm-mode
+  :after (:all org)
+  ;; :straight (:repo "thanhvg/emacs-virtual-comment")
+  :config
+
+  (if xc/debug (message "nasm-mode")))
+
+(setq eww-search-prefix "http://www.frogfind.com/?q=")
+(setq eww-search-prefix "https://duckduckgo.com/html/?q=")
