@@ -1079,7 +1079,7 @@ or unbinds commands."
       "<S-f10>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
       "<C-S-f7>" 'peut-gerer-set-command-to-current-file
       "<S-f7>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
-      "<f3>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (peut-gerer-buffer-file-to-shell))
+      "<f3>" '(lambda () (interactive) (quit-process (get-buffer-process peut-gerer-shell)) (xc/kill-python) (peut-gerer-buffer-file-to-shell))
       "<S-wheel-down>" 'python-nav-forward-block
       "<S-wheel-up>" 'python-nav-backward-block
       )
