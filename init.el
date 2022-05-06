@@ -1780,7 +1780,7 @@ or unbinds commands."
 
   (add-to-list 'right-click-context-global-menu-tree
                '("Search..."
-                 ;; ("pyside" :call (xc/search-Qt))
+                 ("pyside" :call (xc/search-Qt))
                  ("QGIS" :call (xc/search-qgis))
                  ("sdl-wiki" :call (xc/search-sdl-wiki))
                  ("Open Jira ticket" :call (xc/search-jira))
@@ -2841,7 +2841,7 @@ line if no region is provided."
     (save-buffer)))
 
 
-(defun xc/kill-proc-child (&optional buffer-name)
+(defun xc/kill-proc-child (&optional proc-buffer)
   "Kill any child process associated with BUFFER-NAME."
   (interactive)
   (let* ((proc-buffer (or proc-buffer "*shell*"))
@@ -2850,6 +2850,7 @@ line if no region is provided."
          (child-pid (if shell-pid (car (split-string
                                         (shell-command-to-string (format "pgrep --parent %d" shell-pid))))))
          rv)
+    ;; (message "shell-pid: %s\nchild-pid: %s" shell-pid child-pid)
     (if child-pid
         (setq rv (shell-command (format "kill -9 %s" child-pid)))
       ;; (message "No child process to kill!")
