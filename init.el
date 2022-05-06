@@ -1417,6 +1417,7 @@ or unbinds commands."
   (setq hl-todo-keyword-faces
         '(("TODO"    . "#f84547")
           ("FIXME"   . "#f84547")
+          ("KILL"    . "#f84547")
           ("WARNING" . "#FFFF00")
           ("DEBUG"   . "#8485ce")
           ("NOTE"    . "#95c76f")))
