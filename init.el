@@ -266,12 +266,10 @@ Run whitespace-cleanup on save unless
   (interactive)
   (if (member 'xc/-append-newline-after-comma comint-preoutput-filter-functions)
       (progn
-        ;; (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma t)
-        (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
+        (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma t)
         (message "Removed local long line filter"))
     (progn
-      ;; (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90 t)
-      (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 90)
+      (add-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma 0 t)
       (message "Added local long line filter"))))
 
 ;; (remove-hook 'comint-preoutput-filter-functions 'xc/-append-newline-after-comma)
@@ -750,7 +748,7 @@ or unbinds commands."
     (general-def :keymaps 'override
       "<vertical-line> <mouse-3>" 'balance-windows  ; right-click on vertical to balance-windows
       "C-x s" 'save-buffer
-      "<f5>" '(lambda () (interactive) (progn (funcall 'xc/send-line-or-region)))
+      "<f5>" '(lambda () (interactive) (progn (funcall 'xc/send-line-or-region 't)))
       "<f8>" 'xc/switch-to-last-window
       "C-<f8>" '(lambda () (interactive) (peut-gerer-switch-to 'main t 0))
       "S-<f8>" '(lambda () (interactive) (peut-gerer-switch-to 'shell t 0))
