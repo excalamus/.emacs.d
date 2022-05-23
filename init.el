@@ -2471,8 +2471,6 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
 
 (defun xc/minimize-window (&optional window)
   (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
   (setq window (window-normalize-window window))
   (window-resize
    window
@@ -2481,8 +2479,6 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
 
 (defun xc/1/4-window (&optional window)
   (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
   (setq window (window-normalize-window window))
   (xc/maximize-window)
   (window-resize
@@ -2493,8 +2489,6 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
 
 (defun xc/center-window (&optional window)
   (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
   (setq window (window-normalize-window window))
   (xc/maximize-window)
   (window-resize
@@ -2504,8 +2498,6 @@ See URL `https://web.archive.org/web/20151230143154/http://www.emacswiki.org/ema
 
 (defun xc/3/4-window (&optional window)
   (interactive)
-  (when switch-to-buffer-preserve-window-point
-    (window--before-delete-windows window))
   (setq window (window-normalize-window window))
   (xc/maximize-window)
   (window-resize
