@@ -533,3 +533,23 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01292.html"
 
 (setq eww-search-prefix "http://www.frogfind.com/?q=")
 (setq eww-search-prefix "https://duckduckgo.com/html/?q=")
+
+
+(use-package eglot
+  :after (:all org)
+  :straight (:fork "excalamus/eglot")
+  :config
+
+  (if xc/debug (message "eglot")))
+
+
+(use-package anaconda-mode
+  :after (:all org)
+  :straight (:fork "excalamus/anaconda-mode")
+  :config
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  ;; (remove-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+  ;; (remove-hook 'python-mode-hook 'anaconda-eldoc-mode)
+
+  (if xc/debug (message "anaconda-mode")))
