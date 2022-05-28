@@ -2635,10 +2635,11 @@ line if no region is provided."
   (insert "C:\\python\\miniconda38\\condabin\\mamba.bat activate "))
 
 
+(setq xc/python-break-string "breakpoint()")
 ;; (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
 ;; (setq xc/python-break-string "import mydebugger; mydebugger.breakpoint()")
 ;; (setq xc/python-break-string "import my_other_debugger; my_other_debugger.breakpoint()")
-(setq xc/python-break-string "import pydevd_pycharm; pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)")
+;; (setq xc/python-break-string "import pydevd_pycharm; pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)")
 
 (defun xc/insert-breakpoint (&optional string)
   (interactive)
