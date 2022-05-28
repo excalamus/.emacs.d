@@ -807,8 +807,8 @@ or unbinds commands."
       ;; dvp bindings
       "C-]" 'xref-find-definitions
       "C-6" 'xref-find-definitions-other-window
-      "M-]" 'dumb-jump-go
-      "M-6" 'dumb-jump-go-other-window
+      ;; "M-]" 'dumb-jump-go
+      ;; "M-6" 'dumb-jump-go-other-window
 
       ;; Ugh, C-i is also TAB
       ;; "M-o" 'evil-jump-backward
@@ -1079,11 +1079,11 @@ or unbinds commands."
   (add-hook 'elpy-mode-hook (lambda () (company-mode -1)))
   :config
   (pyvenv-mode 1)
-  (elpy-enable)
+  ;; (elpy-enable)
   (setq elpy-rpc-timeout 2)
 
   ;; (remove-hook 'xref-backend-functions #'elpy--xref-backend t)
-  (advice-add 'elpy--xref-backend :override #'dumb-jump-xref-activate)
+  ;; (advice-add 'elpy--xref-backend :override #'dumb-jump-xref-activate)
 
   ;; color docstings differently than strings
   ;; https://stackoverflow.com/questions/27317396/how-to-distinguish-python-strings-and-docstrings-in-an-emacs-buffer
@@ -2241,7 +2241,7 @@ FILE may also be a directory."
     (if dir
         (progn
           (if (eq xc/device 'windows)
-              (browse-url-of-file dir)
+              (browse-url-default-browser dir)
             (start-process "thunar" nil "/run/current-system/profile/bin/thunar" file)))
       (error "No directory to open"))))
 
@@ -2635,10 +2635,10 @@ line if no region is provided."
   (insert "C:\\python\\miniconda38\\condabin\\mamba.bat activate "))
 
 
-;; (setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
+(setq xc/python-break-string "import ipdb; ipdb.set_trace(context=10)")
 ;; (setq xc/python-break-string "import mydebugger; mydebugger.breakpoint()")
 ;; (setq xc/python-break-string "import my_other_debugger; my_other_debugger.breakpoint()")
-(setq xc/python-break-string "import pydevd_pycharm; pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)")
+;; (setq xc/python-break-string "import pydevd_pycharm; pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)")
 
 (defun xc/insert-breakpoint (&optional string)
   (interactive)
@@ -2996,3 +2996,34 @@ alphabet. 5-1=4 so that xE is 14.  14 is then 1110."
         (sleep-for 1)))
     (quit
      (message "You got %%%d correct (%d of %d)." (* (/ correct total) 100) correct total)))))
+
+(defun xc/build-tags (dir &optional exclude)
+  "(Re)build tags table for DIR, not including EXCLUDE."
+  (interactive "DDirectory: ")
+  (let* ((target
+          (if (not (file-directory-p dir))
+              (error "Invalid directory: '%s'" dir)
+            ;; ctags doesn't generate tags if target file is a
+            ;; directory (ends in slash)
+            (directory-file-name dir)))
+         ;; https://stackoverflow.com/a/25819720
+         (exclusion-args (cl-loop for e in exclude concat (format "--exclude=%s " e)))
+         (tags-file (concat (file-name-as-directory target) "TAGS")))
+
+    ;; needed to notify user that new tags were generated
+    (if (file-exists-p tags-file)
+        (delete-file tags-file t))
+
+    (shell-command
+     (format "ctags -f %s -eR %s %s" tags-file exclusion-args target))
+
+    (if (file-exists-p tags-file)
+        (message "Built %s" tags-file))))
+
+(defun xc/rebuild-tags ()
+  "Rebuild tags in `tags-table-list'."
+  (interactive)
+  (mapconcat
+   #'(lambda (dir)
+       (xc/build-tags (file-name-directory dir) '("scratch" "venv" "tours" "notebook")))
+   tags-table-list "\n"))
