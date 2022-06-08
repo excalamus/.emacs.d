@@ -426,7 +426,10 @@ Run whitespace-cleanup on save unless
             )
 
           (with-eval-after-load "bm"
-            (set-face-attribute 'bm-face nil :background "RosyBrown2"))
+            (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified)
+            ;; termux
+            ;; (set-face-attribute 'bm-face nil :background "RosyBrown2")
+            )
 
           ))))
 
