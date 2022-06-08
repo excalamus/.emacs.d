@@ -2049,7 +2049,8 @@ END.  When no region or issue given, try using the thing at
 point.  If there is nothing at point, ask for the search query."
   (interactive)
   (let* ((engine-list `(("ddg" . "https://duckduckgo.com/?q=%s")
-                        ("Qt" . "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q=%s")
+                        ("Qt" . "file:///C:/Users/mtrzcinski/Documents/doc-snapshots.qt.io/qtforpython-5.15/search.html?q=%s")
+                        ;; ("Qt" . "https://doc-snapshots.qt.io/qtforpython-5.15/search.html?check_keywords=yes&area=default&q=%s")
                         ("qgis" . "https://qgis.org/pyqgis/master/search.html?check_keywords=yes&area=default&q=%s")
                         ("sdl-wiki" . "https://wiki.libsdl.org/wiki/search/?q=%s")
                         ("sdl" . "https://wiki.libsdl.org/%s")
@@ -2063,7 +2064,9 @@ point.  If there is nothing at point, ask for the search query."
          (engine (or engine (completing-read "Select search engine: " engine-list nil t (caar engine-list))))
          (query (if prefix (format "%s %s" prefix lookup-term) lookup-term))
          (search-string (url-encode-url (format (cdr (assoc engine engine-list)) query))))
-    (browse-url-default-browser search-string)))
+    (if (string= "file" (substring search-string 0 4))
+        (shell-command (format "start firefox.exe --new-tab --url %s" search-string))
+      (browse-url-default-browser search-string))))
 
 (defun xc/search-ddg (&optional beg end)
   (interactive)
