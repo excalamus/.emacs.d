@@ -11,20 +11,20 @@ from ${1:PySide2}${2:PyQt5} import QtCore, QtWidgets, QtGui
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
-	super().__init__()
+        super().__init__()
 
-	self.init_widgets()
-	self.init_layout()
+        self.init_widgets()
+        self.init_layout()
 
     def init_widgets(self):
-	${3:pass}
+        ${3:pass}
 
     def init_layout(self):
-	layout = QtWidgets.QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
 
-	centralWidget = QtWidgets.QWidget()
-	centralWidget.setLayout(layout)
-	self.setCentralWidget(centralWidget)
+        self.central_widget = QtWidgets.QWidget()
+        self.central_widget.setLayout(self.layout)
+        self.setCentralWidget(self.central_widget)
 
 
 if __name__ == '__main__':
