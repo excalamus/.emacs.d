@@ -1,3 +1,5 @@
+Development has moved to: https://codeberg.org/excalamus/.emacs.d
+
 #+TITLE: init.el -- Principium de Excalamus
 
 Maintain package consistency across multiple devices using [[https://github.com/raxod502/straight.el][straight.el]]
